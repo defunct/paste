@@ -55,7 +55,7 @@ public class GuiceletModule extends AbstractModule
                 });
         
         bind(JanitorQueue.class)
-            .annotatedWith(ServletContextScoped.class)
+            .annotatedWith(ServletContextJanitors.class)
             .toProvider(new Provider<JanitorQueue>()
             {
                 public JanitorQueue get()
@@ -64,7 +64,7 @@ public class GuiceletModule extends AbstractModule
                 }
             });
         bind(JanitorQueue.class)
-            .annotatedWith(RequestScoped.class)
+            .annotatedWith(RequestJanitors.class)
             .toProvider(new Provider<JanitorQueue>()
             {
                 public JanitorQueue get()

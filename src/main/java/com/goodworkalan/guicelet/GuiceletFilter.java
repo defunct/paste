@@ -39,42 +39,50 @@ public class GuiceletFilter implements Filter
     public void init(FilterConfig config) throws ServletException
     {
         List<Module> listOfModules = new ArrayList<Module>();
-        try
+        String modules = config.getInitParameter("Modules");
+        if (modules != null)
         {
-            for (String module : config.getInitParameter("Modules").split(","))
+            try
             {
-                Class<?> moduleClass = Class.forName(module.trim());
-                listOfModules.add((Module) moduleClass.newInstance());
+                for (String module : modules.split(","))
+                {
+                    Class<?> moduleClass = Class.forName(module.trim());
+                    listOfModules.add((Module) moduleClass.newInstance());
+                }
             }
-        }
-        catch (Exception e)
-        {
-            throw new ServletException(e);
+            catch (Exception e)
+            {
+                throw new ServletException(e);
+            }
         }
         injector = Guice.createInjector(listOfModules);
 
         List<Dispatcher> listOfDispatchers = new ArrayList<Dispatcher>();
-        try
+        String dispatchers = config.getInitParameter("Dispatchers");
+        if (dispatchers != null)
         {
-            for (String dispatcher : config.getInitParameter("Dispatchers").split(","))
+            try
             {
-                Class<?> dispatcherClass = Class.forName(dispatcher.trim());
-                listOfDispatchers.add((Dispatcher) dispatcherClass.newInstance());
+                for (String dispatcher : dispatchers.split(","))
+                {
+                    Class<?> dispatcherClass = Class.forName(dispatcher.trim());
+                    listOfDispatchers.add((Dispatcher) dispatcherClass.newInstance());
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ServletException(e);
             }
         }
-        catch (Exception e)
-        {
-            throw new ServletException(e);
-        }
         
-        Binder globber = new Binder();
+        Binder binder = new Binder();
         for (Dispatcher dispatcher : listOfDispatchers)
         {
-            dispatcher.bind(globber);
+            dispatcher.bind(binder);
         }
         
-        controllerBindings = globber.getBindingTrees();
-        viewBindings = globber.getViewBindings();
+        controllerBindings = binder.getBindingTrees();
+        viewBindings = binder.getViewBindings();
     }
 
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -137,10 +145,13 @@ public class GuiceletFilter implements Filter
                         GuiceletModule module = new GuiceletModule(request, response, listOfJanitors, controller);
                         requestInjector = injector.createChildInjector(module);
                         
-                        Actors render = controller.getClass().getAnnotation(Actors.class);
-                        for (Class<?  extends Actor> generator : render.value())
+                        Actors actors = controller.getClass().getAnnotation(Actors.class);
+                        if (actors != null)
                         {
-                            requestInjector.getInstance(generator).actUpon(controller);
+                            for (Class<?  extends Actor> actor : actors.value())
+                            {
+                                requestInjector.getInstance(actor).actUpon(controller);
+                            }
                         }
                     }
                 }
@@ -148,7 +159,7 @@ public class GuiceletFilter implements Filter
 
             if (!interception.isIntercepted() && requestInjector != null)
             {
-                Object controller = requestInjector.getBinding(Key.get(Object.class, Controller.class));
+                Object controller = requestInjector.getProvider(Key.get(Object.class, Controller.class)).get();
                 View view = controller.getClass().getAnnotation(View.class);
                 if (view != null)
                 {
@@ -171,7 +182,7 @@ public class GuiceletFilter implements Filter
                                 ViewBinding binding = prioritized.get(prioritized.firstKey());
                                 Injector viewInjector = requestInjector.createChildInjector(binding.getModule());
                                 Renderer renderer = viewInjector.getProvider(Renderer.class).get();
-                                renderer.render();
+                                renderer.render(view.bundle(), view.name());
                             }
                         }
                     }
@@ -204,5 +215,19 @@ public class GuiceletFilter implements Filter
     
     public void destroy()
     {
+        for (Janitor janitor : listOfJanitors)
+        {
+            try
+            {
+                janitor.cleanUp();
+            }
+            catch (ThreadDeath t)
+            {
+                throw t;
+            }
+            catch (Throwable t)
+            {
+            }
+        }
     }
 }

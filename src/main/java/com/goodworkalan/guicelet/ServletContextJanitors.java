@@ -10,6 +10,6 @@ import com.google.inject.BindingAnnotation;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @BindingAnnotation
-public @interface RequestParameters
+public @interface ServletContextJanitors
 {
 }
