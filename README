@@ -1,0 +1,60 @@
+GUICELET
+
+A MVC web framework that uses Google Guice for constructor depenency
+injection of controllers, faciliating reuse by carefully separating URL
+binding from depenency injected controllers from views.
+
+    Wish and Discuss: http://alan.uservoice.com/pages/guicelet
+    Issues and Tasks: http://curlybraces.org/trac/guicelet
+    Source: http://github.com/bigeasy/guicelet/tree/master
+
+    Contact: alan@blogometer.com
+
+    License: GPL v 3.0 with Classpath Exception
+
+    See Also: http://code.google.com/p/google-guice/
+    See Also: http://github.com/bigeasy/dovetail/tree/master
+
+MOTIVATION
+
+- URL binding via modules, so that controllers can be used in different
+  applications, bound to different paths.
+
+- Wanted to use Guice for constructor injection, but constructor
+  injection did not integrate well into my current framework of choice,
+  Stripes.
+
+DESIGN OBJECTIVES
+
+GuiceletFilter must:
+
+- Be a team player in any Servlet environment.
+- Provide constructor injection of services into controllers.
+- Provide a way for services to cleanup after a request and at shutdown.
+- Provide session and request Guice scopes.
+- Separate controllers and views into a client/server relationship.
+- Provide a file upload handling strategy.
+- Provide an optional request parameter to bean mapping strategy.
+- Provide an optional validation strategy.
+
+Guiclets are neat because:
+
+- Guice builds everything using any flavor of injection.
+- Dovetail URL binding can match many different URL paths, so you can
+  bind muliptle URLs to a single controller.
+- You can bind based on request parameters and request method for more
+  RESTful strategies.
+- Guicelets participate in the Filter chain like any other Filter, so
+  you use Dovetail bindings to apply Filters.
+- You can create any sort of rendering strategy you like and bind it
+  into your Guilcelet Module, PDF using iText, XML using JiBX, etc.
+
+HACKING
+
+Guiclet builds form the Maven POM. A Maven generated Eclipse IDE
+environment is provided. You can use Maven to generate an environment
+for your IDE. 
+
+Please suggest features at the Uservoice forum. If you'd like to
+contribute patches, please fork the git repository and make your
+changes, and send patches.

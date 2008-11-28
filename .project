@@ -1,0 +1,16 @@
+<projectDescription>
+  <name>guicelet</name>
+  <comment>A MVC web framework that uses Google Guice for
+    constructor depenency injection of controllers, faciliating reuse by
+    carefully separating URL binding from depenency injected controllers
+    from views.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

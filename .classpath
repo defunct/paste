@@ -1,0 +1,20 @@
+<classpath>
+  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="src/test/java" output="target/test-classes"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X.jar" sourcepath="M2_REPO/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/com/google/code/guice/guice/2.0/guice-2.0.jar" sourcepath="M2_REPO/com/google/code/guice/guice/2.0/guice-2.0-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty/7.0.0pre2/jetty-7.0.0pre2.jar" sourcepath="M2_REPO/org/mortbay/jetty/jetty/7.0.0pre2/jetty-7.0.0pre2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty-util/7.0.0pre2/jetty-util-7.0.0pre2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4.jar" sourcepath="M2_REPO/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api-3.0/7.0.0pre2/servlet-api-3.0-7.0.0pre2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sourceforge/stripes/stripes/1.5/stripes-1.5.jar" sourcepath="M2_REPO/net/sourceforge/stripes/stripes/1.5/stripes-1.5-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/testng/testng/5.8/testng-5.8-jdk15.jar"/>
+</classpath>
