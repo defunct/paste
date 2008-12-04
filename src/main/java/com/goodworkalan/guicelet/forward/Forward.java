@@ -1,8 +1,8 @@
 package com.goodworkalan.guicelet.forward;
 
 import com.goodworkalan.guicelet.RenderModule;
+import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.ViewBinder;
-import com.goodworkalan.guicelet.*;
 
 public class Forward extends RenderModule
 {
