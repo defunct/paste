@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import com.google.inject.BindingAnnotation;
 
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @BindingAnnotation
 public @interface RequestJanitors
