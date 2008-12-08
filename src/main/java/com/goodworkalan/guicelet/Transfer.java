@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.guicelet.redirect.Redirector;
+import com.google.inject.Inject;
 
 public class Transfer
 {
@@ -21,6 +22,7 @@ public class Transfer
     
     private final Headers requestHeaders;
     
+    @Inject
     public Transfer(
             HttpServletRequest request,
             HttpServletResponse response,

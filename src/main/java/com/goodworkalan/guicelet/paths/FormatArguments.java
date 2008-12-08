@@ -73,7 +73,7 @@ public class FormatArguments
             Object controller = transfer.getController();
             String name = controller.getClass().getCanonicalName();
             String pkg = controller.getClass().getPackage().getName();
-            return name.substring(pkg.length()).replace('.', '/');
+            return name.substring(pkg.length() + 1).replace('.', '/');
         }
     };
 }

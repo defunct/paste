@@ -76,5 +76,25 @@ public class GuiceletModule extends AbstractModule
         bind(Object.class)
             .annotatedWith(Controller.class)
             .toInstance(controller);
+
+        String path = request.getRequestURI();
+        
+        String contextPath = request.getContextPath();
+        if (contextPath != null)
+        {
+            path = path.substring(contextPath.length());
+        }
+        
+        bind(String.class)
+            .annotatedWith(Path.class)
+            .toInstance(path);
+        
+        bind(String.class)
+            .annotatedWith(WelcomeFile.class)
+            .toInstance("index");
+        
+        bind(Headers.class)
+            .annotatedWith(Request.class)
+            .toInstance(new Headers(request));
     }
 }
