@@ -1,5 +1,7 @@
 package com.goodworkalan.guicelet.redirect;
 
+import static com.goodworkalan.guicelet.redirect.Redirects.isRedirectStatus;
+
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.ViewBinder;
@@ -34,16 +36,9 @@ public class Redirect extends RenderModule
     
     public Redirect status(int status)
     {
-        switch (status)
+        if (!isRedirectStatus(status))
         {
-        case 300:
-        case 301:
-        case 302:
-        case 303:
-        case 307:
-            break;
-        default:
-            throw new IllegalStateException();
+            throw new IllegalArgumentException();
         }
         this.status = status;
         return this;

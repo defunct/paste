@@ -1,4 +1,5 @@
 package com.goodworkalan.guicelet.redirect;
+import static com.goodworkalan.guicelet.redirect.Redirects.isRedirectStatus;
 
 import java.net.URI;
 
@@ -26,6 +27,11 @@ public class Redirector
     
     public void redirect(String where, int status)
     {
+        if (!isRedirectStatus(status))
+        {
+            throw new IllegalArgumentException();
+        }
+
         headers.setStatus(status);
         
         URI uri = URI.create(request.getRequestURI());
