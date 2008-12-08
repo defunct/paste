@@ -1,15 +1,15 @@
-package com.goodworkalan.guicelet;
+package com.goodworkalan.guicelet.forward;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.ScopeAnnotation;
+import com.google.inject.BindingAnnotation;
 
-@Target({ ElementType.TYPE, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@ScopeAnnotation
-public @interface SessionScoped
+@Target(ElementType.PARAMETER)
+@BindingAnnotation
+public @interface FormatParameters
 {
 }

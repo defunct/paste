@@ -1,9 +1,9 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Twitter Suite" verbose="1">
+<suite name="Guicelet Suite" verbose="1">
 	<test name="Unit">
 		<packages>
-    		<package name="org.curlybraces.guicelets" />
+    		<package name="com.goodworkalan.guicelet" />
 		</packages>
 	</test>
 </suite>

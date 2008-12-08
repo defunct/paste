@@ -11,8 +11,8 @@ public abstract class RenderModule extends AbstractModule
         this.viewBinder = viewBinder;
     }
     
-    public ViewPathBinder bind(String pattern)
+    public ViewBinder view()
     {
-        return viewBinder.bind(pattern);
+        return viewBinder;
     }
 }

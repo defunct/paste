@@ -3,6 +3,7 @@ package com.goodworkalan.guicelet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.goodworkalan.deviate.Deviations;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
 
@@ -10,12 +11,12 @@ public class Binder
 {
     private final List<ControllerBinder> listOfControllerBinders;
     
-    private final List<ViewBinder> listOfViewBinders;
+    private final Deviations<ViewBinding> viewBindings;
     
     public Binder()
     {
         this.listOfControllerBinders = new ArrayList<ControllerBinder>();
-        this.listOfViewBinders = new ArrayList<ViewBinder>();
+        this.viewBindings = new Deviations<ViewBinding>(PatternKey.values().length);
     }
 
     public ControllerBinder controllers(Class<?> conditional)
@@ -25,11 +26,9 @@ public class Binder
         return globBuilder;
     }
     
-    public ViewBinder views(Class<?> conditional)
+    public ViewBinder view()
     {
-        ViewBinder views = new ViewBinder(new GlobCompiler(conditional));
-        listOfViewBinders.add(views);
-        return views;
+        return new ViewBinder(viewBindings);
     }
     
     public List<GlobTree<ControllerBinding>> getBindingTrees()
@@ -42,13 +41,8 @@ public class Binder
         return controllerBindings;
     }
     
-    public List<GlobTree<ViewBinding>> getViewBindings()
+    public Deviations<ViewBinding> getViewBindings()
     {
-        List<GlobTree<ViewBinding>> viewBindings = new ArrayList<GlobTree<ViewBinding>>();
-        for (ViewBinder binder : listOfViewBinders)
-        {
-            viewBindings.add(binder.getGlobTree());
-        }
         return viewBindings;
     }
 }

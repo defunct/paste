@@ -1,27 +1,33 @@
 package com.goodworkalan.guicelet;
 
-import com.goodworkalan.dovetail.GlobCompiler;
-import com.goodworkalan.dovetail.GlobTree;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import com.goodworkalan.deviate.Deviations;
+import com.goodworkalan.deviate.Match;
 
 public class ViewBinder
 {
-    private final GlobTree<ViewBinding> treeOfBindings;
+    private final Deviations<ViewBinding> viewBindings;
     
-    private final GlobCompiler compiler;
-    
-    public ViewBinder(GlobCompiler compiler)
+    public ViewBinder(Deviations<ViewBinding> viewBindings)
     {
-        this.treeOfBindings = new GlobTree<ViewBinding>();
-        this.compiler = compiler;
+        this.viewBindings = viewBindings;
     }
 
-    public ViewPathBinder bind(String pattern)
+    public ViewControllerBinder controller(Class<?> controllerClass)
     {
-        return new ViewPathBinder(this, treeOfBindings, compiler.compile(pattern));
+        return new ViewConditionBinder(this, viewBindings, newPattern()).controller(controllerClass);
     }
     
-    public GlobTree<ViewBinding> getGlobTree()
+    public ViewConditionBinder controller()
     {
-        return treeOfBindings;
+        return new ViewConditionBinder(this, viewBindings, newPattern()).controller();
+    }
+    
+    public Map<PatternKey, Set<Match>> newPattern()
+    {
+        return new HashMap<PatternKey, Set<Match>>();
     }
 }

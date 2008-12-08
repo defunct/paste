@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.deviate.Deviations;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Mapping;
 import com.goodworkalan.dovetail.TreeMapper;
@@ -32,7 +33,7 @@ public class GuiceletFilter implements Filter
     
     private List<GlobTree<ControllerBinding>> controllerBindings;
     
-    private List<GlobTree<ViewBinding>> viewBindings;
+    private Deviations<ViewBinding> viewBindings;
     
     final static List<Janitor> listOfJanitors = new ArrayList<Janitor>();
     
@@ -160,35 +161,39 @@ public class GuiceletFilter implements Filter
             if (!interception.isIntercepted() && requestInjector != null)
             {
                 Object controller = requestInjector.getProvider(Key.get(Object.class, Controller.class)).get();
-                View view = controller.getClass().getAnnotation(View.class);
-                if (view != null)
+                
+                // Using a list to build this to express the order.  Please do
+                // not turn into a vararg call or something clever.
+             
+                List<Object> pattern = new ArrayList<Object>();
+                
+                pattern.add(controller.getClass().getPackage());
+                pattern.add(controller.getClass());
+                pattern.add(controller.getClass());
+                pattern.add(path);
+                pattern.add(request.getMethod());
+                pattern.add(request.getParameterMap());
+                pattern.add(request);
+                pattern.add(200);
+                pattern.add(response);
+                
+                List<ViewBinding> views = viewBindings.get(pattern.toArray());
+                
+                SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
+                for (ViewBinding view : views)
                 {
-                    for (GlobTree<ViewBinding> tree : viewBindings)
-                    {
-                        TreeMapper<ViewBinding> mapper = new TreeMapper<ViewBinding>();
-                        if (tree.match(mapper, path))
-                        {
-                            SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
-                            for (Mapping<ViewBinding> mapping : mapper.mappings())
-                            {
-                                ViewBinding binding = mapping.getObject();
-                                if (binding.test(view.bundle(), view.name()))
-                                {
-                                    prioritized.put(binding.getPriority(), binding);
-                                }
-                            }
-                            if (prioritized.size() != 0)
-                            {
-                                ViewBinding binding = prioritized.get(prioritized.firstKey());
-                                Injector viewInjector = requestInjector.createChildInjector(binding.getModule());
-                                Renderer renderer = viewInjector.getProvider(Renderer.class).get();
-                                renderer.render(view.bundle(), view.name());
-                            }
-                        }
-                    }
+                    prioritized.put(view.getPriority(), view);
+                }
+
+                if (prioritized.size() != 0)
+                {
+                    ViewBinding view = prioritized.get(prioritized.firstKey());
+                    Injector viewInjector = requestInjector.createChildInjector(view.getModule());
+                    Renderer renderer = viewInjector.getProvider(Renderer.class).get();
+                    renderer.render();
                 }
             }
-
+            
             if (!interception.isIntercepted())
             {
                 chain.doFilter(request, response);
@@ -231,3 +236,5 @@ public class GuiceletFilter implements Filter
         }
     }
 }
+
+/* vim: set et tw=80 nowrap: */

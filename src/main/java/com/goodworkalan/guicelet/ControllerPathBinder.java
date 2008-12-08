@@ -7,30 +7,40 @@ import java.util.List;
 import java.util.Map;
 
 import com.goodworkalan.dovetail.Glob;
+import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
 
 public class ControllerPathBinder
 {
     private final GlobTree<ControllerBinding> treeOfBindings;
     
-    private final Glob glob;
+    private final List<Glob> listOfGlobs;
     
     private final ControllerBinder controllerBinder;
     
     private final Map<String, Class<? extends Annotation>> mapOfAnnotations;
+    
+    private final GlobCompiler compiler;
     
     private final List<ControllerCondition> listOfConditions;
     
     private int priority;
     
     public ControllerPathBinder(ControllerBinder controllerBinder,
-            GlobTree<ControllerBinding> treeOfBindings, Glob glob)
+            GlobTree<ControllerBinding> treeOfBindings, GlobCompiler compiler)
     {
-        this.glob = glob;
+        this.compiler = compiler;
+        this.listOfGlobs = new ArrayList<Glob>();
         this.treeOfBindings = treeOfBindings;
         this.controllerBinder = controllerBinder;
         this.mapOfAnnotations = new HashMap<String, Class<? extends Annotation>>();
         this.listOfConditions = new ArrayList<ControllerCondition>();
+    }
+    
+    public ControllerPathBinder or(String pattern)
+    {
+        listOfGlobs.add(compiler.compile(pattern));
+        return this;
     }
 
     public ControllerPathBinder map(String string, Class<? extends Annotation> annotationType)
@@ -53,7 +63,10 @@ public class ControllerPathBinder
     
     public ControllerBinder to(Class<?> controller)
     {
-        treeOfBindings.add(glob, new ControllerBinding(listOfConditions, priority, controller));
+        for (Glob glob : listOfGlobs)
+        {
+            treeOfBindings.add(glob, new ControllerBinding(listOfConditions, priority, controller));
+        }
         return controllerBinder;
     }
 }

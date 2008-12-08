@@ -17,7 +17,7 @@ public class ControllerBinder
     
     public ControllerPathBinder bind(String pattern)
     {
-        return new ControllerPathBinder(this, treeOfBindings, compiler.compile(pattern));
+        return new ControllerPathBinder(this, treeOfBindings, compiler).or(pattern);
     }
     
     public GlobTree<ControllerBinding> getGlobTree()

@@ -1,5 +1,6 @@
 package com.goodworkalan.guicelet.forward;
 
+import com.goodworkalan.guicelet.Paths;
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.ViewBinder;
@@ -11,6 +12,8 @@ public class Forward extends RenderModule
     private String directory = "/";
     
     private String property = "controller";
+    
+    private Paths[] formatParameters = new Paths[0];
 
     public Forward(ViewBinder viewBinder)
     {
@@ -22,6 +25,7 @@ public class Forward extends RenderModule
     {
         bind(Renderer.class).to(ForwardRenderer.class);
         bind(String.class).annotatedWith(Format.class).toInstance(format);
+        bind(Paths[].class).annotatedWith(FormatParameters.class).toInstance(formatParameters);
         bind(String.class).annotatedWith(Directory.class).toInstance(directory);
         bindConstant().annotatedWith(Property.class).to(property);
     }
@@ -38,9 +42,10 @@ public class Forward extends RenderModule
         return this;
     }
     
-    public Forward format(String format)
+    public Forward format(String format, Paths...formatParameters)
     {
         this.format = format;
+        this.formatParameters = formatParameters;
         return this;
     }
 }
