@@ -26,6 +26,8 @@ public class Redirector
     
     public void redirect(String where, int status)
     {
+        headers.setStatus(status);
+        
         URI uri = URI.create(request.getRequestURI());
         URI location = URI.create(where.trim());
         if (location.getScheme() == null)
