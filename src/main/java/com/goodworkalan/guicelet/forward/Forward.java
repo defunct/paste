@@ -1,19 +1,22 @@
 package com.goodworkalan.guicelet.forward;
 
-import com.goodworkalan.guicelet.Paths;
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.ViewBinder;
+import com.goodworkalan.guicelet.paths.FormatArgument;
+import com.goodworkalan.guicelet.paths.FormatArguments;
+import com.google.inject.Provider;
 
 public class Forward extends RenderModule
 {
-    private String format = "%s.ftl";
-    
-    private String directory = "/";
+    private String format = "/%s.ftl";
     
     private String property = "controller";
     
-    private Paths[] formatParameters = new Paths[0];
+    private FormatArgument[] formatArguments = new FormatArgument[]
+    {
+        FormatArguments.CONTROLLER_CLASS_AS_PATH
+    };
 
     public Forward(ViewBinder viewBinder)
     {
@@ -24,16 +27,13 @@ public class Forward extends RenderModule
     protected void configure()
     {
         bind(Renderer.class).to(ForwardRenderer.class);
-        bind(String.class).annotatedWith(Format.class).toInstance(format);
-        bind(Paths[].class).annotatedWith(FormatParameters.class).toInstance(formatParameters);
-        bind(String.class).annotatedWith(Directory.class).toInstance(directory);
-        bindConstant().annotatedWith(Property.class).to(property);
-    }
-    
-    public Forward directory(String directory)
-    {
-        this.directory = directory;
-        return this;
+        bind(Configuration.class).toProvider(new Provider<Configuration>()
+        {
+            public Configuration get()
+            {
+                return new Configuration(property, format, formatArguments);
+            }
+        });
     }
     
     public Forward property(String property)
@@ -42,10 +42,10 @@ public class Forward extends RenderModule
         return this;
     }
     
-    public Forward format(String format, Paths...formatParameters)
+    public Forward format(String format, FormatArgument...formatArguments)
     {
         this.format = format;
-        this.formatParameters = formatParameters;
+        this.formatArguments = formatArguments;
         return this;
     }
 }

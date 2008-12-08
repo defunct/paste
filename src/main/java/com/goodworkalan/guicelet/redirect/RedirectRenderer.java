@@ -5,76 +5,72 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.guicelet.Controller;
 import com.goodworkalan.guicelet.Headers;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.Response;
+import com.goodworkalan.guicelet.Transfer;
 
 public class RedirectRenderer implements Renderer
 {
-    private final static String pageFormat;
+    private final Transfer transfer;
     
-    private final Object controller;
-    
-    private final HttpServletResponse response;
-    
-    private final Redirector redirector;
-    
-    private final Headers headers;
-    
-    static
-    {
-        Reader reader = new InputStreamReader(RedirectRenderer.class.getResourceAsStream("redirect.html"));
-        StringBuilder newString = new StringBuilder();
-        char[] buffer = new char[2048];
-        int read;
-        try
-        {
-            while ((read = reader.read(buffer)) != -1)
-            {
-                newString.append(buffer, 0, read);
-            }
-        }
-        catch (IOException e)
-        {
-            throw new Error(e);
-        }
-        pageFormat = newString.toString();
-    }
+    private final Configuration configuration;
     
     public RedirectRenderer(
-            @Controller Object controller,
-            HttpServletResponse response,
-            Redirector redirector,
-            @Response Headers headers)
+            Transfer transfer,
+            Configuration configuration)
     {
-        this.controller = controller;
-        this.response = response;
-        this.redirector = redirector;
-        this.headers = headers;
+        this.transfer = transfer;
+        this.configuration = configuration;
     }
 
     public void render() throws ServletException, IOException
     {
+        Redirector redirector = transfer.getRedirector();
+
+        if (configuration.getFormat() != null)
+        {
+            Object[] args = new String[configuration.getFormatArguments().length];
+            for (int i = 0; i < args.length; i++){
+                args[i] = configuration.getFormatArguments()[i].getArgument(transfer);
+            }
+            String where = String.format(configuration.getFormat(), args);
+            redirector.redirect(where);
+        }
+
+        Headers headers = transfer.getRequestHeaders();
         if (!headers.contains("Location"))
         {
+            Object controller = transfer.getController();
             SuggestedRedirection suggestedRedirection = controller.getClass().getAnnotation(SuggestedRedirection.class);
             if (suggestedRedirection != null)
             {
                 redirector.redirect(suggestedRedirection.value());
             }
         }
+        
         if (headers.getStatus() == 0)
         {
-            headers.setStatus(303);
+            headers.setStatus(configuration.getStatus());
         }
-        headers.send(response);
+        headers.send(transfer.getHttpServletResponse());
  
         String page = 
-            String.format(pageFormat,
+            String.format(getPageFormat(),
                           headers.getStatus(), headers.get("Location"));
-        response.getWriter().append(page);
+        transfer.getHttpServletResponse().getWriter().append(page);
+    }
+    
+    private String getPageFormat() throws IOException
+    {
+        Reader reader = new InputStreamReader(RedirectRenderer.class.getResourceAsStream("redirect.html"));
+        StringBuilder newString = new StringBuilder();
+        char[] buffer = new char[2048];
+        int read;
+        while ((read = reader.read(buffer)) != -1)
+        {
+            newString.append(buffer, 0, read);
+        }
+        return newString.toString();
     }
 }

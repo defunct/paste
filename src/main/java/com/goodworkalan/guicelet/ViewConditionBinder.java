@@ -1,7 +1,10 @@
 package com.goodworkalan.guicelet;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +20,8 @@ public class ViewConditionBinder
     protected final Deviations<ViewBinding> viewBindings;
     
     protected final Map<PatternKey, Set<Match>> pattern;
+    
+    private int priority;
     
     public ViewConditionBinder(ViewBinder viewBinder, Deviations<ViewBinding> viewBindings, Map<PatternKey, Set<Match>> pattern)
     {
@@ -61,6 +66,12 @@ public class ViewConditionBinder
         }
         return this;
     }
+    
+    public ViewConditionBinder withPriority(int priority)
+    {
+        this.priority = priority;
+        return this;
+    }
 
     public <T extends RenderModule> T with(Class<T> binderClass)
     {
@@ -82,6 +93,19 @@ public class ViewConditionBinder
         {
             throw new GuiceletException(e);
         }
+        List<Set<Match>> listOfMatches = new ArrayList<Set<Match>>(); 
+        for (PatternKey key : PatternKey.values())
+        {
+            if (pattern.containsKey(key))
+            {
+                listOfMatches.add(pattern.get(key));
+            }
+            else
+            {
+                listOfMatches.add(Collections.singleton((Match) new Any())); 
+            }
+        }
+        viewBindings.put(listOfMatches, new ViewBinding(priority, module));
         return module;
     }
 }
