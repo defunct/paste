@@ -4,6 +4,7 @@
 	<test name="Unit">
 		<packages>
     		<package name="com.goodworkalan.guicelet" />
+    		<package name="com.goodworkalan.guicelet.forward" />
 		</packages>
 	</test>
 </suite>
