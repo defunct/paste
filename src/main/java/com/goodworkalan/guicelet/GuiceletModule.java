@@ -41,7 +41,7 @@ public class GuiceletModule extends AbstractModule
         
         bind(HttpServletResponse.class).toInstance(response);
         bind(ServletResponse.class).toInstance(response);
-        
+
         bind(new TypeLiteral<Map<String, String[]>>() {})
             .annotatedWith(RequestParameters.class)
             .toProvider(
@@ -96,5 +96,9 @@ public class GuiceletModule extends AbstractModule
         bind(Headers.class)
             .annotatedWith(Request.class)
             .toInstance(new Headers(request));
+        
+        bind(Headers.class)
+            .annotatedWith(Response.class)
+            .toInstance(new Headers(request.getMethod()));
     }
 }

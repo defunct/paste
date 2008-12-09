@@ -6,15 +6,22 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 
 import com.goodworkalan.guicelet.Headers;
+import com.goodworkalan.guicelet.Response;
+import com.google.inject.Inject;
 
-
+/**
+ * Initiate a redircecion.
+ * 
+ * @author Alan Gutierrez
+ */
 public class Redirector
 {
     private final HttpServletRequest request;
     
     private final Headers headers;
     
-    public Redirector(HttpServletRequest request, Headers headers)
+    @Inject
+    public Redirector(HttpServletRequest request, @Response Headers headers)
     {
         this.request = request;
         this.headers = headers;
