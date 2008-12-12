@@ -29,7 +29,7 @@ public class GuiceletGuicerTest
         
         FilterChain chain = mock(FilterChain.class);
         
-        Binder binder = new Binder();
+        CoreBinder binder = new CoreBinder();
         binder.controllers(Object.class)
               .bind("/queue/{user}")
               .to(BindingController.class);

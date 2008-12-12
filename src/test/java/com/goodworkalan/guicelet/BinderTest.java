@@ -15,13 +15,13 @@ public class BinderTest
     @Test
     public void constructor()
     {
-        new Binder();
+        new CoreBinder();
     }
 
     @Test
     public void anyController()
     {
-        Binder binder = new Binder();
+        CoreBinder binder = new CoreBinder();
         binder.view().controller().with(Forward.class);
         Deviations<ViewBinding> bindings = binder.getViewBindings();
         Object[] path = new Object[9];
@@ -39,7 +39,7 @@ public class BinderTest
     @Test
     public void controllers()
     {
-        Binder binder = new Binder();
+        CoreBinder binder = new CoreBinder();
         binder.view()
               .controller(Object.class).or(String.class)
               .with(Forward.class);

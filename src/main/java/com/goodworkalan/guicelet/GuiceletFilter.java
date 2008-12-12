@@ -62,7 +62,7 @@ public class GuiceletFilter implements Filter
             }
         }
         
-        Binder binder = new Binder();
+        CoreBinder binder = new CoreBinder();
         for (Dispatcher dispatcher : listOfDispatchers)
         {
             dispatcher.bind(binder);
