@@ -34,6 +34,18 @@ public class Parameters
         this.parameters = parameters;
     }
     
+    public final static Parameters fromMapOfStrings(Map<String, String> mapOfStrings)
+    {
+        Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+        for (Map.Entry<String, String> entry : mapOfStrings.entrySet())
+        {
+            List<String> values = new ArrayList<String>();
+            values.add(entry.getValue());
+            parameters.put(entry.getKey(), values);
+        }
+        return new Parameters(parameters);
+    }
+    
     public Parameters()
     {
         this.parameters = new HashMap<String, List<String>>();

@@ -127,23 +127,28 @@ public class GuiceletFilter implements Filter
                 TreeMapper<ControllerBinding> mapper = new TreeMapper<ControllerBinding>();
                 if (tree.match(mapper, path))
                 {
-                    SortedMap<Integer, ControllerBinding> prioritized = new TreeMap<Integer, ControllerBinding>(Collections.reverseOrder());
+                    SortedMap<Integer, Mapping<ControllerBinding>> prioritized = new TreeMap<Integer, Mapping<ControllerBinding>>(Collections.reverseOrder());
                     
                     for (Mapping<ControllerBinding> mapping : mapper.mappings())
                     {
                         ControllerBinding binding = mapping.getObject();
                         if (binding.test(request, response))
                         {
-                            prioritized.put(binding.getPriority(), binding);
+                            prioritized.put(binding.getPriority(), mapping);
                         }
                     }
 
                     if (prioritized.size() != 0)
                     {
-                        ControllerBinding binding = prioritized.get(prioritized.firstKey());
-                        Object controller = injector.getInstance(binding.getController());
+                        Mapping<ControllerBinding> mapping = prioritized.get(prioritized.firstKey());
+                        Object controller = injector.getInstance(mapping.getObject().getController());
                             
-                        GuiceletModule module = new GuiceletModule(request, response, listOfJanitors, controller);
+                        GuiceletModule module = new GuiceletModule(
+                                request,
+                                response,
+                                listOfJanitors,
+                                controller,
+                                Parameters.fromMapOfStrings(mapping.getParameters()));
                         requestInjector = injector.createChildInjector(module);
                         
                         Actors actors = controller.getClass().getAnnotation(Actors.class);

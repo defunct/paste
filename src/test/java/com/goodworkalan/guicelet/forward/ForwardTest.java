@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.guicelet.GuiceletModule;
 import com.goodworkalan.guicelet.Janitor;
+import com.goodworkalan.guicelet.Parameters;
 import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
@@ -45,7 +46,12 @@ public class ForwardTest
         HttpServletResponse repsonse = mock(HttpServletResponse.class);
         Object controller = new Object();
         
-        GuiceletModule guiceletModule = new GuiceletModule(request, repsonse, new ArrayList<Janitor>(), controller);
+        GuiceletModule guiceletModule = new GuiceletModule(
+                request,
+                repsonse,
+                new ArrayList<Janitor>(),
+                controller,
+                new Parameters());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
@@ -72,7 +78,12 @@ public class ForwardTest
         HttpServletResponse repsonse = mock(HttpServletResponse.class);
         Object controller = new Object();
         
-        GuiceletModule guiceletModule = new GuiceletModule(request, repsonse, new ArrayList<Janitor>(), controller);
+        GuiceletModule guiceletModule = new GuiceletModule(
+                request,
+                repsonse,
+                new ArrayList<Janitor>(),
+                controller,
+                new Parameters());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
@@ -100,7 +111,12 @@ public class ForwardTest
         HttpServletResponse repsonse = mock(HttpServletResponse.class);
         Object controller = new Object();
         
-        GuiceletModule guiceletModule = new GuiceletModule(request, repsonse, new ArrayList<Janitor>(), controller);
+        GuiceletModule guiceletModule = new GuiceletModule(
+                    request,
+                    repsonse,
+                    new ArrayList<Janitor>(),
+                    controller,
+                    new Parameters());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         

@@ -22,12 +22,20 @@ public class GuiceletModule extends AbstractModule
     
     private final List<Janitor> listOfJanitors;
     
-    public GuiceletModule(HttpServletRequest request, HttpServletResponse response, List<Janitor> listOfJanitors, Object controller)
+    private final Parameters bindingParameters;
+    
+    public GuiceletModule(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            List<Janitor> listOfJanitors,
+            Object controller,
+            Parameters bindingParameters)
     {
         this.request = request;
         this.response = response;
         this.controller = controller;
         this.listOfJanitors = listOfJanitors;
+        this.bindingParameters = bindingParameters; 
     }
 
     @Override
@@ -100,5 +108,13 @@ public class GuiceletModule extends AbstractModule
         bind(Headers.class)
             .annotatedWith(Response.class)
             .toInstance(new Headers(request.getMethod()));
+        
+        bind(Parameters.class)
+            .annotatedWith(Binding.class)
+            .toInstance(bindingParameters);
+
+        bind(Parameters.class)
+            .annotatedWith(Request.class)
+            .toInstance(new Parameters(request));
     }
 }
