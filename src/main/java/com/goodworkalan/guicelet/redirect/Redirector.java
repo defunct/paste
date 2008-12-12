@@ -41,10 +41,10 @@ public class Redirector
 
         headers.setStatus(status);
         
-        URI uri = URI.create(request.getRequestURI());
         URI location = URI.create(where.trim());
         if (location.getScheme() == null)
         {
+            URI uri = URI.create(request.getRequestURL().toString());
             String path = location.getPath();
             if (path.length() != 0 && path.charAt(0) == '/')
             {
