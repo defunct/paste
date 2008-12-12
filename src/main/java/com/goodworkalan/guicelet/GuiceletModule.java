@@ -1,5 +1,6 @@
 package com.goodworkalan.guicelet;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
@@ -18,23 +19,19 @@ public class GuiceletModule extends AbstractModule
     
     private final HttpServletResponse response;
     
-    private final Object controller;
-    
-    private final List<Janitor> listOfJanitors;
+    private final Map<Class<? extends Annotation>, List<Janitor>> mapOfJanitors;
     
     private final Parameters bindingParameters;
     
     public GuiceletModule(
             HttpServletRequest request,
             HttpServletResponse response,
-            List<Janitor> listOfJanitors,
-            Object controller,
+            Map<Class<? extends Annotation>, List<Janitor>> mapOfJanitors,
             Parameters bindingParameters)
     {
         this.request = request;
         this.response = response;
-        this.controller = controller;
-        this.listOfJanitors = listOfJanitors;
+        this.mapOfJanitors = mapOfJanitors;
         this.bindingParameters = bindingParameters; 
     }
 
@@ -62,29 +59,21 @@ public class GuiceletModule extends AbstractModule
                     }
                 });
         
-        bind(JanitorQueue.class)
-            .annotatedWith(ServletContextJanitors.class)
-            .toProvider(new Provider<JanitorQueue>()
-            {
-                public JanitorQueue get()
-                {
-                    return new JanitorQueue(GuiceletFilter.listOfJanitors);
-                }
-            });
-        bind(JanitorQueue.class)
-            .annotatedWith(RequestJanitors.class)
-            .toProvider(new Provider<JanitorQueue>()
-            {
-                public JanitorQueue get()
-                {
-                    return new JanitorQueue(listOfJanitors);
-                }
-            });
-        
-        bind(Object.class)
-            .annotatedWith(Controller.class)
-            .toInstance(controller);
 
+        for (Class<? extends Annotation> annotation : mapOfJanitors.keySet())
+        {
+            final List<Janitor> janitors = mapOfJanitors.get(annotation); 
+            bind(JanitorQueue.class)
+                .annotatedWith(annotation)
+                .toProvider(new Provider<JanitorQueue>()
+                {
+                    public JanitorQueue get()
+                    {
+                        return new JanitorQueue(janitors);
+                    }
+                });
+        }
+        
         String path = request.getRequestURI();
         
         String contextPath = request.getContextPath();

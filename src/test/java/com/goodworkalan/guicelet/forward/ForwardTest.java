@@ -8,14 +8,17 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.guicelet.ControllerModule;
 import com.goodworkalan.guicelet.GuiceletModule;
 import com.goodworkalan.guicelet.Janitor;
 import com.goodworkalan.guicelet.Parameters;
@@ -44,19 +47,18 @@ public class ForwardTest
         when(request.getRequestURI()).thenReturn("/account/create");
         
         HttpServletResponse repsonse = mock(HttpServletResponse.class);
-        Object controller = new Object();
         
-        GuiceletModule guiceletModule = new GuiceletModule(
+        GuiceletModule guicelet = new GuiceletModule(
                 request,
                 repsonse,
-                new ArrayList<Janitor>(),
-                controller,
+                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
                 new Parameters());
+        ControllerModule controller = new ControllerModule(new Object());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
-        Injector injector = Guice.createInjector(guiceletModule, forward);
+        Injector injector = Guice.createInjector(guicelet, controller, forward);
         
         Renderer renderer = injector.getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
@@ -76,20 +78,19 @@ public class ForwardTest
         when(request.getRequestURI()).thenReturn("/account/create");
         
         HttpServletResponse repsonse = mock(HttpServletResponse.class);
-        Object controller = new Object();
         
-        GuiceletModule guiceletModule = new GuiceletModule(
+        GuiceletModule guicelet = new GuiceletModule(
                 request,
                 repsonse,
-                new ArrayList<Janitor>(),
-                controller,
+                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
                 new Parameters());
+        ControllerModule controller = new ControllerModule(new Object());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         forward.property("property");
-        Injector injector = Guice.createInjector(guiceletModule, forward);
+        Injector injector = Guice.createInjector(guicelet, controller, forward);
         
         Renderer renderer = injector.getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
@@ -109,20 +110,19 @@ public class ForwardTest
         when(request.getRequestURI()).thenReturn("/account/create");
         
         HttpServletResponse repsonse = mock(HttpServletResponse.class);
-        Object controller = new Object();
         
-        GuiceletModule guiceletModule = new GuiceletModule(
-                    request,
-                    repsonse,
-                    new ArrayList<Janitor>(),
-                    controller,
-                    new Parameters());
+        GuiceletModule guicelet = new GuiceletModule(
+                request,
+                repsonse,
+                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
+                new Parameters());
+        ControllerModule controller = new ControllerModule(new Object());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         forward.format("/templates/%s.ftl", new FormatArgument[] { REQUEST_PATH });
-        Injector injector = Guice.createInjector(guiceletModule, forward);
+        Injector injector = Guice.createInjector(guicelet, controller, forward);
         
         Renderer renderer = injector.getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);

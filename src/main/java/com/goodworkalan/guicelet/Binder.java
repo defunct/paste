@@ -6,6 +6,7 @@ import java.util.List;
 import com.goodworkalan.deviate.Deviations;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
+import com.google.inject.Injector;
 
 public class Binder
 {
@@ -44,5 +45,10 @@ public class Binder
     public Deviations<ViewBinding> getViewBindings()
     {
         return viewBindings;
+    }
+    
+    public GuiceletGuicer newGuiceletGuicer(Injector injector)
+    {
+        return new GuiceletGuicer(injector, getBindingTrees(), getViewBindings());
     }
 }
