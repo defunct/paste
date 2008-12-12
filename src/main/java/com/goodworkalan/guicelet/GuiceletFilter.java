@@ -148,7 +148,7 @@ public class GuiceletFilter implements Filter
                                 response,
                                 listOfJanitors,
                                 controller,
-                                Parameters.fromMapOfStrings(mapping.getParameters()));
+                                Parameters.fromStringMap(mapping.getParameters()));
                         requestInjector = injector.createChildInjector(module);
                         
                         Actors actors = controller.getClass().getAnnotation(Actors.class);

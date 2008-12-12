@@ -115,6 +115,12 @@ public class GuiceletModule extends AbstractModule
 
         bind(Parameters.class)
             .annotatedWith(Request.class)
-            .toInstance(new Parameters(request));
+            .toInstance(Parameters.fromStringArrayMap(getParameterMap(request)));
+    }
+    
+    @SuppressWarnings("unchecked")
+    private final Map<String, String[]> getParameterMap(HttpServletRequest request)
+    {
+        return request.getParameterMap();
     }
 }
