@@ -20,19 +20,20 @@ public class RequestScope implements Scope
         final String name = key.toString();
         return new Provider<T>()
         {
+            @SuppressWarnings("unchecked")
             public T get()
             {
+                T t;
                 synchronized (request)
                 {
-                    @SuppressWarnings("unchecked")
-                    T t = (T) request.getAttribute(name);
+                    t = (T) request.getAttribute(name);
                     if (t == null)
                     {
                         t = unscoped.get();
                         request.setAttribute(name, t);
                     }
-                    return t;
                 }
+                return t;
             }
         };
     }

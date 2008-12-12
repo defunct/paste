@@ -100,11 +100,26 @@ public class GuiceletModule extends AbstractModule
         
         bind(Parameters.class)
             .annotatedWith(Binding.class)
-            .toInstance(bindingParameters);
+            .toProvider(new Provider<Parameters>()
+                {
+                    public Parameters get()
+                    {
+                        return bindingParameters;
+                    }
+                })
+            .in(RequestScoped.class);
 
         bind(Parameters.class)
             .annotatedWith(Request.class)
-            .toInstance(Parameters.fromStringArrayMap(getParameterMap(request)));
+            .toProvider(new Provider<Parameters>()
+                {
+                    public Parameters get()
+                    {
+                        return Parameters
+                                .fromStringArrayMap(getParameterMap(request));
+                    }
+                })
+            .in(RequestScoped.class);
     }
     
     @SuppressWarnings("unchecked")
