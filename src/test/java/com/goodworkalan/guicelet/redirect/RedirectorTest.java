@@ -43,7 +43,7 @@ public class RedirectorTest
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("/bar");
         
-        assertEquals(headers.get("Location"), "http://domain.com/foo/bar");
+        assertEquals(headers.getFirst("Location"), "http://domain.com/foo/bar");
     }
     
     @Test
@@ -57,7 +57,7 @@ public class RedirectorTest
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("bar");
         
-        assertEquals(headers.get("Location"), "http://domain.com/foo/bar");
+        assertEquals(headers.getFirst("Location"), "http://domain.com/foo/bar");
     }
 
     @Test
@@ -71,7 +71,7 @@ public class RedirectorTest
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("");
         
-        assertEquals(headers.get("Location"), "http://domain.com/foo/");
+        assertEquals(headers.getFirst("Location"), "http://domain.com/foo/");
     }    
 
     @Test
@@ -84,7 +84,7 @@ public class RedirectorTest
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("http://netscape.com/");
         
-        assertEquals(headers.get("Location"), "http://netscape.com/");
+        assertEquals(headers.getFirst("Location"), "http://netscape.com/");
     }
     
     @Test
@@ -99,6 +99,6 @@ public class RedirectorTest
         redirector.parameter(null, null);
         redirector.redirect("http://netscape.com/");
         
-        assertEquals(headers.get("Location"), "http://netscape.com/");
+        assertEquals(headers.getFirst("Location"), "http://netscape.com/");
     }
 }

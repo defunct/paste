@@ -19,7 +19,6 @@ import java.util.Map;
  */
 public class Parameters
 extends StringListMap
-implements Map<String, List<String>>
 {
     public Parameters()
     {

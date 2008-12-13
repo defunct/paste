@@ -9,8 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class StringListMap
+implements Map<String, List<String>>
 {
-    private final Map<String, List<String>> parameters;
+    private final Map<String, List<String>> map;
 
     public StringListMap()
     {
@@ -19,15 +20,15 @@ public class StringListMap
 
     public StringListMap(Map<String, List<String>> map)
     {
-        this.parameters = map;
+        this.map = map;
     }
     
     public Map<String, List<String>> unmodifiableMap()
     {
         Map<String, List<String>> unmodifiable = new HashMap<String, List<String>>();
-        for (String key : parameters.keySet())
+        for (String key : map.keySet())
         {
-            List<String> values = new ArrayList<String>(parameters.get(key));
+            List<String> values = new ArrayList<String>(map.get(key));
             unmodifiable.put(key, Collections.unmodifiableList(values));
         }
         return Collections.unmodifiableMap(unmodifiable);
@@ -35,7 +36,7 @@ public class StringListMap
     
     public String getFirst(String key)
     {
-        List<String> values = parameters.get(key);
+        List<String> values = map.get(key);
         if (values != null && values.size() != 0)
         {
             return values.get(0);
@@ -45,73 +46,73 @@ public class StringListMap
     
     public void add(String key, String value)
     {
-        List<String> values = parameters.get(key);
+        List<String> values = map.get(key);
         if (values == null)
         {
             values = new ArrayList<String>();
-            parameters.put(key, values);
+            map.put(key, values);
         }
         values.add(value);
     }
     
     public List<String> put(String key, List<String> value)
     {
-        return parameters.put(key, value);
+        return map.put(key, value);
     }
     
     public void putAll(Map<? extends String, ? extends List<String>> t)
     {
-        parameters.putAll(t);
+        map.putAll(t);
     }
     
     public boolean containsKey(Object key)
     {
-        return parameters.containsKey(key);
+        return map.containsKey(key);
     }
     
     public boolean containsValue(Object value)
     {
-        return parameters.containsValue(value);
+        return map.containsValue(value);
     }
     
     public List<String> get(Object key)
     {
-        return parameters.get(key);
+        return map.get(key);
     }
 
     public Set<java.util.Map.Entry<String, List<String>>> entrySet()
     {
-        return parameters.entrySet();
+        return map.entrySet();
     }
     
     public Set<String> keySet()
     {
-        return parameters.keySet();
+        return map.keySet();
     }
     
     public Collection<List<String>> values()
     {
-        return parameters.values();
+        return map.values();
     }
     
     public int size()
     {
-        return parameters.size();
+        return map.size();
     }
     
     public List<String> remove(Object key)
     {
-        return parameters.remove(key);
+        return map.remove(key);
     }
     
     public void clear()
     {
-        parameters.clear();
+        map.clear();
     }
     
     public boolean isEmpty()
     {
-        return parameters.isEmpty();
+        return map.isEmpty();
     }
     
     @Override
@@ -123,7 +124,7 @@ public class StringListMap
         }
         if (object instanceof Map)
         {
-            return parameters.equals(object);
+            return map.equals(object);
         }
         return false;
     }
@@ -131,6 +132,6 @@ public class StringListMap
     @Override
     public int hashCode()
     {
-        return parameters.hashCode();
+        return map.hashCode();
     }
 }

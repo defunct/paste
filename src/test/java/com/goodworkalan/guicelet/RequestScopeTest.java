@@ -1,13 +1,13 @@
 package com.goodworkalan.guicelet;
 
-import static org.testng.Assert.assertSame;
-
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertSame;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,8 +54,19 @@ public class RequestScopeTest
                 return new Object();
             }
         };
-        RequestScope scope = new RequestScope(request);
+        Provider<Parameters> parameters = new Provider<Parameters>()
+        {
+            public Parameters get()
+            {
+                return new Parameters();
+            }
+        };
+        Bindable requestable = new Bindable();
+        RequestScope scope = new RequestScope(new HashMap<Class<? extends Annotation>, Parameters>(), request);
         Object object = scope.scope(Key.get(Object.class, Request.class), provider).get();
         assertSame(scope.scope(Key.get(Object.class, Request.class), provider).get(), object);
+        scope.scope(Key.get(Parameters.class, Request.class), parameters).get();
+        Binding binding = requestable.getClass().getAnnotation(Binding.class);
+        scope.scope(Key.get(Parameters.class, binding), parameters).get();
     }
 }

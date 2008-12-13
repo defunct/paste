@@ -25,6 +25,6 @@ public class RedirectionTest
         Redirection redirection = new Redirection("bar").parameter("hello", "world");
         redirection.redirect(redirector);
         
-        assertEquals(headers.get("Location"), "http://domain.com/foo/bar");   
+        assertEquals(headers.getFirst("Location"), "http://domain.com/foo/bar");   
     }
 }

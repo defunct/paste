@@ -1,6 +1,7 @@
 package com.goodworkalan.guicelet;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,9 @@ public class GuiceletModule extends AbstractModule
     @Override
     protected void configure()
     {
-        bindScope(RequestScoped.class, new RequestScope(request));
+        final Map<Class<? extends Annotation>, Parameters> parameters = new HashMap<Class<? extends Annotation>, Parameters>();
+
+        bindScope(RequestScoped.class, new RequestScope(parameters, request));
         bindScope(SessionScoped.class, new SessionScope(request));
         
         bind(HttpServletRequest.class).toInstance(request);
@@ -117,6 +120,16 @@ public class GuiceletModule extends AbstractModule
                     {
                         return Parameters
                                 .fromStringArrayMap(getParameterMap(request));
+                    }
+                })
+            .in(RequestScoped.class);
+        
+        bind(new TypeLiteral<Map<Class<? extends Annotation>, Parameters>>() { })
+            .toProvider(new Provider<Map<Class<? extends Annotation>, Parameters>>()
+                {
+                    public Map<Class<? extends Annotation>, Parameters> get()
+                    {
+                        return parameters;
                     }
                 })
             .in(RequestScoped.class);
