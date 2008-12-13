@@ -3,62 +3,94 @@ package com.goodworkalan.guicelet.redirect;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.guicelet.Controller;
+import com.goodworkalan.guicelet.GuiceletException;
 import com.goodworkalan.guicelet.Headers;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.Transfer;
+import com.goodworkalan.guicelet.Request;
+import com.goodworkalan.guicelet.paths.PathFormatter;
+import com.google.inject.Inject;
 
 public class RedirectRenderer implements Renderer
 {
-    private final Transfer transfer;
+    private final PathFormatter pathFormatter;
     
+    private final HttpServletResponse response;
+    
+    private final Object controller;
+    
+    private final Redirector redirector;
+
+    private final Headers headers;
+
     private final Configuration configuration;
     
+    @Inject
     public RedirectRenderer(
-            Transfer transfer,
+            PathFormatter pathFormatter,
+            HttpServletResponse response,
+            @Controller Object controller,
+            Redirector redirector,
+            @Request Headers headers,
             Configuration configuration)
     {
-        this.transfer = transfer;
+        this.pathFormatter = pathFormatter;
+        this.response = response;
+        this.controller = controller;
+        this.redirector = redirector;
+        this.headers = headers;
         this.configuration = configuration;
     }
 
     public void render() throws ServletException, IOException
     {
-        Redirector redirector = transfer.getRedirector();
-
-        if (configuration.getFormat() != null)
+        if (headers.get("Location") == null)
         {
-            Object[] args = new String[configuration.getFormatArguments().length];
-            for (int i = 0; i < args.length; i++){
-                args[i] = configuration.getFormatArguments()[i].getArgument(transfer);
-            }
-            String where = String.format(configuration.getFormat(), args);
-            redirector.redirect(where);
-        }
-
-        Headers headers = transfer.getRequestHeaders();
-        if (!headers.contains("Location"))
-        {
-            Object controller = transfer.getController();
             SuggestedRedirection suggestedRedirection = controller.getClass().getAnnotation(SuggestedRedirection.class);
             if (suggestedRedirection != null)
             {
                 redirector.redirect(suggestedRedirection.value());
             }
         }
-        
-        if (headers.getStatus() == 0)
+
+        if (configuration.getFormat() != null)
         {
-            headers.setStatus(configuration.getStatus());
+            String path = pathFormatter.format(configuration.getFormat(), configuration.getFormatArguments());
+            redirector.redirect(path, configuration.getStatus());
         }
-        headers.send(transfer.getHttpServletResponse());
+        
+        if (!Redirects.isRedirectStatus(headers.getStatus()))
+        {
+            throw new GuiceletException();
+        }
+        else if (headers.get("Location") == null)
+        {
+            throw new GuiceletException();
+        }
+        else
+        {
+            try
+            {
+                new URI(headers.get("Location"));
+            }
+            catch (URISyntaxException e)
+            {
+                throw new GuiceletException(e);
+            }
+        }
+        
+        headers.send(response);
  
         String page = 
             String.format(getPageFormat(),
                           headers.getStatus(), headers.get("Location"));
-        transfer.getHttpServletResponse().getWriter().append(page);
+        response.getWriter().append(page);
     }
     
     private String getPageFormat() throws IOException

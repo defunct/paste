@@ -44,7 +44,7 @@ public class Redirect extends RenderModule
         return this;
     }
     
-    public Redirect format(String format, FormatArgument[] formatArguments)
+    public Redirect format(String format, FormatArgument...formatArguments)
     {
         this.format = format;
         this.formatArguments = formatArguments;

@@ -1,9 +1,6 @@
 package com.goodworkalan.guicelet.redirect;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.goodworkalan.guicelet.Parameters;
 
 public class Redirection extends RuntimeException
 {
@@ -11,20 +8,16 @@ public class Redirection extends RuntimeException
 
     private final String where;
     
-    private final Map<String, List<String>> parameters;
+    private final Parameters parameters;
     
     public Redirection(String where)
     {
         this.where = where;
-        this.parameters = new HashMap<String, List<String>>();
+        this.parameters = new Parameters();
     }
     
     public void redirect(Redirector redirector)
     {
-        if (where != null)
-        {
-            redirector.redirect(where);
-        }
         for (String name : parameters.keySet())
         {
             for (String value : parameters.get(name))
@@ -32,17 +25,12 @@ public class Redirection extends RuntimeException
                 redirector.parameter(name, value);
             }
         }
+        redirector.redirect(where);
     }
     
     public Redirection parameter(String name, String value)
     {
-        List<String> values = parameters.get(name);
-        if (values == null)
-        {
-            values = new ArrayList<String>();
-            parameters.put(name, values);
-        }
-        values.add(value);
+        parameters.add(name, value);
         return this;
     }
 }
