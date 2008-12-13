@@ -21,7 +21,9 @@ import java.util.Set;
  * 
  * @author Alan Gutierrez
  */
-public class Parameters implements Map<String, List<String>>
+public class Parameters
+extends StringListMap
+implements Map<String, List<String>>
 {
     private final Map<String, List<String>> parameters;
     
