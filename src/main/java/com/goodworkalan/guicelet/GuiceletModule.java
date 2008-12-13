@@ -92,7 +92,7 @@ public class GuiceletModule extends AbstractModule
         
         bind(Headers.class)
             .annotatedWith(Request.class)
-            .toInstance(new Headers(request));
+            .toInstance(Headers.fromRequest(request));
         
         bind(Headers.class)
             .annotatedWith(Response.class)

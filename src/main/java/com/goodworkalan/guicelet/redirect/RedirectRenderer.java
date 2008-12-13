@@ -77,7 +77,7 @@ public class RedirectRenderer implements Renderer
         {
             try
             {
-                new URI(headers.get("Location"));
+                new URI(headers.getFirst("Location"));
             }
             catch (URISyntaxException e)
             {

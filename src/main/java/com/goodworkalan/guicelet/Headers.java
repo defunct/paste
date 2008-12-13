@@ -16,21 +16,30 @@ extends StringListMap
     private int status;
 
     private final String method;
-    
-    private final Map<String, List<String>> headers;
-    
+
     @SuppressWarnings("unchecked")
-    public Headers(HttpServletRequest request)
+    private final static Enumeration<String> getNames(HttpServletRequest request)
+    {
+        return request.getHeaderNames();
+    }
+
+    @SuppressWarnings("unchecked")
+    private final static Enumeration<String> getHeaders(HttpServletRequest request, String name)
+    {
+        return request.getHeaders(name);
+    }
+
+    public static Headers fromRequest(HttpServletRequest request)
     {
         Map<String, List<String>> mapOfHeaders = new HashMap<String, List<String>>();
 
-        Enumeration<String> names = request.getHeaderNames();
+        Enumeration<String> names = getNames(request);
         while (names.hasMoreElements())
         {
             List<String> listOfValues = new ArrayList<String>();
 
             String name = names.nextElement();
-            Enumeration<String> values = request.getHeaders(name);
+            Enumeration<String> values = getHeaders(request, name);
             while (values.hasMoreElements())
             {
                 listOfValues.add(values.nextElement());
@@ -39,29 +48,42 @@ extends StringListMap
             mapOfHeaders.put(name, Collections.unmodifiableList(listOfValues));
         }
 
-        status = 200; // It is OK, is it not?
-        method = request.getMethod();
-        headers = Collections.unmodifiableMap(mapOfHeaders);
+        return new Headers(mapOfHeaders, request.getMethod(), 200);
     }
     
-    public Headers(String theMethod)
+    public Headers(Map<String, List<String>> map, String method, int status)
     {
-        method = theMethod;
-        headers = new HashMap<String, List<String>>();
+        super(map);
+        this.method = method;
+        this.status = status;
+    }
+
+    public Headers(Map<String, List<String>> map, String method)
+    {
+        this(map, method, 0);
+    }
+
+    public Headers(String method)
+    {
+        this(new HashMap<String, List<String>>(), method, 0);
     }
     
-    public void setStatus(int newStatus)
+    public void setStatus(int status)
     {
-        if (status != 0)
+        if (this.status < 0)
         {
-            throw new IllegalStateException();
+            throw new UnsupportedOperationException();
         }
-        status = newStatus;
+        if (status < 0)
+        {
+            throw new IllegalArgumentException();
+        }
+        this.status = status;
     }
     
     public int getStatus()
     {
-        return status;
+        return status == Integer.MIN_VALUE ? 0 : Math.abs(status);
     }
     
     public String getMethod()
@@ -72,55 +94,12 @@ extends StringListMap
     public void send(HttpServletResponse response)
     {
         response.setStatus(getStatus());
-        for (Map.Entry<String, List<String>> header : headers.entrySet())
+        for (Map.Entry<String, List<String>> header : entrySet())
         {
             for (String value : header.getValue())
             {
                 response.addHeader(header.getKey(), value);
             }
         }
-    }
-
-    public void add(String name, String value)
-    {
-        List<String> values = headers.get(name);
-        if (values == null)
-        {
-            values = new ArrayList<String>();
-            headers.put(name, values);
-        }
-        values.add(value);
-    }
-    
-    public void clear()
-    {
-        headers.clear();
-    }
-    
-    public void clear(String name)
-    {
-        headers.remove(name);
-    }
-    
-    public boolean contains(String name)
-    {
-        return headers.containsKey(name);
-    }
-    
-    public void remove(String name, String value)
-    {
-        if (headers.containsKey(name))
-        {
-            headers.get(name).remove(value);
-        }
-    }
-    
-    public String get(String name)
-    {
-        if (headers.containsKey(name))
-        {
-            return headers.get(name).get(0);
-        }
-        return null;
     }
 }
