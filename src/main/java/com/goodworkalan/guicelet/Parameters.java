@@ -1,5 +1,6 @@
 package com.goodworkalan.guicelet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,10 @@ extends StringListMap
         {
             for (String key : merge.keySet())
             {
+                if (!merged.containsKey(key))
+                {
+                    merged.put(key, new ArrayList<String>());
+                }
                 for (String value : merge.get(key))
                 {
                     merged.add(key, value);

@@ -1,10 +1,11 @@
 package com.goodworkalan.guicelet.bean;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.Actor;
-import com.goodworkalan.guicelet.RequestParameters;
+import com.goodworkalan.guicelet.Parameters;
 
 /**
  * An actor that sets bean properties in a controller.
@@ -13,24 +14,33 @@ import com.goodworkalan.guicelet.RequestParameters;
  */
 public class BeanActor implements Actor
 {
-    private final Map<String, String[]> parameters;
+    private final Map<Class<? extends Annotation>, Parameters> parameters;
     
-    public BeanActor(@RequestParameters Map<String, String[]> parameters)
+    public BeanActor(Map<Class<? extends Annotation>, Parameters> parameters)
     {
         this.parameters = parameters;
     }
     
     public void actUpon(Object controller)
     {
-        for (String name : parameters.keySet())
+        Parameters[] merge = new Parameters[parameters.size()];
+        int index = 0;
+        for (Class<? extends Annotation> key : parameters.keySet())
         {
-            String[] value = parameters.get(name);
-            if (value != null && value.length != 0)
+            merge[index++] = parameters.get(key);
+        }            
+        
+        Parameters merged = Parameters.merge(merge);
+        
+        for (String key : merged.keySet())
+        {
+            String value = merged.getFirst(key);
+            if (value != null)
             {
                 PropertyPath path = null;
                 try
                 {
-                    path = new PropertyPath(name);
+                    path = new PropertyPath(key);
                 }
                 catch (PropertyPath.Error e)
                 {
@@ -38,7 +48,7 @@ public class BeanActor implements Actor
                 }
                 try
                 {
-                    path.set(controller, value[0]);
+                    path.set(controller, value, true);
                 }
                 catch (PropertyPath.Error e)
                 {
@@ -46,5 +56,4 @@ public class BeanActor implements Actor
             }
         }
     }
-
 }
