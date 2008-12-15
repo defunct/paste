@@ -37,6 +37,11 @@
     <dependencies>
         <dependency>
             <groupId>com.goodworkalan</groupId>
+            <artifactId>cassandra</artifactId>
+            <version>0.1.X</version> 
+        </dependency>
+        <dependency>
+            <groupId>com.goodworkalan</groupId>
             <artifactId>dovetail</artifactId>
             <version>0.7.X</version> 
         </dependency>
