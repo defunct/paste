@@ -7,9 +7,12 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface MinimumLength
+@Validation(validator=RequiredValidator.class)
+public @interface ValueInRange
 {
-    int value();
+    long min() default Long.MIN_VALUE;
     
+    long max() default Long.MAX_VALUE;
+
     Property[] property() default { @Property() };
 }

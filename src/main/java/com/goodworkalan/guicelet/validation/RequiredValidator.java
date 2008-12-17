@@ -4,46 +4,19 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import com.goodworkalan.guicelet.RequestScoped;
+import com.google.inject.Inject;
 
-public class RequiredValidator extends AbstractValidator
+public class RequiredValidator extends AbstractFieldValidator
 {
-    private final PostTree tree;
-    
-    private final Map<String, String> errors;
-    
-    public RequiredValidator(PostTree tree, @RequestScoped @Errors Map<String, String> errors)
+    @Inject
+    public RequiredValidator(PostTree tree, @RequestScoped @Faults Map<String, Fault> errors, FaultFactory faultFactory)
     {
-        this.tree = tree;
-        this.errors = errors;
+        super("required", tree, errors, faultFactory);
     }
     
     @Override
-    protected void validate(Annotation annotation, PathFixup fixup)
+    protected boolean isValid(Annotation annotation, PostTree tree, String path)
     {
-        Required required = (Required) annotation;
-        for (Property property : required.property())
-        {
-            String foreach = fixup.fixup(property.foreach());
-            if (property.path().length == 0)
-            {
-                if (tree.getObject(foreach) == null)
-                {
-                    errors.put("required", foreach);
-                }
-            }
-            else
-            {
-                for (String each : tree.find(foreach))
-                {
-                    for (String path : property.path())
-                    {
-                        if (tree.getObject(each + '.' + path) == null)
-                        {
-                            errors.put("required", foreach);
-                        }
-                    }
-                }
-            }
-        }
+        return tree.getObject(path) != null;
     }
 }

@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Validation(validator=RequiredValidator.class)
 public @interface Required
 {
     Property[] property() default { @Property() };

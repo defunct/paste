@@ -12,5 +12,4 @@ import com.google.inject.BindingAnnotation;
 @BindingAnnotation
 public @interface Tree
 {
-
 }

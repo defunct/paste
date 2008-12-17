@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface Property
 {
-    String[] path() default { "" };
+    String[] path() default {};
     String foreach() default "this";
 }

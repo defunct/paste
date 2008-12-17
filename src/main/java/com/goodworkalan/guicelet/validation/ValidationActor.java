@@ -13,7 +13,7 @@ public class ValidationActor implements Actor
     
     private final Map<String, String> errors ;
     
-    public ValidationActor(Injector injector, @Errors Map<String, String> errors)
+    public ValidationActor(Injector injector, @Faults Map<String, String> errors)
     {
         this.injector = injector;
         this.errors = errors;

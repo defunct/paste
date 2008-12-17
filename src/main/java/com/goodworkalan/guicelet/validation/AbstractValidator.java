@@ -8,11 +8,13 @@ import java.util.regex.Pattern;
 
 public abstract class AbstractValidator implements Validator
 {
-    protected abstract void validate(Annotation annotation, PathFixup fixup);
+    private final static Pattern THIS = Pattern.compile("^\\s*(this)[^\\W\\D]");   
+        
+    protected abstract void validate(Annotation annotation, PathFixup fixup, String context);
     
     public void validate(Method method, Annotation annotation)
     {
-        String pattern = "^(this_\\s*[.\\[";
+        // Determine the bean property name.
         String name = method.getName();
         int start = 0;
         if (name.startsWith("is"))
@@ -24,7 +26,12 @@ public abstract class AbstractValidator implements Validator
             start = 3;
         }
         name = name.substring(start, start + 1).toLowerCase() + name.substring(start + 1);
-        validate(annotation, new PathFixup(Pattern.compile(pattern), name));
+        
+        // Create the root context.
+        String context = method.getDeclaringClass().getCanonicalName() + '.' + method.getName();
+        
+        // Call validate.
+        validate(annotation, new PathFixup(THIS, name), context);
     }
 
     public void validate(Type type, Annotation annotation)

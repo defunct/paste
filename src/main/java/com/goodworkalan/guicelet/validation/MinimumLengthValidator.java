@@ -4,48 +4,42 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import com.goodworkalan.guicelet.RequestScoped;
+import com.google.inject.Inject;
 
-public class MinimumLengthValidator extends AbstractValidator
+public class MinimumLengthValidator extends AbstractFieldValidator
 {
-    private final PostTree tree;
-    
-    private final Map<String, String> errors;
-    
-    public MinimumLengthValidator(PostTree tree, @RequestScoped @Errors Map<String, String> errors)
+    @Inject
+    public MinimumLengthValidator(PostTree tree, @RequestScoped @Faults Map<String, Fault> errors, FaultFactory faultFactory)
     {
-        this.tree = tree;
-        this.errors = errors;
+        super("outOfRange", tree, errors, faultFactory);
     }
     
     @Override
-    protected void validate(Annotation annotation, PathFixup fixup)
+    protected boolean isValid(Annotation annotation, PostTree tree, String path)
     {
-        MinimumLength minimumLength = (MinimumLength) annotation;
-        for (Property property : minimumLength.property())
+        String string = (String) tree.getObject(path);
+        if (string != null && string.length() != 0)
         {
-            String foreach = fixup.fixup(property.foreach());
-            if (property.path().length == 0)
+            ValueInRange range = (ValueInRange) annotation;
+            try
             {
-                String value = tree.getString(foreach);
-                if (value == null || value.length() < minimumLength.value())
+                long number = Long.parseLong(string);
+                if (number > range.max() || number < range.min())
                 {
-                    errors.put("minimumLength", foreach);
+                    return false;
                 }
             }
-            else
+            catch (NumberFormatException e)
             {
-                for (String each : tree.find(foreach))
-                {
-                    for (String path : property.path())
-                    {
-                        String string = tree.getString(each + '.' + path);
-                        if (string == null || string.length() < minimumLength.value())
-                        {
-                            errors.put("minimumLength", foreach);
-                        }
-                    }
-                }
             }
         }
+        return true;
+    }
+    
+    @Override
+    protected void atFault(Annotation annotation, Fault fault)
+    {
+        ValueInRange range = (ValueInRange) annotation;
+        fault.getMessage().put("min", range.min()).put("max", range.max());
     }
 }

@@ -1,15 +1,15 @@
-package com.goodworkalan.guicelet;
+package com.goodworkalan.guicelet.validation;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.google.inject.BindingAnnotation;
+
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface View
+@Target(ElementType.PARAMETER)
+@BindingAnnotation
+public @interface Faults
 {
-    Class<? extends Annotation> bundle();
-    String name();
 }
