@@ -6,12 +6,12 @@ import java.util.Map;
 import com.goodworkalan.guicelet.RequestScoped;
 import com.google.inject.Inject;
 
-public class MinimumLengthValidator extends AbstractFieldValidator
+public class ValueInRangeValidator extends AbstractFieldValidator
 {
     @Inject
-    public MinimumLengthValidator(PostTree tree, @RequestScoped @Faults Map<String, Fault> errors, FaultFactory faultFactory)
+    public ValueInRangeValidator(PostTree tree, @RequestScoped @Faults Map<String, Fault> errors, FaultFactory faultFactory)
     {
-        super("outOfRange", tree, errors, faultFactory);
+        super("valueOutOfRange", tree, errors, faultFactory);
     }
     
     @Override

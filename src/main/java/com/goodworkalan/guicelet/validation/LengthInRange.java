@@ -7,9 +7,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface MinimumValue
+public @interface LengthInRange
 {
-    int value();
+    long min() default Long.MIN_VALUE;
+    
+    long max() default Long.MAX_VALUE;
     
     Property[] property() default { @Property() };
 }
