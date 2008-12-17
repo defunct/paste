@@ -3,7 +3,9 @@ package com.goodworkalan.guicelet.validation;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.goodworkalan.cassandra.BundleFormatter;
 import com.goodworkalan.cassandra.Cassandra;
+import com.goodworkalan.cassandra.Variable;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.Controller;
 import com.goodworkalan.guicelet.ControllerScoped;
@@ -19,7 +21,7 @@ public class FaultFactory
         String bundleName = controller.getClass().getPackage().getName() + ".fault.properties";
         ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
         
-        Cassandra.Variable variable = new Cassandra.Variable()
+        Variable variable = new Variable()
         {
             public Object get(Map<Object, Object> map, String property)
             {
@@ -35,7 +37,7 @@ public class FaultFactory
             }
         };
         
-        Cassandra.BundleFormatter formatter = new Cassandra.BundleFormatter(bundle, variable);
+        BundleFormatter formatter = new BundleFormatter(bundle, variable);
 
         this.cassandra = new Cassandra(formatter);
     }

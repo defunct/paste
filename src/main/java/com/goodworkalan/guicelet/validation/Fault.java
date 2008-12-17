@@ -3,11 +3,11 @@ package com.goodworkalan.guicelet.validation;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.goodworkalan.cassandra.Cassandra;
+import com.goodworkalan.cassandra.Message;
 
 public class Fault
 {
-    private final Cassandra.Message message;
+    private final Message message;
     
     private final String key;
     
@@ -15,7 +15,7 @@ public class Fault
     
     private final Map<String, String> map = new HashMap<String, String>();
     
-    public Fault(Cassandra.Message message, String key, String path)
+    public Fault(Message message, String key, String path)
     {
         this.message = message;
         this.key = key;
@@ -32,7 +32,7 @@ public class Fault
         return path;
     }
     
-    public Cassandra.Message getMessage()
+    public Message getMessage()
     {
         return message;
     }
