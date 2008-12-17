@@ -14,6 +14,7 @@ public class ControllerModule extends AbstractModule
     @Override
     protected void configure()
     {
+        bindScope(ControllerScoped.class, new ControllerScope());
         bind(Object.class).annotatedWith(Controller.class).toInstance(controller);
     }
 }
