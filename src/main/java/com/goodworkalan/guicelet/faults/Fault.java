@@ -1,4 +1,4 @@
-package com.goodworkalan.guicelet.validation;
+package com.goodworkalan.guicelet.faults;
 
 import java.util.HashMap;
 import java.util.Map;

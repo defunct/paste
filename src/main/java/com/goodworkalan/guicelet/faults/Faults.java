@@ -1,4 +1,4 @@
-package com.goodworkalan.guicelet.validation;
+package com.goodworkalan.guicelet.faults;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +10,6 @@ import com.google.inject.BindingAnnotation;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @BindingAnnotation
-public @interface Validate
+public @interface Faults
 {
-    public String path() default "";
 }
