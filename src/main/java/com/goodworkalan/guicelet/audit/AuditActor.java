@@ -1,6 +1,7 @@
-package com.goodworkalan.guicelet.bean;
+package com.goodworkalan.guicelet.audit;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.goodworkalan.dspl.PathException;
@@ -8,16 +9,11 @@ import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.Actor;
 import com.goodworkalan.guicelet.Parameters;
 
-/**
- * An actor that sets bean properties in a controller.
- * 
- * @author Alan Gutierrez
- */
-public class BeanActor implements Actor
+public class AuditActor implements Actor
 {
     private final Map<Class<? extends Annotation>, Parameters> parameters;
     
-    public BeanActor(Map<Class<? extends Annotation>, Parameters> parameters)
+    public AuditActor(Map<Class<? extends Annotation>, Parameters> parameters)
     {
         this.parameters = parameters;
     }
@@ -33,28 +29,31 @@ public class BeanActor implements Actor
         
         Parameters merged = Parameters.merge(merge);
         
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        
         for (String key : merged.keySet())
         {
             String value = merged.getFirst(key);
-            if (value != null)
+            
+            PropertyPath path;
+            try
             {
-                PropertyPath path = null;
-                try
-                {
-                    path = new PropertyPath(key);
-                }
-                catch (PathException e)
-                {
-                    continue;
-                }
-                try
-                {
-                    path.set(controller, value, true);
-                }
-                catch (PathException e)
-                {
-                }
+                path = new PropertyPath(key);
+            }
+            catch (PathException e)
+            {
+                continue;
+            }
+            try
+            {
+                path.set(map, value, true);
+            }
+            catch (PathException e)
+            {
+                continue;
             }
         }
+        
+        
     }
 }

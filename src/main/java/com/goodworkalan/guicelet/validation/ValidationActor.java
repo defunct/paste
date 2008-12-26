@@ -5,18 +5,19 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.goodworkalan.guicelet.Actor;
+import com.goodworkalan.guicelet.Actors;
 import com.google.inject.Injector;
 
 public class ValidationActor implements Actor
 {
     private final Injector injector;
     
-    private final Map<String, String> errors ;
+    private final Map<String, String> faults ;
     
     public ValidationActor(Injector injector, @Faults Map<String, String> errors)
     {
         this.injector = injector;
-        this.errors = errors;
+        this.faults = errors;
     }
 
     private void validate(Method method, Validation validation, Object controller)
@@ -40,9 +41,21 @@ public class ValidationActor implements Actor
                 }
             }
         }
-        if (errors.size() != 0)
+        if (faults.size() != 0)
         {
-            throw new Invalid();
+            boolean raise = true;
+            Actors actors = controller.getClass().getAnnotation(Actors.class);
+            for (Class<? extends Actor> actor : actors.value())
+            {
+                if (actor.equals(RaiseInvalidActor.class))
+                {
+                    raise = false;
+                }
+            }
+            if (raise)
+            {
+                throw new Invalid();
+            }
         }
     }
 }

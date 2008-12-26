@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.RequestScoped;
 
@@ -29,7 +30,7 @@ public class PostTree
             PropertyPath path = new PropertyPath(pattern);
             return path.get(tree);
         }
-        catch (PropertyPath.Error e)
+        catch (PathException e)
         {
             return null;
         }
@@ -42,7 +43,7 @@ public class PostTree
             PropertyPath path = new PropertyPath(pattern);
             return (String) path.get(tree);
         }
-        catch (PropertyPath.Error e)
+        catch (PathException e)
         {
             return null;
         }

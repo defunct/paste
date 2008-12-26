@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import com.goodworkalan.cassandra.BundleFormatter;
 import com.goodworkalan.cassandra.Cassandra;
 import com.goodworkalan.cassandra.Variable;
+import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.Controller;
 import com.goodworkalan.guicelet.ControllerScoped;
@@ -30,7 +31,7 @@ public class FaultFactory
                     PropertyPath path = new PropertyPath(property);
                     return path.get(map);
                 }
-                catch (PropertyPath.Error e)
+                catch (PathException e)
                 {
                     throw new GuiceletException(e);
                 }
