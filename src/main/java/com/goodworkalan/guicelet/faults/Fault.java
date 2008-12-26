@@ -3,42 +3,27 @@ package com.goodworkalan.guicelet.faults;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.goodworkalan.cassandra.Message;
-
-public class Fault
+public class Fault extends HashMap<Object, Object>
 {
-    private final Message message;
+    private static final long serialVersionUID = 1L;
+
+    private final Map<String, Object> report;
     
-    private final String key;
+    private final String message;
     
-    private final String path;
-    
-    private final Map<String, String> map = new HashMap<String, String>();
-    
-    public Fault(Message message, String key, String path)
+    public Fault(String message, Map<String, Object> report)
     {
         this.message = message;
-        this.key = key;
-        this.path = path;
+        this.report = report;
     }
     
-    public String getKey()
-    {
-        return key;
-    }
-    
-    public String getPath()
-    {
-        return path;
-    }
-    
-    public Message getMessage()
+    public String getMessage()
     {
         return message;
     }
 
-    public Map<String, String> getMap()
+    public Map<String, Object> getReport()
     {
-        return map;
+        return report;
     }
 }

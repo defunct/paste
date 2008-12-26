@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.dspl.PathException;
+import com.goodworkalan.dspl.PropertyPath;
 
 
 public class AuditorTest
@@ -23,7 +23,8 @@ public class AuditorTest
     @Test
     public void audit() throws PathException
     {
-        Auditor auditor = new Auditor();
+        // TODO Search the path for faults before testing nested properties.
+        Auditor auditor = new Auditor(new Object());
         auditor.audit("foo").with(Required.class);
         auditor.audit("foo", "quantity").with(Required.class)
                                  .then().with(ValueInRange.class)
@@ -31,6 +32,6 @@ public class AuditorTest
                                         .max(10);
         auditor.audit("foo", "password").with(Confirm.class)
                                         .compare("confirm");
-        auditor.audit(newTree());
+        auditor.audit(new HashMap<Object, Object>(), newTree());
     }
 }

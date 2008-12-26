@@ -9,13 +9,18 @@ import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyGlob;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.GuiceletException;
+import com.goodworkalan.guicelet.faults.Fault;
+import com.goodworkalan.guicelet.faults.FaultMessages;
 
 public class Auditor
 {
+    private final Object controller;
+
     private final List<AuditAction> listOfAuditActions;
 
-    public Auditor()
+    public Auditor(Object controller)
     {
+        this.controller = controller;
         this.listOfAuditActions = new ArrayList<AuditAction>();
     }
     
@@ -32,7 +37,7 @@ public class Auditor
         return audit("this", path);
     }
     
-    public void audit(Map<Object, Object> map)
+    public void audit(Map<Object, Object> faults, Map<Object, Object> request)
     {
         try
         {
@@ -40,9 +45,9 @@ public class Auditor
             for (AuditAction action : listOfAuditActions)
             {
                 PropertyGlob glob = new PropertyGlob(action.getContextPath());
-                for (PropertyPath contextPath : glob.all(map))
+                for (PropertyPath contextPath : glob.all(request))
                 {
-                    Object context = contextPath.get(map);
+                    Object context = contextPath.get(request);
                     PropertyPath path = new PropertyPath(action.getPath());
 
                     Object value = path.get(context);
@@ -57,14 +62,21 @@ public class Auditor
                         keyStem += "." + path.withoutIndexes();
                     }
 
-                    Tree tree = new Tree(context, value, map);
-                    CoreReporter reporter = new CoreReporter(reports, keyStem, value);
+                    Tree tree = new Tree(context, value, request);
+                    CoreReporter reporter = new CoreReporter(reports);
                     for (AuditBuilder newAudit : action.getAuditBuilders())
                     {
                         newAudit.newAudit().audit(reporter, tree);
                         if (reporter.isInvalid())
                         {
-                            System.out.println("Invalid.");
+                            FaultMessages messages = new FaultMessages(controller);
+                            for (String key : reporter.getReports().keySet())
+                            {
+                                String message = messages.getMessage(keyStem, key);
+                                CoreReport report = reporter.getReports().get(key);
+                                report.put("value", value);
+                                new PropertyPath(contextPath + "." + path).set(faults, new Fault(message, report.map), true);
+                            }
                         }
                     }
                 }

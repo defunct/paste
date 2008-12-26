@@ -1,7 +1,12 @@
 package com.goodworkalan.guicelet.audit;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CoreReport implements Report
 {
+    Map<String, Object> map = new HashMap<String, Object>();
+
     public String getKeyStem()
     {
         return null;
@@ -9,7 +14,7 @@ public class CoreReport implements Report
     
     public Report put(String name, Object object)
     {
-        return null;
+        return this;
     }
     
     public void report(String name)

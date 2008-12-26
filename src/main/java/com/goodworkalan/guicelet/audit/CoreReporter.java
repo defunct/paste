@@ -6,19 +6,13 @@ import com.goodworkalan.guicelet.GuiceletException;
 
 public class CoreReporter implements Reporter
 {
-    private final Map<String, CoreReport> listOfReporters;
+    private final Map<String, CoreReport> listOfReports;
 
-    private final String keyStem;
-    
-    private final Object value;
-    
     private boolean invalid;
 
-    public CoreReporter(Map<String, CoreReport> listOfReports, String keyStem, Object value)
+    public CoreReporter(Map<String, CoreReport> listOfReports)
     {
-        this.listOfReporters = listOfReports;
-        this.keyStem = keyStem;
-        this.value = value;
+        this.listOfReports = listOfReports;
     }
     
     public boolean isInvalid()
@@ -34,8 +28,12 @@ public class CoreReporter implements Reporter
         }
         invalid = true;
         CoreReport report = new CoreReport();
-        listOfReporters.put(keyStem + "." + name, report);
-        report.put("value", value);
+        listOfReports.put(name, report);
         return report;
+    }
+    
+    public Map<String, CoreReport> getReports()
+    {
+        return listOfReports;
     }
 }
