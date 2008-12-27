@@ -6,6 +6,7 @@ import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.GuiceletException;
 
+// FIXME Combine with reporter.
 public class Tree
 {
     private final Map<Object, Object> map;

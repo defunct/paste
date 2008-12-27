@@ -53,6 +53,12 @@ extends StringListMap
         }
         return parameters;
     }
+
+    public static Parameters merge(Map<?, Parameters> parameters)
+    {
+        Parameters[] merge = parameters.values().toArray(new Parameters[parameters.size()]);
+        return Parameters.merge(merge);
+    }
     
     public final static Parameters merge(Parameters...parameters)
     {

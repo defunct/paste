@@ -37,6 +37,7 @@ public class Auditor
         return audit("this", path);
     }
     
+    // FIXME Move to AuditActor.
     public void audit(Map<Object, Object> faults, Map<Object, Object> request)
     {
         try
