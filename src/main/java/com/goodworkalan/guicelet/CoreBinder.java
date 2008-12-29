@@ -5,27 +5,28 @@ import java.util.List;
 
 import com.goodworkalan.diverge.RuleMap;
 import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
 import com.google.inject.Injector;
 
 public class CoreBinder implements Binder
 {
-    private final List<ControllerBinder> listOfControllerBinders;
+    private final List<List<ControllerPathMapping>> listOfControllerBinders;
     
     private final RuleMapBuilder<ViewBinding> viewBindings;
     
     public CoreBinder()
     {
-        this.listOfControllerBinders = new ArrayList<ControllerBinder>();
+        this.listOfControllerBinders = new ArrayList<List<ControllerPathMapping>>();
         this.viewBindings = new RuleMapBuilder<ViewBinding>();
     }
 
     public ControllerBinder controllers(Class<?> conditional)
     {
-        ControllerBinder globBuilder = new ControllerBinder(new GlobCompiler(conditional));
-        listOfControllerBinders.add(globBuilder);
-        return globBuilder;
+        List<ControllerPathMapping> listOfControllerPathMappings = new ArrayList<ControllerPathMapping>();
+        listOfControllerBinders.add(listOfControllerPathMappings);
+        return new ControllerBinder(new GlobCompiler(conditional), listOfControllerPathMappings);
     }
     
     public ViewBinder view()
@@ -33,14 +34,23 @@ public class CoreBinder implements Binder
         return new ViewBinder(viewBindings);
     }
     
-    public List<GlobTree<ControllerBinding>> getBindingTrees()
+    public List<GlobTree<RuleMap<ControllerBinding>>> getBindingTrees()
     {
-        List<GlobTree<ControllerBinding>> controllerBindings = new ArrayList<GlobTree<ControllerBinding>>();
-        for (ControllerBinder binder : listOfControllerBinders)
+        List<GlobTree<RuleMap<ControllerBinding>>> trees = new ArrayList<GlobTree<RuleMap<ControllerBinding>>>();
+        for (List<ControllerPathMapping> listOfControllerPathMappings : listOfControllerBinders)
         {
-            controllerBindings.add(binder.getGlobTree());
+            GlobTree<RuleMap<ControllerBinding>> tree = new GlobTree<RuleMap<ControllerBinding>>(); 
+            for (ControllerPathMapping mapping : listOfControllerPathMappings)
+            {
+                RuleMap<ControllerBinding> rules = mapping.rules.newRuleMap();
+                for (Glob glob : mapping.listOfGlobs)
+                {
+                    tree.add(glob, rules);
+                }
+            }
+            trees.add(tree);
         }
-        return controllerBindings;
+        return trees;
     }
     
     public RuleMap<ViewBinding> getViewBindings()

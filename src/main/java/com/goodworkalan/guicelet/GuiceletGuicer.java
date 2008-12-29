@@ -27,19 +27,19 @@ public class GuiceletGuicer
 {
     private final Injector injector;
 
-    private final List<GlobTree<ControllerBinding>> controllerBindings;
+    private final List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings;
 
     private final RuleMap<ViewBinding> mapOfViewBindings;
 
     private final List<Janitor> listOfJanitors;
 
     public GuiceletGuicer(Injector injector,
-                          List<GlobTree<ControllerBinding>> controllerBindings,
-                          RuleMap<ViewBinding> viewBindings)
+                          List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
+                          RuleMap<ViewBinding> mapOfViewBindings)
     {
         this.injector = injector;
         this.controllerBindings = controllerBindings;
-        this.mapOfViewBindings = viewBindings;
+        this.mapOfViewBindings = mapOfViewBindings;
         this.listOfJanitors = new ArrayList<Janitor>();
     }
 
@@ -88,58 +88,73 @@ public class GuiceletGuicer
             path = path.substring(contextPath.length());
         }
 
-        Injector childInjector = null;
+        Injector requestInjector = null;
+        Injector controllerInjector = null;
 
-        for (GlobTree<ControllerBinding> tree : controllerBindings)
+        for (GlobTree<RuleMap<ControllerBinding>> tree : controllerBindings)
         {
             if (interception.isIntercepted())
             {
                 break;
             }
 
-            TreeMapper<ControllerBinding> mapper = new TreeMapper<ControllerBinding>();
+            TreeMapper<RuleMap<ControllerBinding>> mapper = new TreeMapper<RuleMap<ControllerBinding>>();
             if (tree.match(mapper, path))
             {
-                SortedMap<Integer, Mapping<ControllerBinding>> prioritized = new TreeMap<Integer, Mapping<ControllerBinding>>(Collections.reverseOrder());
-                
-                for (Mapping<ControllerBinding> mapping : mapper.mappings())
+                long highest = Long.MIN_VALUE;
+                Parameters parameters = null;
+                Class<?> controllerClass = null;
+
+                for (Mapping<RuleMap<ControllerBinding>> mapping : mapper.mappings())
                 {
-                    ControllerBinding binding = mapping.getObject();
-                    if (binding.test(request, response))
+                    List<ControllerBinding> bindings
+                        = mapping.getObject()
+                            .test().put(PatternKey.METHOD, request.getMethod())
+                                   .put(PatternKey.PATH, path)
+                                   .get();
+                    for (ControllerBinding binding : bindings)
                     {
-                        prioritized.put(binding.getPriority(), mapping);
+                        if (binding.getPriority() > highest)
+                        {
+                            highest = binding.getPriority();
+                            controllerClass = binding.getController();
+                            parameters = Parameters.fromStringMap(mapping.getParameters());
+                        }
                     }
                 }
 
-                if (prioritized.size() != 0)
+                if (highest == Long.MIN_VALUE)
                 {
-                    Mapping<ControllerBinding> mapping = prioritized.get(prioritized.firstKey());
+                    break;
+                }
+
+                if (requestInjector == null)
+                {
                     Module module
-                        = new GuiceletModule(
-                            request,
-                            response,
-                            mapOfJanitors,
-                            Parameters.fromStringMap(mapping.getParameters()));
-                    childInjector = injector.createChildInjector(module);
-                    Object controller = childInjector.getInstance(mapping.getObject().getController());
-                    module = new ControllerModule(controller);
-                    childInjector = childInjector.createChildInjector(module);
+                        = new GuiceletModule(request, response, mapOfJanitors, parameters);
                     
-                    Actors actors = controller.getClass().getAnnotation(Actors.class);
-                    if (actors != null)
+                    requestInjector = injector.createChildInjector(module);
+                }
+
+                Object controller = requestInjector.getInstance(controllerClass);
+
+                Module module = new ControllerModule(controller);
+                controllerInjector = requestInjector.createChildInjector(module);
+                
+                Actors actors = controller.getClass().getAnnotation(Actors.class);
+                if (actors != null)
+                {
+                    for (Class<?  extends Actor> actor : actors.value())
                     {
-                        for (Class<?  extends Actor> actor : actors.value())
-                        {
-                            childInjector.getInstance(actor).actUpon(controller);
-                        }
+                        controllerInjector.getInstance(actor).actUpon(controller);
                     }
                 }
             }
         }
 
-        if (!interception.isIntercepted() && childInjector != null)
+        if (!interception.isIntercepted() && controllerInjector != null)
         {
-            Object controller = childInjector.getProvider(Key.get(Object.class, Controller.class)).get();
+            Object controller = controllerInjector.getProvider(Key.get(Object.class, Controller.class)).get();
             
             List<ViewBinding> views
                 = mapOfViewBindings
@@ -158,7 +173,7 @@ public class GuiceletGuicer
             if (prioritized.size() != 0)
             {
                 ViewBinding view = prioritized.get(prioritized.firstKey());
-                Injector viewInjector = childInjector.createChildInjector(view.getModule());
+                Injector viewInjector = controllerInjector.createChildInjector(view.getModule());
                 Renderer renderer = viewInjector.getProvider(Renderer.class).get();
                 renderer.render();
             }

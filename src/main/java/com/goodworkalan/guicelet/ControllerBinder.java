@@ -1,27 +1,25 @@
 package com.goodworkalan.guicelet;
 
+import java.util.List;
+
 import com.goodworkalan.dovetail.GlobCompiler;
-import com.goodworkalan.dovetail.GlobTree;
 
 public class ControllerBinder
 {
-    private final GlobTree<ControllerBinding> treeOfBindings;
-    
+    private final List<ControllerPathMapping> listOfControllerPathMappings;
+
     private final GlobCompiler compiler;
     
-    public ControllerBinder(GlobCompiler compiler)
+    public ControllerBinder(GlobCompiler compiler, List<ControllerPathMapping> listOfControllerPathMappings)
     {
-        this.treeOfBindings = new GlobTree<ControllerBinding>();
+        this.listOfControllerPathMappings = listOfControllerPathMappings;
         this.compiler = compiler;
     }
     
     public ControllerPathBinder bind(String pattern)
     {
-        return new ControllerPathBinder(this, treeOfBindings, compiler).or(pattern);
-    }
-    
-    public GlobTree<ControllerBinding> getGlobTree()
-    {
-        return treeOfBindings;
+        ControllerPathMapping mapping = new ControllerPathMapping();
+        listOfControllerPathMappings.add(mapping);
+        return new ControllerPathBinder(this, mapping.listOfGlobs, mapping.rules, compiler).or(pattern);
     }
 }
