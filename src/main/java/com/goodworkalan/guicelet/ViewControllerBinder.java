@@ -1,22 +1,20 @@
 package com.goodworkalan.guicelet;
 
-import java.util.Map;
-import java.util.Set;
-
-import com.goodworkalan.deviate.Deviations;
-import com.goodworkalan.deviate.Equals;
-import com.goodworkalan.deviate.Match;
+import com.goodworkalan.diverge.Equals;
+import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.diverge.RuleSetBuilder;
+import com.goodworkalan.guicelet.conditions.WithClass;
 
 public class ViewControllerBinder extends ViewConditionBinder
 {
-    public ViewControllerBinder(ViewBinder viewBinder, Deviations<ViewBinding> viewBindings,  Map<PatternKey, Set<Match>> pattern)
+    public ViewControllerBinder(ViewBinder viewBinder, RuleMapBuilder<ViewBinding> viewBindings,  RuleSetBuilder<ViewBinding> setOfRules)
     {
-        super(viewBinder, viewBindings, pattern);
+        super(viewBinder, viewBindings, setOfRules);
     }
     
     public ViewControllerBinder or(Class<?> controllerClass)
     {
-        add(PatternKey.CONTROLLER, new Equals(controllerClass));
+        setOfRules.check(PatternKey.CONTROLLER, new WithClass(new Equals(controllerClass)));
         return this;
     }
 }

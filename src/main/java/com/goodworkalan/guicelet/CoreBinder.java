@@ -3,7 +3,8 @@ package com.goodworkalan.guicelet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.goodworkalan.deviate.Deviations;
+import com.goodworkalan.diverge.RuleMap;
+import com.goodworkalan.diverge.RuleMapBuilder;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
 import com.google.inject.Injector;
@@ -12,12 +13,12 @@ public class CoreBinder implements Binder
 {
     private final List<ControllerBinder> listOfControllerBinders;
     
-    private final Deviations<ViewBinding> viewBindings;
+    private final RuleMapBuilder<ViewBinding> viewBindings;
     
     public CoreBinder()
     {
         this.listOfControllerBinders = new ArrayList<ControllerBinder>();
-        this.viewBindings = new Deviations<ViewBinding>(PatternKey.values().length);
+        this.viewBindings = new RuleMapBuilder<ViewBinding>();
     }
 
     public ControllerBinder controllers(Class<?> conditional)
@@ -42,9 +43,9 @@ public class CoreBinder implements Binder
         return controllerBindings;
     }
     
-    public Deviations<ViewBinding> getViewBindings()
+    public RuleMap<ViewBinding> getViewBindings()
     {
-        return viewBindings;
+        return viewBindings.newRuleMap();
     }
     
     public GuiceletGuicer newGuiceletGuicer(Injector injector)

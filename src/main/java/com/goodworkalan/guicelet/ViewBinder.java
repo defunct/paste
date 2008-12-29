@@ -1,33 +1,24 @@
 package com.goodworkalan.guicelet;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import com.goodworkalan.deviate.Deviations;
-import com.goodworkalan.deviate.Match;
+import com.goodworkalan.diverge.RuleMapBuilder;
 
 public class ViewBinder
 {
-    private final Deviations<ViewBinding> viewBindings;
+    private final RuleMapBuilder<ViewBinding> mapOfBindings;
     
-    public ViewBinder(Deviations<ViewBinding> viewBindings)
+    public ViewBinder(RuleMapBuilder<ViewBinding> viewBindings)
     {
-        this.viewBindings = viewBindings;
+        this.mapOfBindings = viewBindings;
     }
 
     public ViewControllerBinder controller(Class<?> controllerClass)
     {
-        return new ViewConditionBinder(this, viewBindings, newPattern()).controller(controllerClass);
+        return new ViewConditionBinder(this, mapOfBindings, mapOfBindings.rule()).controller(controllerClass);
     }
     
-    public ViewConditionBinder controller()
-    {
-        return new ViewConditionBinder(this, viewBindings, newPattern()).controller();
-    }
     
-    public Map<PatternKey, Set<Match>> newPattern()
+    public  <T extends RenderModule> T with(Class<T> renderClass)
     {
-        return new HashMap<PatternKey, Set<Match>>();
+        return new ViewConditionBinder(this, mapOfBindings, mapOfBindings.rule()).with(renderClass);
     }
 }

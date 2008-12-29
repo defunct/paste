@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.deviate.Deviations;
+import com.goodworkalan.diverge.RuleMap;
 import com.goodworkalan.guicelet.forward.Forward;
 
 public class BinderTest
@@ -22,10 +22,9 @@ public class BinderTest
     public void anyController()
     {
         CoreBinder binder = new CoreBinder();
-        binder.view().controller().with(Forward.class);
-        Deviations<ViewBinding> bindings = binder.getViewBindings();
-        Object[] path = new Object[9];
-        List<ViewBinding> found = bindings.get(path);
+        binder.view().with(Forward.class);
+        RuleMap<ViewBinding> bindings = binder.getViewBindings();
+        List<ViewBinding> found = bindings.test().get();
         assertEquals(found.size(), 1);
         assertEquals(found.get(0).getPriority(), 0);
         assertTrue(found.get(0).getModule() instanceof Forward);
@@ -43,14 +42,12 @@ public class BinderTest
         binder.view()
               .controller(Object.class).or(String.class)
               .with(Forward.class);
-        Deviations<ViewBinding> bindings = binder.getViewBindings();
-        Object[] path = path(null, Object.class, null, null, null, null, null, null, null);
-        List<ViewBinding> found = bindings.get(path);
+        RuleMap<ViewBinding> bindings = binder.getViewBindings();
+        List<ViewBinding> found = bindings.test().put(PatternKey.CONTROLLER, new Object()).get();
         assertEquals(found.size(), 1);
         assertEquals(found.get(0).getPriority(), 0);
         assertTrue(found.get(0).getModule() instanceof Forward);
-        path = path(null, Integer.class, null, null, null, null, null, null, null);
-        found = bindings.get(path);
+        found =  bindings.test().put(PatternKey.CONTROLLER, new Integer(1)).get();
         assertEquals(found.size(), 0);
     }
 }

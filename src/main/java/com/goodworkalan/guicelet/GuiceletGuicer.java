@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.deviate.Deviations;
+import com.goodworkalan.diverge.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Mapping;
 import com.goodworkalan.dovetail.TreeMapper;
@@ -29,17 +29,17 @@ public class GuiceletGuicer
 
     private final List<GlobTree<ControllerBinding>> controllerBindings;
 
-    private final Deviations<ViewBinding> viewBindings;
+    private final RuleMap<ViewBinding> mapOfViewBindings;
 
     private final List<Janitor> listOfJanitors;
 
     public GuiceletGuicer(Injector injector,
                           List<GlobTree<ControllerBinding>> controllerBindings,
-                          Deviations<ViewBinding> viewBindings)
+                          RuleMap<ViewBinding> viewBindings)
     {
         this.injector = injector;
         this.controllerBindings = controllerBindings;
-        this.viewBindings = viewBindings;
+        this.mapOfViewBindings = viewBindings;
         this.listOfJanitors = new ArrayList<Janitor>();
     }
 
@@ -141,22 +141,13 @@ public class GuiceletGuicer
         {
             Object controller = childInjector.getProvider(Key.get(Object.class, Controller.class)).get();
             
-            // Using a list to build this to express the order.  Please do
-            // not turn into a vararg call or something clever.
-         
-            List<Object> pattern = new ArrayList<Object>();
-            
-            pattern.add(controller.getClass().getPackage());
-            pattern.add(controller.getClass());
-            pattern.add(controller.getClass());
-            pattern.add(path);
-            pattern.add(request.getMethod());
-            pattern.add(request.getParameterMap());
-            pattern.add(request);
-            pattern.add(200);
-            pattern.add(response);
-            
-            List<ViewBinding> views = viewBindings.get(pattern.toArray());
+            List<ViewBinding> views
+                = mapOfViewBindings
+                    .test()
+                        .put(PatternKey.PACKAGE, controller.getClass().getPackage().getName())
+                        .put(PatternKey.CONTROLLER, controller.getClass())
+                        .put(PatternKey.PATH, path)
+                        .put(PatternKey.METHOD, request.getMethod()).get();
             
             SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
             for (ViewBinding view : views)

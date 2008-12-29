@@ -1,60 +1,36 @@
 package com.goodworkalan.guicelet;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import com.goodworkalan.deviate.Any;
-import com.goodworkalan.deviate.Deviations;
-import com.goodworkalan.deviate.Equals;
-import com.goodworkalan.deviate.Match;
+import com.goodworkalan.diverge.Equals;
+import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.diverge.RuleSetBuilder;
 
 public class ViewConditionBinder
 {
-    protected final ViewBinder viewBinder;
+    protected final ViewBinder binder;
     
-    protected final Deviations<ViewBinding> viewBindings;
+    protected final RuleMapBuilder<ViewBinding> mapOfBindings;
     
-    protected final Map<PatternKey, Set<Match>> pattern;
+    protected final RuleSetBuilder<ViewBinding> setOfRules;
     
     private int priority;
     
-    public ViewConditionBinder(ViewBinder viewBinder, Deviations<ViewBinding> viewBindings, Map<PatternKey, Set<Match>> pattern)
+    public ViewConditionBinder(ViewBinder binder, RuleMapBuilder<ViewBinding> mapOfBindings, RuleSetBuilder<ViewBinding> setOfRules) 
     {
-        this.viewBinder = viewBinder;
-        this.viewBindings = viewBindings;
-        this.pattern = pattern;
+        this.binder = binder;
+        this.mapOfBindings = mapOfBindings;
+        this.setOfRules = setOfRules;
     }
     
-    protected void add(PatternKey key, Match match)
-    {
-        Set<Match> matches = pattern.get(key);
-        if (matches == null)
-        {
-            matches = new HashSet<Match>();
-            pattern.put(key, matches);
-        }
-        matches.add(match);
-    }
-
-    public ViewConditionBinder controller()
-    {
-        add(PatternKey.CONTROLLER, new Any());
-        return this;
-    }
-
     public ViewControllerBinder controller(Class<?> controllerClass)
     {
-        return new ViewControllerBinder(viewBinder, viewBindings, pattern).or(controllerClass);
+        return new ViewControllerBinder(binder, mapOfBindings, setOfRules).or(controllerClass);
     }
     
     public ViewConditionBinder forMethod(String method)
     {
-        add(PatternKey.METHOD, new Equals(method));
+        setOfRules.check(PatternKey.METHOD, new Equals(method));
         return this;
     }
     
@@ -62,7 +38,7 @@ public class ViewConditionBinder
     {
         for (String method : methods)
         {
-            add(PatternKey.METHOD, new Equals(method));
+            setOfRules.check(PatternKey.METHOD, new Equals(method));
         }
         return this;
     }
@@ -73,12 +49,12 @@ public class ViewConditionBinder
         return this;
     }
 
-    public <T extends RenderModule> T with(Class<T> binderClass)
+    public <T extends RenderModule> T with(Class<T> renderClass)
     {
         Constructor<T> constructor;
         try
         {
-            constructor = binderClass.getConstructor(ViewBinder.class);
+            constructor = renderClass.getConstructor(ViewBinder.class);
         }
         catch (Exception e)
         {
@@ -87,25 +63,13 @@ public class ViewConditionBinder
         T module;
         try
         {
-            module = constructor.newInstance(viewBinder);
+            module = constructor.newInstance(binder);
         }
         catch (Exception e)
         {
             throw new GuiceletException(e);
         }
-        List<Set<Match>> listOfMatches = new ArrayList<Set<Match>>(); 
-        for (PatternKey key : PatternKey.values())
-        {
-            if (pattern.containsKey(key))
-            {
-                listOfMatches.add(pattern.get(key));
-            }
-            else
-            {
-                listOfMatches.add(Collections.singleton((Match) new Any())); 
-            }
-        }
-        viewBindings.put(listOfMatches, new ViewBinding(priority, module));
+        setOfRules.put(new ViewBinding(priority, module));
         return module;
     }
 }
