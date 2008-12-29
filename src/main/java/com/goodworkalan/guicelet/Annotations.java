@@ -42,7 +42,7 @@ public class Annotations
             {
                 for (int i = 0; !audit &&  i < on.length; i++)
                 {
-                    audit = parameters.containsKey(on[i]);
+                    audit = merged.containsKey(on[i]);
                 }
             }
         }

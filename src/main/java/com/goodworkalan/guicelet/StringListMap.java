@@ -134,4 +134,10 @@ implements Map<String, List<String>>
     {
         return map.hashCode();
     }
+    
+    @Override
+    public String toString()
+    {
+        return map.toString();
+    }
 }
