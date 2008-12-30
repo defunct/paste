@@ -26,7 +26,7 @@ public class ControllerConditionBinder
     {
         for (String method : methods)
         {
-            setOfRules.check(PatternKey.METHOD, new Equals(method));
+            setOfRules.check(BindKey.METHOD, new Equals(method));
         }
         return this;
     }

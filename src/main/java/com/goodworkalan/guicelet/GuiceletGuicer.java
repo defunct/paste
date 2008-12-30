@@ -109,8 +109,8 @@ public class GuiceletGuicer
                 {
                     List<ControllerBinding> bindings
                         = mapping.getObject()
-                            .test().put(PatternKey.METHOD, request.getMethod())
-                                   .put(PatternKey.PATH, path)
+                            .test().put(BindKey.METHOD, request.getMethod())
+                                   .put(BindKey.PATH, path)
                                    .get();
                     for (ControllerBinding binding : bindings)
                     {
@@ -159,10 +159,10 @@ public class GuiceletGuicer
             List<ViewBinding> views
                 = mapOfViewBindings
                     .test()
-                        .put(PatternKey.PACKAGE, controller.getClass().getPackage().getName())
-                        .put(PatternKey.CONTROLLER, controller.getClass())
-                        .put(PatternKey.PATH, path)
-                        .put(PatternKey.METHOD, request.getMethod()).get();
+                        .put(BindKey.PACKAGE, controller.getClass().getPackage().getName())
+                        .put(BindKey.CONTROLLER_CLASS, controller.getClass())
+                        .put(BindKey.PATH, path)
+                        .put(BindKey.METHOD, request.getMethod()).get();
             
             SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
             for (ViewBinding view : views)

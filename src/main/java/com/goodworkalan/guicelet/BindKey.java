@@ -1,9 +1,10 @@
 package com.goodworkalan.guicelet;
 
-public enum PatternKey
+public enum BindKey
 {
     PACKAGE,
-    CONTROLLER,
+    CONTROLL_ER,
+    CONTROLLER_CLASS,
     ANNOTATION,
     METHOD,
     PATH,

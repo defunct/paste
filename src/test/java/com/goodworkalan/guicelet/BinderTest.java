@@ -43,11 +43,11 @@ public class BinderTest
               .controller(Object.class).or(String.class)
               .with(Forward.class);
         RuleMap<ViewBinding> bindings = binder.getMapOfRules();
-        List<ViewBinding> found = bindings.test().put(PatternKey.CONTROLLER, new Object()).get();
+        List<ViewBinding> found = bindings.test().put(BindKey.CONTROLLER_CLASS, Object.class).get();
         assertEquals(found.size(), 1);
         assertEquals(found.get(0).getPriority(), 0);
         assertTrue(found.get(0).getModule() instanceof Forward);
-        found =  bindings.test().put(PatternKey.CONTROLLER, new Integer(1)).get();
+        found =  bindings.test().put(BindKey.CONTROLLER_CLASS, Integer.class).get();
         assertEquals(found.size(), 0);
     }
 }

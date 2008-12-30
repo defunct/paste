@@ -1,46 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/java"/>
-  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
-  <classpathentry kind="src" path="src/test/java" output="target/test-classes"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/goodworkalan/cassandra/0.1.X/cassandra-0.1.X.jar" sourcepath="M2_REPO/com/goodworkalan/cassandra/0.1.X/cassandra-0.1.X-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/cassandra/0.1.X/cassandra-0.1.X-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/goodworkalan/diverge/0.1.X/diverge-0.1.X.jar" sourcepath="M2_REPO/com/goodworkalan/diverge/0.1.X/diverge-0.1.X-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/diverge/0.1.X/diverge-0.1.X-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X.jar" sourcepath="M2_REPO/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/goodworkalan/dspl/0.1.X/dspl-0.1.X.jar" sourcepath="M2_REPO/com/goodworkalan/dspl/0.1.X/dspl-0.1.X-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/dspl/0.1.X/dspl-0.1.X-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/com/google/code/guice/guice/2.0/guice-2.0.jar" sourcepath="M2_REPO/com/google/code/guice/guice/2.0/guice-2.0-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" sourcepath="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty/7.0.0pre2/jetty-7.0.0pre2.jar" sourcepath="M2_REPO/org/mortbay/jetty/jetty/7.0.0pre2/jetty-7.0.0pre2-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty-util/7.0.0pre2/jetty-util-7.0.0pre2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mockito/mockito-core/1.6/mockito-core-1.6.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar" sourcepath="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/alan/.m2/repository/org/objenesis/objenesis/1.0/objenesis-1.0-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4.jar" sourcepath="M2_REPO/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/alan/.m2/repository/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api-3.0/7.0.0pre2/servlet-api-3.0-7.0.0pre2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/testng/testng/5.8/testng-5.8-jdk15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/diverge"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/goodworkalan/cassandra/0.1.X/cassandra-0.1.X.jar" sourcepath="M2_REPO/com/goodworkalan/cassandra/0.1.X/cassandra-0.1.X-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/cassandra/0.1.X/cassandra-0.1.X-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/goodworkalan/diverge/0.1.X/diverge-0.1.X.jar" sourcepath="M2_REPO/com/goodworkalan/diverge/0.1.X/diverge-0.1.X-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/diverge/0.1.X/diverge-0.1.X-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X.jar" sourcepath="M2_REPO/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/dovetail/0.7.X/dovetail-0.7.X-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/goodworkalan/dspl/0.1.X/dspl-0.1.X.jar" sourcepath="M2_REPO/com/goodworkalan/dspl/0.1.X/dspl-0.1.X-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/goodworkalan/dspl/0.1.X/dspl-0.1.X-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/google/code/guice/guice/2.0/guice-2.0.jar" sourcepath="M2_REPO/com/google/code/guice/guice/2.0/guice-2.0-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" sourcepath="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty/7.0.0pre2/jetty-7.0.0pre2.jar" sourcepath="M2_REPO/org/mortbay/jetty/jetty/7.0.0pre2/jetty-7.0.0pre2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jetty-util/7.0.0pre2/jetty-util-7.0.0pre2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/mockito/mockito-core/1.6/mockito-core-1.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0.jar" sourcepath="M2_REPO/org/objenesis/objenesis/1.0/objenesis-1.0-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/org/objenesis/objenesis/1.0/objenesis-1.0-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4.jar" sourcepath="M2_REPO/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api-3.0/7.0.0pre2/servlet-api-3.0-7.0.0pre2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/testng/testng/5.8/testng-5.8-jdk15.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -4,15 +4,15 @@ import com.google.inject.AbstractModule;
 
 public abstract class RenderModule extends AbstractModule
 {
-    private final ViewBinder viewBinder;
+    private final ViewBinder end;
     
     public RenderModule(ViewBinder viewBinder)
     {
-        this.viewBinder = viewBinder;
+        this.end = viewBinder;
     }
     
     public ViewBinder end()
     {
-        return viewBinder;
+        return end;
     }
 }

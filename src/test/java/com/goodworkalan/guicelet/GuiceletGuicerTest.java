@@ -67,16 +67,6 @@ public class GuiceletGuicerTest
     @Test
     public void view() throws IOException, ServletException
     {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getRequestURI()).thenReturn("/servlet/login");
-        when(request.getContextPath()).thenReturn("/servlet");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
-
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        
-        FilterChain chain = mock(FilterChain.class);
-        
         CoreBinder binder = new CoreBinder();
         binder
             .controllers(Object.class)
@@ -96,8 +86,5 @@ public class GuiceletGuicerTest
                     .method("POST").with(Forward.class).format("/foo")
                     .end()
                 .end();
-                    
-        GuiceletGuicer guicer = binder.newGuiceletGuicer(Guice.createInjector());
-        guicer.filter(request, response, chain);
     }
 }

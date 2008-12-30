@@ -58,14 +58,14 @@ public class ViewBinder
     {
         for (String method : methods)
         {
-            listOfSetOfRules.get(0).check(PatternKey.METHOD, new Equals(method));
+            listOfSetOfRules.get(0).check(BindKey.METHOD, new Equals(method));
         }
         return this;
     }
     
     public ViewBinder exception(Class<? extends Throwable> exceptionClass)
     {
-        listOfSetOfRules.get(0).check(PatternKey.EXCEPTION, new Equals(exceptionClass));
+        listOfSetOfRules.get(0).check(BindKey.EXCEPTION, new Equals(exceptionClass));
         return this;
     }
     
