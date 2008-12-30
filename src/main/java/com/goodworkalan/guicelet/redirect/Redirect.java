@@ -4,7 +4,7 @@ import static com.goodworkalan.guicelet.redirect.Redirects.isRedirectStatus;
 
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.ViewConditionBinder;
+import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.google.inject.Provider;
 
@@ -16,7 +16,7 @@ public class Redirect extends RenderModule
     
     private FormatArgument[] formatArguments = new FormatArgument[0];
     
-    public Redirect(ViewConditionBinder binder)
+    public Redirect(ViewBinder binder)
     {
         super(binder);
     }

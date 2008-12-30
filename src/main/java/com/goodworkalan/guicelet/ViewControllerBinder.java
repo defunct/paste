@@ -7,9 +7,9 @@ import com.goodworkalan.diverge.RuleMapBuilder;
 import com.goodworkalan.diverge.RuleSetBuilder;
 import com.goodworkalan.guicelet.conditions.WithClass;
 
-public class ViewControllerBinder extends ViewConditionBinder
+public class ViewControllerBinder extends ViewBinder
 {
-    public ViewControllerBinder(ViewConditionBinder parent, RuleMapBuilder<ViewBinding> mapOfRules,  List<RuleSetBuilder<ViewBinding>> setOfRules)
+    public ViewControllerBinder(ViewBinder parent, RuleMapBuilder<ViewBinding> mapOfRules,  List<RuleSetBuilder<ViewBinding>> setOfRules)
     {
         super(parent, mapOfRules, setOfRules);
     }

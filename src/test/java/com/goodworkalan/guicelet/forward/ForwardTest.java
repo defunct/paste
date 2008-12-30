@@ -23,7 +23,7 @@ import com.goodworkalan.guicelet.GuiceletModule;
 import com.goodworkalan.guicelet.Janitor;
 import com.goodworkalan.guicelet.Parameters;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.ViewConditionBinder;
+import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -33,7 +33,7 @@ public class ForwardTest
     @Test
     public void constructor()
     {
-        ViewConditionBinder viewBinder = mock(ViewConditionBinder.class);
+        ViewBinder viewBinder = mock(ViewBinder.class);
          
         new Forward(viewBinder);
     }
@@ -55,7 +55,7 @@ public class ForwardTest
                 new Parameters());
         ControllerModule controller = new ControllerModule(new Object());
         
-        ViewConditionBinder viewBinder = mock(ViewConditionBinder.class);
+        ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         Injector injector = Guice.createInjector(guicelet, controller, forward);
@@ -86,7 +86,7 @@ public class ForwardTest
                 new Parameters());
         ControllerModule controller = new ControllerModule(new Object());
         
-        ViewConditionBinder viewBinder = mock(ViewConditionBinder.class);
+        ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         forward.property("property");
@@ -118,7 +118,7 @@ public class ForwardTest
                 new Parameters());
         ControllerModule controller = new ControllerModule(new Object());
         
-        ViewConditionBinder viewBinder = mock(ViewConditionBinder.class);
+        ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         forward.format("/templates/%s.ftl", new FormatArgument[] { REQUEST_PATH });

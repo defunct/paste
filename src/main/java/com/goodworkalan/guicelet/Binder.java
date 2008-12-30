@@ -4,5 +4,5 @@ public interface Binder
 {
     public ControllerBinder controllers(Class<?> conditional);
 
-    public ViewConditionBinder view();
+    public ViewBinder view();
 }

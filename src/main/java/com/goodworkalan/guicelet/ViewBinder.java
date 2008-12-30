@@ -10,9 +10,9 @@ import com.goodworkalan.diverge.RuleMapBuilder;
 import com.goodworkalan.diverge.RuleSetBuilder;
 import com.goodworkalan.diverge.RuleSetBuilderList;
 
-public class ViewConditionBinder
+public class ViewBinder
 {
-    private final ViewConditionBinder parent;
+    private final ViewBinder parent;
     
     protected final RuleMapBuilder<ViewBinding> mapOfBindings;
     
@@ -22,7 +22,7 @@ public class ViewConditionBinder
     
     private int priority;
     
-    public ViewConditionBinder(ViewConditionBinder parent, RuleMapBuilder<ViewBinding> mapOfBindings, List<RuleSetBuilder<ViewBinding>> listOfSetOfRules) 
+    public ViewBinder(ViewBinder parent, RuleMapBuilder<ViewBinding> mapOfBindings, List<RuleSetBuilder<ViewBinding>> listOfSetOfRules) 
     {
         this.parent = parent;
         this.mapOfBindings = mapOfBindings;
@@ -39,12 +39,12 @@ public class ViewConditionBinder
         return Collections.singletonList(new RuleSetBuilderList<ViewBinding>(listOfSetOfRules).duplicate());
     }
 
-    public ViewConditionBinder view()
+    public ViewBinder view()
     {
-        return new ViewConditionBinder(this, mapOfBindings, newView());
+        return new ViewBinder(this, mapOfBindings, newView());
     }
     
-    public ViewConditionBinder end()
+    public ViewBinder end()
     {
         return parent;
     }
@@ -54,7 +54,7 @@ public class ViewConditionBinder
         return new ViewControllerBinder(parent, mapOfBindings, listOfSetOfRules).or(controllerClass);
     }
     
-    public ViewConditionBinder method(String...methods)
+    public ViewBinder method(String...methods)
     {
         for (String method : methods)
         {
@@ -63,21 +63,21 @@ public class ViewConditionBinder
         return this;
     }
     
-    public ViewConditionBinder exception(Class<? extends Throwable> exceptionClass)
+    public ViewBinder exception(Class<? extends Throwable> exceptionClass)
     {
         listOfSetOfRules.get(0).check(PatternKey.EXCEPTION, new Equals(exceptionClass));
         return this;
     }
     
-    public ViewConditionBinder or()
+    public ViewBinder or()
     {
         List<RuleSetBuilder<ViewBinding>> shift = new ArrayList<RuleSetBuilder<ViewBinding>>();
         shift.add(from.duplicate());
         shift.addAll(listOfSetOfRules);
-        return new ViewConditionBinder(parent, mapOfBindings, shift);
+        return new ViewBinder(parent, mapOfBindings, shift);
     }
     
-    public ViewConditionBinder priority(int priority)
+    public ViewBinder priority(int priority)
     {
         this.priority = priority;
         return this;
@@ -88,13 +88,13 @@ public class ViewConditionBinder
         Constructor<T> constructor;
         try
         {
-            constructor = renderClass.getConstructor(ViewConditionBinder.class);
+            constructor = renderClass.getConstructor(ViewBinder.class);
         }
         catch (Exception e)
         {
             throw new GuiceletException(e);
         }
-        ViewConditionBinder end = new ViewConditionBinder(parent, mapOfBindings, Collections.singletonList(from.duplicate()));
+        ViewBinder end = new ViewBinder(parent, mapOfBindings, Collections.singletonList(from.duplicate()));
         T module;
         try
         {

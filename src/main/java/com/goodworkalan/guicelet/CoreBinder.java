@@ -31,9 +31,9 @@ public class CoreBinder implements Binder
         return new ControllerBinder(new GlobCompiler(conditional), listOfControllerPathMappings);
     }
     
-    public ViewConditionBinder view()
+    public ViewBinder view()
     {
-        return new ViewConditionBinder(null, mapOfRules, Collections.singletonList(mapOfRules.rule()));
+        return new ViewBinder(null, mapOfRules, Collections.singletonList(mapOfRules.rule()));
     }
     
     public List<GlobTree<RuleMap<ControllerBinding>>> getBindingTrees()

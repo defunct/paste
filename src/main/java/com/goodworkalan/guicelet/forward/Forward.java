@@ -4,7 +4,7 @@ import static com.goodworkalan.guicelet.paths.FormatArguments.CONTROLLER_CLASS_A
 
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.ViewConditionBinder;
+import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.google.inject.Provider;
 
@@ -19,7 +19,7 @@ public class Forward extends RenderModule
             CONTROLLER_CLASS_AS_PATH
     };
 
-    public Forward(ViewConditionBinder viewBinder)
+    public Forward(ViewBinder viewBinder)
     {
         super(viewBinder);
     }
