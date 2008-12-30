@@ -23,7 +23,7 @@ public class BinderTest
     {
         CoreBinder binder = new CoreBinder();
         binder.view().with(Forward.class);
-        RuleMap<ViewBinding> bindings = binder.getViewBindings();
+        RuleMap<ViewBinding> bindings = binder.getMapOfRules();
         List<ViewBinding> found = bindings.test().get();
         assertEquals(found.size(), 1);
         assertEquals(found.get(0).getPriority(), 0);
@@ -42,7 +42,7 @@ public class BinderTest
         binder.view()
               .controller(Object.class).or(String.class)
               .with(Forward.class);
-        RuleMap<ViewBinding> bindings = binder.getViewBindings();
+        RuleMap<ViewBinding> bindings = binder.getMapOfRules();
         List<ViewBinding> found = bindings.test().put(PatternKey.CONTROLLER, new Object()).get();
         assertEquals(found.size(), 1);
         assertEquals(found.get(0).getPriority(), 0);

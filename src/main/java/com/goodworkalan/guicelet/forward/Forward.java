@@ -1,10 +1,11 @@
 package com.goodworkalan.guicelet.forward;
 
+import static com.goodworkalan.guicelet.paths.FormatArguments.CONTROLLER_CLASS_AS_PATH;
+
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.ViewBinder;
+import com.goodworkalan.guicelet.ViewConditionBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
-import com.goodworkalan.guicelet.paths.FormatArguments;
 import com.google.inject.Provider;
 
 public class Forward extends RenderModule
@@ -15,10 +16,10 @@ public class Forward extends RenderModule
     
     private FormatArgument[] formatArguments = new FormatArgument[]
     {
-        FormatArguments.CONTROLLER_CLASS_AS_PATH
+            CONTROLLER_CLASS_AS_PATH
     };
 
-    public Forward(ViewBinder viewBinder)
+    public Forward(ViewConditionBinder viewBinder)
     {
         super(viewBinder);
     }

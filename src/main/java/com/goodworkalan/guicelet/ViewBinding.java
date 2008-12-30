@@ -1,6 +1,5 @@
 package com.goodworkalan.guicelet;
 
-import java.lang.annotation.Annotation;
 
 public class ViewBinding
 {
@@ -22,10 +21,5 @@ public class ViewBinding
     public RenderModule getModule()
     {
         return module;
-    }
-    
-    public boolean test(Class<? extends Annotation> bundle, String name)
-    {
-        return true;
     }
 }

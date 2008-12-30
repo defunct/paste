@@ -1,27 +1,32 @@
 package com.goodworkalan.guicelet;
 
 import com.goodworkalan.diverge.Equals;
+import com.goodworkalan.diverge.RuleMapBuilder;
 import com.goodworkalan.diverge.RuleSetBuilder;
 
 public class ControllerConditionBinder
 {
-    private final ControllerBinder binder;
+    private final ControllerPathBinder pathBinder;
     
-    protected final RuleSetBuilder<ControllerBinding> rules;
+    protected final RuleMapBuilder<ControllerBinding> mapOfRules;
+    
+    protected final RuleSetBuilder<ControllerBinding> setOfRules;
     
     private int priority;
     
-    public ControllerConditionBinder(ControllerBinder binder, RuleSetBuilder<ControllerBinding> rules)
+    public ControllerConditionBinder(ControllerPathBinder pathBinder,
+                                     RuleMapBuilder<ControllerBinding> mapOfRules)
     {
-        this.binder = binder;
-        this.rules = rules;
+        this.pathBinder = pathBinder;
+        this.mapOfRules = mapOfRules;
+        this.setOfRules = mapOfRules.rule();
     }
     
     public ControllerConditionBinder method(String...methods)
     {
         for (String method : methods)
         {
-            rules.check(PatternKey.METHOD, new Equals(method));
+            setOfRules.check(PatternKey.METHOD, new Equals(method));
         }
         return this;
     }
@@ -32,10 +37,10 @@ public class ControllerConditionBinder
         return this;
     }
     
-    public <T> ControllerBinder to(Class<?> controller)
+    public <T> ControllerPathBinder to(Class<?> controller)
     {
         ControllerBinding binding = new ControllerBinding(priority, controller);
-        rules.put(binding);
-        return binder;
+        setOfRules.put(binding);
+        return pathBinder;
     }
 }

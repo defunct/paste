@@ -32,4 +32,10 @@ public class WithClass implements Condition
     {
         return condition.hashCode();
     }
+    
+    @Override
+    public String toString()
+    {
+        return "WithClass(" + condition + ")";
+    }
 }

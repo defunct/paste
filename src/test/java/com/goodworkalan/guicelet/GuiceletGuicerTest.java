@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.guicelet.forward.Forward;
 import com.google.inject.Guice;
 
 public class GuiceletGuicerTest
@@ -33,6 +34,69 @@ public class GuiceletGuicerTest
         binder.controllers(Object.class)
               .bind("/queue/{user}")
               .to(BindingController.class);
+        GuiceletGuicer guicer = binder.newGuiceletGuicer(Guice.createInjector());
+        guicer.filter(request, response, chain);
+    }
+    
+    @Test
+    public void method() throws IOException, ServletException
+    {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("/servlet/login");
+        when(request.getContextPath()).thenReturn("/servlet");
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        FilterChain chain = mock(FilterChain.class);
+        
+        CoreBinder binder = new CoreBinder();
+        binder
+            .controllers(Object.class)
+                  .bind("/queue/{user}").to(BindingController.class)
+                  .bind("/login")
+                      .when().method("GET").priority(1).to(Object.class)
+                      .when().method("POST").to(Object.class)
+                  .bind("/index").to(Object.class);
+        
+        GuiceletGuicer guicer = binder.newGuiceletGuicer(Guice.createInjector());
+        guicer.filter(request, response, chain);
+    }
+    
+    @Test
+    public void view() throws IOException, ServletException
+    {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("/servlet/login");
+        when(request.getContextPath()).thenReturn("/servlet");
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        FilterChain chain = mock(FilterChain.class);
+        
+        CoreBinder binder = new CoreBinder();
+        binder
+            .controllers(Object.class)
+                  .bind("/queue/{user}").to(BindingController.class)
+                  .bind("/login")
+                      .when().method("GET").priority(1).to(Object.class)
+                      .when().method("POST").to(Object.class)
+                  .bind("/index").to(Object.class);
+        
+        binder
+            .view()
+                .controller(Object.class).or(Index.class)
+                .view()
+                    .method("GET").or().exception(Error.class).with(Forward.class).format("/foo")
+                    .end()
+                .view()
+                    .method("POST").with(Forward.class).format("/foo")
+                    .end()
+                .end();
+                    
         GuiceletGuicer guicer = binder.newGuiceletGuicer(Guice.createInjector());
         guicer.filter(request, response, chain);
     }

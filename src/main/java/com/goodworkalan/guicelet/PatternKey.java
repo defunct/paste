@@ -6,5 +6,6 @@ public enum PatternKey
     CONTROLLER,
     ANNOTATION,
     METHOD,
-    PATH
+    PATH,
+    EXCEPTION
 }

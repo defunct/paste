@@ -35,10 +35,15 @@ public class ControllerPathBinder
         return this;
     }
 
-    public ControllerPathBinder withPriority(int priority)
+    public ControllerPathBinder priority(int priority)
     {
         this.priority = priority;
         return this;
+    }
+    
+    public ControllerConditionBinder when()
+    {
+        return new ControllerConditionBinder(this, mapOfRules);
     }
     
     public ControllerBinder to(Class<?> controller)
@@ -46,5 +51,10 @@ public class ControllerPathBinder
         ControllerBinding binding = new ControllerBinding(priority, controller);
         mapOfRules.rule().put(binding);
         return binder;
+    }
+    
+    public ControllerPathBinder bind(String pattern)
+    {
+        return binder.bind(pattern);
     }
 }

@@ -70,7 +70,7 @@ public class GuiceletFilter implements Filter
         
         guicer = new GuiceletGuicer(injector,
                                     binder.getBindingTrees(),
-                                    binder.getViewBindings());
+                                    binder.getMapOfRules());
     }
 
     public void doFilter(ServletRequest request,

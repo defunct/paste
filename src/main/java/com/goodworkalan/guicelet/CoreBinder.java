@@ -1,10 +1,12 @@
 package com.goodworkalan.guicelet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.goodworkalan.diverge.RuleMap;
 import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.diverge.RuleSetBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
@@ -14,12 +16,12 @@ public class CoreBinder implements Binder
 {
     private final List<List<ControllerPathMapping>> listOfControllerBinders;
     
-    private final RuleMapBuilder<ViewBinding> viewBindings;
+    private final RuleMapBuilder<ViewBinding> mapOfRules;
     
     public CoreBinder()
     {
         this.listOfControllerBinders = new ArrayList<List<ControllerPathMapping>>();
-        this.viewBindings = new RuleMapBuilder<ViewBinding>();
+        this.mapOfRules = new RuleMapBuilder<ViewBinding>();
     }
 
     public ControllerBinder controllers(Class<?> conditional)
@@ -29,9 +31,9 @@ public class CoreBinder implements Binder
         return new ControllerBinder(new GlobCompiler(conditional), listOfControllerPathMappings);
     }
     
-    public ViewBinder view()
+    public ViewConditionBinder view()
     {
-        return new ViewBinder(viewBindings);
+        return new ViewConditionBinder(null, mapOfRules, Collections.singletonList(mapOfRules.rule()));
     }
     
     public List<GlobTree<RuleMap<ControllerBinding>>> getBindingTrees()
@@ -53,13 +55,13 @@ public class CoreBinder implements Binder
         return trees;
     }
     
-    public RuleMap<ViewBinding> getViewBindings()
+    public RuleMap<ViewBinding> getMapOfRules()
     {
-        return viewBindings.newRuleMap();
+        return mapOfRules.newRuleMap();
     }
     
     public GuiceletGuicer newGuiceletGuicer(Injector injector)
     {
-        return new GuiceletGuicer(injector, getBindingTrees(), getViewBindings());
+        return new GuiceletGuicer(injector, getBindingTrees(), getMapOfRules());
     }
 }

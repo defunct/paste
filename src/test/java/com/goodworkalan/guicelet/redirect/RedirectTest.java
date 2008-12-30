@@ -18,7 +18,7 @@ import com.goodworkalan.guicelet.ControllerModule;
 import com.goodworkalan.guicelet.GuiceletModule;
 import com.goodworkalan.guicelet.Janitor;
 import com.goodworkalan.guicelet.Parameters;
-import com.goodworkalan.guicelet.ViewBinder;
+import com.goodworkalan.guicelet.ViewConditionBinder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -41,7 +41,7 @@ public class RedirectTest
                 new Parameters());
         ControllerModule controller = new ControllerModule(new Object());
 
-        ViewBinder binder = mock(ViewBinder.class);
+        ViewConditionBinder binder = mock(ViewConditionBinder.class);
         
         Redirect redirect = new Redirect(binder);
         redirect.status(301);
@@ -54,7 +54,7 @@ public class RedirectTest
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void isRedirectStatus()
     {
-        ViewBinder binder = mock(ViewBinder.class);
+        ViewConditionBinder binder = mock(ViewConditionBinder.class);
         
         Redirect redirect = new Redirect(binder);
         redirect.status(200);
