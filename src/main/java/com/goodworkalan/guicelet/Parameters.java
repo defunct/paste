@@ -21,6 +21,10 @@ import java.util.Map;
 public class Parameters
 extends StringListMap
 {
+    public final static Object BINDING = new Object();
+        
+    public final static Object REQUEST = new Object();
+
     public Parameters()
     {
         super(new HashMap<String, List<String>>());
