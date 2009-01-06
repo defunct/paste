@@ -29,6 +29,7 @@ public class RedirectTest
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
+        when(request.getContextPath()).thenReturn("");
         when(request.getRequestURI()).thenReturn("/account/create");
         
         when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);

@@ -1,7 +1,9 @@
 package com.goodworkalan.guicelet.forward;
 
+import com.goodworkalan.guicelet.RequestScoped;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 
+@RequestScoped
 class Configuration
 {
     private final String property;

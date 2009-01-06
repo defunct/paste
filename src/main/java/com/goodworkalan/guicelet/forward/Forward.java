@@ -2,6 +2,7 @@ package com.goodworkalan.guicelet.forward;
 
 import static com.goodworkalan.guicelet.paths.FormatArguments.CONTROLLER_CLASS_AS_PATH;
 
+import com.goodworkalan.guicelet.ControllerScoped;
 import com.goodworkalan.guicelet.RenderModule;
 import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.ViewBinder;
@@ -27,14 +28,14 @@ public class Forward extends RenderModule
     @Override
     protected void configure()
     {
-        bind(Renderer.class).to(ForwardRenderer.class);
+        bind(Renderer.class).to(ForwardRenderer.class).in(ControllerScoped.class);
         bind(Configuration.class).toProvider(new Provider<Configuration>()
         {
             public Configuration get()
             {
                 return new Configuration(property, format, formatArguments);
             }
-        });
+        }).in(ControllerScoped.class);
     }
     
     public Forward property(String property)

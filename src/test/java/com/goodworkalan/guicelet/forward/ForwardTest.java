@@ -44,6 +44,7 @@ public class ForwardTest
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getContextPath()).thenReturn("");
         when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -60,10 +61,11 @@ public class ForwardTest
         
         Forward forward = new Forward(viewBinder);
         
-        Renderer renderer = injector.createChildInjector(forward).getInstance(Renderer.class);
+        Injector childInjector = injector.createChildInjector(forward);
+        Renderer renderer = childInjector.getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
         
-        Configuration configuration = injector.getInstance(Configuration.class);
+        Configuration configuration = childInjector.getInstance(Configuration.class);
         assertEquals(configuration.getProperty(), "controller");
         assertEquals(configuration.getFormat(), "/%s.ftl");
         assertSame(configuration.getFormatArguments()[0], CONTROLLER_CLASS_AS_PATH);
@@ -76,6 +78,7 @@ public class ForwardTest
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getContextPath()).thenReturn("");
         when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
         
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -93,10 +96,11 @@ public class ForwardTest
         Forward forward = new Forward(viewBinder);
         forward.property("property");
         
-        Renderer renderer = injector.createChildInjector(forward).getInstance(Renderer.class);
+        Injector childInjector = injector.createChildInjector(forward);
+        Renderer renderer = childInjector.getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
         
-        Configuration configuration = injector.getInstance(Configuration.class);
+        Configuration configuration = childInjector.getInstance(Configuration.class);
         assertEquals(configuration.getProperty(), "property");
         assertEquals(configuration.getFormat(), "/%s.ftl");
         assertSame(configuration.getFormatArguments()[0], CONTROLLER_CLASS_AS_PATH);
@@ -109,6 +113,7 @@ public class ForwardTest
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getContextPath()).thenReturn("");
         when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -126,10 +131,11 @@ public class ForwardTest
         Forward forward = new Forward(viewBinder);
         forward.format("/templates/%s.ftl", new FormatArgument[] { REQUEST_PATH });
         
-        Renderer renderer = injector.createChildInjector(forward).getInstance(Renderer.class);
+        Injector childInjector = injector.createChildInjector(forward);
+        Renderer renderer = childInjector.getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
         
-        Configuration configuration = injector.getInstance(Configuration.class);
+        Configuration configuration = childInjector.getInstance(Configuration.class);
         assertEquals(configuration.getProperty(), "controller");
         assertEquals(configuration.getFormat(), "/templates/%s.ftl");
         assertSame(configuration.getFormatArguments()[0], REQUEST_PATH);

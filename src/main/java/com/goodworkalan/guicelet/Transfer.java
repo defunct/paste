@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.guicelet.redirect.Redirector;
 import com.google.inject.Inject;
 
-// TODO Just use Injector.
+// FIXME Just use Injector.
 public class Transfer
 {
     private final HttpServletRequest request;
