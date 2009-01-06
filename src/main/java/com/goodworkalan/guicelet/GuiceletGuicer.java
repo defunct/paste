@@ -1,12 +1,9 @@
 package com.goodworkalan.guicelet;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -19,28 +16,43 @@ import com.goodworkalan.diverge.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Mapping;
 import com.goodworkalan.dovetail.TreeMapper;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 
 public class GuiceletGuicer
 {
+    private final SessionScope sessionScope;
+
+    private final BasicScope requestScope;
+    
+    private final BasicScope controllerScope;
+    
     private final Injector injector;
 
     private final List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings;
 
     private final RuleMap<ViewBinding> mapOfViewBindings;
 
-    private final List<Janitor> listOfJanitors;
+    private final List<Janitor> janitors;
 
-    public GuiceletGuicer(Injector injector,
-                          List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
-                          RuleMap<ViewBinding> mapOfViewBindings)
+    public GuiceletGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
+                          RuleMap<ViewBinding> mapOfViewBindings,
+                          List<Module> modules)
     {
-        this.injector = injector;
+        this.requestScope = new BasicScope();
+        this.controllerScope = new BasicScope();
+        this.sessionScope = new SessionScope();
+        this.janitors = new ArrayList<Janitor>();
+        
+        List<Module> pushGuicletModule = new ArrayList<Module>(modules);
+        pushGuicletModule.add(new GuiceletModule(sessionScope, requestScope, controllerScope, janitors));
+        
+        this.injector = Guice.createInjector(pushGuicletModule);
+
         this.controllerBindings = controllerBindings;
         this.mapOfViewBindings = mapOfViewBindings;
-        this.listOfJanitors = new ArrayList<Janitor>();
     }
 
     public void filter(HttpServletRequest request,
@@ -60,22 +72,20 @@ public class GuiceletGuicer
                         FilterChain chain)
         throws IOException, ServletException
     {
-        Map<Class<? extends Annotation>, List<Janitor>> mapOfJanitors = new HashMap<Class<? extends Annotation>, List<Janitor>>();
-        mapOfJanitors.put(Servlet.class, listOfJanitors);
-        mapOfJanitors.put(Request.class, new ArrayList<Janitor>());
+        List<Janitor> janitors = new ArrayList<Janitor>();
         try
         {
-            filter(request, response, mapOfJanitors, interception, chain);
+            filter(request, response, janitors, interception, chain);
         }
         finally
         {
-            cleanUp(mapOfJanitors.get(Request.class));
+            cleanUp(janitors);
         }
     }
     
     private void filter(HttpServletRequest request,
                         HttpServletResponse response,
-                        Map<Class<? extends Annotation>, List<Janitor>> mapOfJanitors,
+                        List<Janitor> janitors,
                         Interception interception,
                         FilterChain chain)
         throws IOException, ServletException
@@ -88,9 +98,7 @@ public class GuiceletGuicer
             path = path.substring(contextPath.length());
         }
 
-        Injector requestInjector = null;
-        Injector controllerInjector = null;
-
+        boolean hasController = false;
         for (GlobTree<RuleMap<ControllerBinding>> tree : controllerBindings)
         {
             if (interception.isIntercepted())
@@ -128,33 +136,32 @@ public class GuiceletGuicer
                     break;
                 }
 
-                if (requestInjector == null)
+                if (hasController)
                 {
-                    Module module
-                        = new GuiceletModule(request, response, mapOfJanitors, parameters);
-                    
-                    requestInjector = injector.createChildInjector(module);
+                    controllerScope.exit();
                 }
+                else
+                {
+                    Scopes.enterRequest(requestScope, request, response, janitors);
+                }
+                Scopes.enterController(controllerScope, injector, controllerClass, parameters);
+                Object controller = injector.getInstance(Key.get(Object.class, Controller.class));
+                hasController = true;
 
-                Object controller = requestInjector.getInstance(controllerClass);
-
-                Module module = new ControllerModule(controller);
-                controllerInjector = requestInjector.createChildInjector(module);
-                
                 Actors actors = controller.getClass().getAnnotation(Actors.class);
                 if (actors != null)
                 {
                     for (Class<?  extends Actor> actor : actors.value())
                     {
-                        controllerInjector.getInstance(actor).actUpon(controller);
+                        injector.getInstance(actor).actUpon(controller);
                     }
                 }
             }
         }
 
-        if (!interception.isIntercepted() && controllerInjector != null)
+        if (!interception.isIntercepted() && hasController)
         {
-            Object controller = controllerInjector.getProvider(Key.get(Object.class, Controller.class)).get();
+            Object controller = injector.getProvider(Key.get(Object.class, Controller.class)).get();
             
             List<ViewBinding> views
                 = mapOfViewBindings
@@ -173,10 +180,15 @@ public class GuiceletGuicer
             if (prioritized.size() != 0)
             {
                 ViewBinding view = prioritized.get(prioritized.firstKey());
-                Injector viewInjector = controllerInjector.createChildInjector(view.getModule());
-                Renderer renderer = viewInjector.getProvider(Renderer.class).get();
-                renderer.render();
+                injector.createChildInjector(view.getModule())
+                        .getInstance(Renderer.class).render();
             }
+        }
+        
+        if (hasController)
+        {
+            controllerScope.exit();
+            requestScope.exit();
         }
         
         if (!interception.isIntercepted())
@@ -205,6 +217,6 @@ public class GuiceletGuicer
     
     public void destroy()
     {
-        cleanUp(listOfJanitors);
+        cleanUp(janitors);
     }
 }

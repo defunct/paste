@@ -9,11 +9,11 @@ import com.google.inject.Scope;
 
 public class SessionScope implements Scope
 {
-    private final HttpServletRequest request;
+    private final static ThreadLocal<HttpServletRequest> request = new ThreadLocal<HttpServletRequest>();
     
-    public SessionScope(HttpServletRequest request)
+    public static void set(HttpServletRequest value)
     {
-        this.request = request;
+        request.set(value);
     }
 
     public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped)
@@ -21,7 +21,7 @@ public class SessionScope implements Scope
         final String name = key.toString();
         return new Provider<T>()
         {
-            HttpSession session = request.getSession();
+            HttpSession session = request.get().getSession();
             public T get()
             {
                 @SuppressWarnings("unchecked")

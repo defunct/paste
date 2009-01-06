@@ -8,21 +8,20 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
-import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.guicelet.ControllerModule;
+import com.goodworkalan.guicelet.BasicScope;
 import com.goodworkalan.guicelet.GuiceletModule;
 import com.goodworkalan.guicelet.Janitor;
 import com.goodworkalan.guicelet.Parameters;
 import com.goodworkalan.guicelet.Renderer;
+import com.goodworkalan.guicelet.Scopes;
+import com.goodworkalan.guicelet.SessionScope;
 import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.google.inject.Guice;
@@ -45,22 +44,23 @@ public class ForwardTest
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
         
-        HttpServletResponse repsonse = mock(HttpServletResponse.class);
-        
-        GuiceletModule guicelet = new GuiceletModule(
-                request,
-                repsonse,
-                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
-                new Parameters());
-        ControllerModule controller = new ControllerModule(new Object());
+        BasicScope requestScope = new BasicScope();
+        BasicScope controllerScope = new BasicScope();
+        GuiceletModule guicelet = new GuiceletModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        Injector injector = Guice.createInjector(guicelet);
+
+        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
-        Injector injector = Guice.createInjector(guicelet, controller, forward);
         
-        Renderer renderer = injector.getInstance(Renderer.class);
+        Renderer renderer = injector.createChildInjector(forward).getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
         
         Configuration configuration = injector.getInstance(Configuration.class);
@@ -76,23 +76,24 @@ public class ForwardTest
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
         
-        HttpServletResponse repsonse = mock(HttpServletResponse.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
         
-        GuiceletModule guicelet = new GuiceletModule(
-                request,
-                repsonse,
-                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
-                new Parameters());
-        ControllerModule controller = new ControllerModule(new Object());
+        BasicScope requestScope = new BasicScope();
+        BasicScope controllerScope = new BasicScope();
+        GuiceletModule guicelet = new GuiceletModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        Injector injector = Guice.createInjector(guicelet);
+
+        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         forward.property("property");
-        Injector injector = Guice.createInjector(guicelet, controller, forward);
         
-        Renderer renderer = injector.getInstance(Renderer.class);
+        Renderer renderer = injector.createChildInjector(forward).getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
         
         Configuration configuration = injector.getInstance(Configuration.class);
@@ -108,23 +109,24 @@ public class ForwardTest
         when(request.getMethod()).thenReturn("GET");
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
         
-        HttpServletResponse repsonse = mock(HttpServletResponse.class);
-        
-        GuiceletModule guicelet = new GuiceletModule(
-                request,
-                repsonse,
-                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
-                new Parameters());
-        ControllerModule controller = new ControllerModule(new Object());
+        BasicScope requestScope = new BasicScope();
+        BasicScope controllerScope = new BasicScope();
+        GuiceletModule guicelet = new GuiceletModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        Injector injector = Guice.createInjector(guicelet);
+
+        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
         Forward forward = new Forward(viewBinder);
         forward.format("/templates/%s.ftl", new FormatArgument[] { REQUEST_PATH });
-        Injector injector = Guice.createInjector(guicelet, controller, forward);
         
-        Renderer renderer = injector.getInstance(Renderer.class);
+        Renderer renderer = injector.createChildInjector(forward).getInstance(Renderer.class);
         assertTrue(renderer instanceof ForwardRenderer);
         
         Configuration configuration = injector.getInstance(Configuration.class);

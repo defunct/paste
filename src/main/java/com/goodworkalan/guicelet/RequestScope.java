@@ -1,67 +1,33 @@
 package com.goodworkalan.guicelet;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Key;
-import com.google.inject.Provider;
-import com.google.inject.Scope;
+import com.google.inject.TypeLiteral;
 
-public class RequestScope implements Scope
+public class RequestScope extends BasicScope
 {
-    private final Map<Class<? extends Annotation>, Parameters> parameters;
-    
-    private final HttpServletRequest request;
-    
-    public RequestScope(Map<Class<? extends Annotation>, Parameters> parameters, HttpServletRequest request)
+    public void init(HttpServletRequest request, HttpServletResponse response)
     {
-        this.parameters = parameters;
-        this.request = request;
-    }
+        enter();
 
-    private <T> Class<? extends Annotation> isAnnotatedParameters(Key<T> key, Object object)
-    {
-        if (object instanceof Parameters)
-        {
-            if (key.getAnnotationType() != null)
-            {
-                return key.getAnnotationType();
-            }
-            else if (key.getAnnotation() != null)
-            {
-                return key.getAnnotation().getClass();
-            }
-        }
-        return null;
+        seed(HttpServletRequest.class, request);
+        seed(ServletRequest.class, request);
+            
+        seed(HttpServletResponse.class, response);
+        seed(ServletResponse.class, response);
+        
+        seed(Key.get(new TypeLiteral<Map<String, String[]>>() {}, RequestParameters.class), getParameterMap(request));
     }
-
-    public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped)
+    
+    @SuppressWarnings("unchecked")
+    private Map<String, String[]> getParameterMap(HttpServletRequest request)
     {
-        final String name = key.toString();
-        return new Provider<T>()
-        {
-            @SuppressWarnings("unchecked")
-            public T get()
-            {
-                T t;
-                synchronized (request)
-                {
-                    t = (T) request.getAttribute(name);
-                    if (t == null)
-                    {
-                        t = unscoped.get();
-                        Class<? extends Annotation> annotationType = isAnnotatedParameters(key, t);
-                        if (annotationType != null)
-                        {
-                            parameters.put(annotationType, (Parameters) t);
-                        }
-                        request.setAttribute(name, t);
-                    }
-                }
-                return t;
-            }
-        };
+        return request.getParameterMap();
     }
 }

@@ -9,7 +9,7 @@ import com.goodworkalan.diverge.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;
-import com.google.inject.Injector;
+import com.google.inject.Module;
 
 public class CoreBinder implements Binder
 {
@@ -59,8 +59,8 @@ public class CoreBinder implements Binder
         return mapOfRules.newRuleMap();
     }
     
-    public GuiceletGuicer newGuiceletGuicer(Injector injector)
+    public GuiceletGuicer newGuiceletGuicer(List<Module> modules)
     {
-        return new GuiceletGuicer(injector, getBindingTrees(), getMapOfRules());
+        return new GuiceletGuicer(getBindingTrees(), getMapOfRules(), modules);
     }
 }

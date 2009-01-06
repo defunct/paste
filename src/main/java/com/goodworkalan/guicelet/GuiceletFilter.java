@@ -13,8 +13,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 
 public class GuiceletFilter implements Filter
@@ -42,7 +40,6 @@ public class GuiceletFilter implements Filter
                 throw new ServletException(e);
             }
         }
-        Injector injector = Guice.createInjector(listOfModules);
 
         List<Dispatcher> listOfDispatchers = new ArrayList<Dispatcher>();
         String dispatchers = config.getInitParameter("Dispatchers");
@@ -68,9 +65,9 @@ public class GuiceletFilter implements Filter
             dispatcher.bind(binder);
         }
         
-        guicer = new GuiceletGuicer(injector,
-                                    binder.getBindingTrees(),
-                                    binder.getMapOfRules());
+        guicer = new GuiceletGuicer(binder.getBindingTrees(),
+                                    binder.getMapOfRules(),
+                                    listOfModules);
     }
 
     public void doFilter(ServletRequest request,

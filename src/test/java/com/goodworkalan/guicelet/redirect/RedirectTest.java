@@ -4,20 +4,19 @@ import static com.goodworkalan.guicelet.paths.FormatArguments.REQUEST_DIRECTORY_
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.guicelet.ControllerModule;
+import com.goodworkalan.guicelet.BasicScope;
 import com.goodworkalan.guicelet.GuiceletModule;
 import com.goodworkalan.guicelet.Janitor;
 import com.goodworkalan.guicelet.Parameters;
+import com.goodworkalan.guicelet.Scopes;
+import com.goodworkalan.guicelet.SessionScope;
 import com.goodworkalan.guicelet.ViewBinder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -32,23 +31,25 @@ public class RedirectTest
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getRequestURI()).thenReturn("/account/create");
         
-        HttpServletResponse repsonse = mock(HttpServletResponse.class);
+        when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
         
-        GuiceletModule guicelet = new GuiceletModule(
-                request,
-                repsonse,
-                new HashMap<Class<? extends Annotation>, List<Janitor>>(),
-                new Parameters());
-        ControllerModule controller = new ControllerModule(new Object());
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        BasicScope requestScope = new BasicScope();
+        BasicScope controllerScope = new BasicScope();
+        GuiceletModule guicelet = new GuiceletModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        Injector injector = Guice.createInjector(guicelet);
 
+        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
+        
         ViewBinder binder = mock(ViewBinder.class);
         
         Redirect redirect = new Redirect(binder);
         redirect.status(301);
         redirect.format("%s/index", REQUEST_DIRECTORY_NAME);
    
-        Injector injector = Guice.createInjector(guicelet, controller, redirect);
-        injector.getInstance(Configuration.class);
+        injector.createChildInjector(redirect).getInstance(Configuration.class);
     }
     
     @Test(expectedExceptions=IllegalArgumentException.class)
