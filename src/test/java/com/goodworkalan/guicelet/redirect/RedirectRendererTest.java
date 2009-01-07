@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.testng.annotations.Test;
 
 import com.goodworkalan.guicelet.Headers;
-import com.goodworkalan.guicelet.Transfer;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.goodworkalan.guicelet.paths.PathFormatter;
+import com.google.inject.Guice;
 
 public class RedirectRendererTest
 {
@@ -30,9 +30,7 @@ public class RedirectRendererTest
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
         
-        Transfer transfer = mock(Transfer.class);
-        
-        PathFormatter formatter = new PathFormatter(transfer);
+        PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
         Headers headers = new Headers("GET");
         Redirector redirector = new Redirector(request, headers);
@@ -60,9 +58,7 @@ public class RedirectRendererTest
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
         
-        Transfer transfer = mock(Transfer.class);
-        
-        PathFormatter formatter = new PathFormatter(transfer);
+        PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
         Headers headers = new Headers("GET");
         Redirector redirector = new Redirector(request, headers);

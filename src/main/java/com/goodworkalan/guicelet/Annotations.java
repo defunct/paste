@@ -1,8 +1,5 @@
 package com.goodworkalan.guicelet;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.inject.Inject;
@@ -11,10 +8,10 @@ public class Annotations
 {
     private final HttpServletRequest request;
     
-    private final Map<Class<? extends Annotation>, Parameters> parameters;
+    private final ParametersServer parameters;
     
     @Inject
-    public Annotations(@RequestScoped Map<Class<? extends Annotation>, Parameters> parameters,
+    public Annotations(ParametersServer parameters,
                        HttpServletRequest request)
     {
         this.parameters = parameters;
@@ -23,7 +20,7 @@ public class Annotations
 
     public boolean invoke(String[] on, String param, String[] methods)
     {
-        Parameters merged = Parameters.merge(parameters);
+        Parameters merged = parameters.merge();
         boolean audit = on.length == 0;
         if (!audit)
         {

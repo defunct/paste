@@ -2,8 +2,8 @@ package com.goodworkalan.guicelet.forward;
 
 import static com.goodworkalan.guicelet.paths.FormatArguments.CONTROLLER_CLASS_AS_PATH;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
@@ -14,21 +14,30 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.guicelet.Controller;
 import com.goodworkalan.guicelet.Renderer;
-import com.goodworkalan.guicelet.Transfer;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.goodworkalan.guicelet.paths.PathFormatter;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class ForwardRendererTest
 {
     @Test public void forward() throws ServletException, IOException
     {
-        Object controller = new Object();
+        final Object controller = new Object();
+        
+        Injector injector = Guice.createInjector(new AbstractModule()
+        {
+            @Override
+            protected void configure()
+            {
+                bind(Object.class).annotatedWith(Controller.class).toInstance(controller);
+            }
+        });
 
-        Transfer transfer = mock(Transfer.class);
-        when(transfer.getController()).thenReturn(controller);
-
-        PathFormatter formatter = new PathFormatter(transfer);
+        PathFormatter formatter = new PathFormatter(injector);
 
         RequestDispatcher dispatcher = mock(RequestDispatcher.class);
         

@@ -80,6 +80,8 @@ public class GuiceletGuicer
         finally
         {
             cleanUp(janitors);
+            requestScope.exit();
+            controllerScope.exit();
         }
     }
     

@@ -1,12 +1,11 @@
 package com.goodworkalan.guicelet.bean;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-
 import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.Actor;
 import com.goodworkalan.guicelet.Parameters;
+import com.goodworkalan.guicelet.ParametersServer;
+import com.google.inject.Inject;
 
 /**
  * An actor that sets bean properties in a controller.
@@ -15,23 +14,17 @@ import com.goodworkalan.guicelet.Parameters;
  */
 public class BeanActor implements Actor
 {
-    private final Map<Class<? extends Annotation>, Parameters> parameters;
+    private final ParametersServer parameters;
     
-    public BeanActor(Map<Class<? extends Annotation>, Parameters> parameters)
+    @Inject
+    public BeanActor(ParametersServer parameters)
     {
         this.parameters = parameters;
     }
     
     public void actUpon(Object controller)
     {
-        Parameters[] merge = new Parameters[parameters.size()];
-        int index = 0;
-        for (Class<? extends Annotation> key : parameters.keySet())
-        {
-            merge[index++] = parameters.get(key);
-        }            
-        
-        Parameters merged = Parameters.merge(merge);
+        Parameters merged = parameters.merge();
         
         for (String key : merged.keySet())
         {

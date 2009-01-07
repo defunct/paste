@@ -1,6 +1,5 @@
 package com.goodworkalan.guicelet.audit;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +11,11 @@ import com.goodworkalan.guicelet.Actors;
 import com.goodworkalan.guicelet.Annotations;
 import com.goodworkalan.guicelet.GuiceletException;
 import com.goodworkalan.guicelet.Parameters;
-import com.goodworkalan.guicelet.RequestScoped;
+import com.goodworkalan.guicelet.ParametersServer;
 import com.goodworkalan.guicelet.faults.Faults;
 import com.goodworkalan.guicelet.faults.Invalid;
 import com.goodworkalan.guicelet.faults.RaiseInvalid;
+import com.google.inject.Inject;
 
 public class AuditActor implements Actor
 {
@@ -23,11 +23,12 @@ public class AuditActor implements Actor
 
     private final Map<Object, Object> faults;
     
-    private final Map<Class<? extends Annotation>, Parameters> parameters;
+    private final ParametersServer parameters;
     
-    public AuditActor(@RequestScoped Annotations annotations,
-                      @RequestScoped @Faults Map<Object, Object> faults,
-                      @RequestScoped Map<Class<? extends Annotation>, Parameters> parameters)
+    @Inject
+    public AuditActor(Annotations annotations,
+                      @Faults Map<Object, Object> faults,
+                      ParametersServer parameters)
     {
         this.annotations = annotations;
         this.faults = faults;
@@ -36,15 +37,7 @@ public class AuditActor implements Actor
     
     public void actUpon(Object controller)
     {
-        Parameters[] merge = new Parameters[parameters.size()];
-
-        int index = 0;
-        for (Class<? extends Annotation> key : parameters.keySet())
-        {
-            merge[index++] = parameters.get(key);
-        }            
-        
-        Parameters merged = Parameters.merge(merge);
+        Parameters merged = parameters.merge();
         
         Map<Object, Object> map = new HashMap<Object, Object>();
         

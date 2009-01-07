@@ -1,22 +1,27 @@
 package com.goodworkalan.guicelet.paths;
 
-import com.goodworkalan.guicelet.Transfer;
+import com.goodworkalan.guicelet.Controller;
+import com.goodworkalan.guicelet.Path;
+import com.goodworkalan.guicelet.WelcomeFile;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+
 
 public class FormatArguments
 {
     public final static FormatArgument REQUEST_PATH = new FormatArgument()
     {
-        public Object getArgument(Transfer transfer)
+        public Object getArgument(Injector injector)
         {
-            return transfer.getPath();
+            return injector.getInstance(Key.get(String.class, Path.class));
         }
     };
     
     public final static FormatArgument REQUEST_DIRECTORY_NAME = new FormatArgument()
     {
-        public Object getArgument(Transfer transfer)
+        public Object getArgument(Injector injector)
         {
-            String path = transfer.getPath();
+            String path = injector.getInstance(Key.get(String.class, Path.class));
             if (path.length() == 0)
             {
                 return "";
@@ -27,12 +32,12 @@ public class FormatArguments
 
     public final static FormatArgument REQUEST_FILE_NAME = new FormatArgument()
     {
-        public Object getArgument(Transfer transfer)
+        public Object getArgument(Injector injector)
         {
-            String path = transfer.getPath();
+            String path = injector.getInstance(Key.get(String.class, Path.class));
             if (path.length() < 2)
             {
-                return transfer.getWelcomeFile();
+                return injector.getInstance(Key.get(String.class, WelcomeFile.class));
             }
             int toothpick = path.lastIndexOf('/');
             if (toothpick != -1 && toothpick + 1 < path.length())
@@ -45,9 +50,9 @@ public class FormatArguments
     
     public final static FormatArgument CONTROLLER_CLASS_AS_PATH = new FormatArgument()
     {
-        public Object getArgument(Transfer transfer)
+        public Object getArgument(Injector injector)
         {
-            return transfer.getController()
+            return injector.getInstance(Key.get(Object.class, Controller.class))
                            .getClass()
                            .getCanonicalName()
                            .replace('.', '/');
@@ -56,9 +61,9 @@ public class FormatArguments
 
     public final static FormatArgument CONTROLLER_PACKAGE_AS_PATH = new FormatArgument()
     {
-        public Object getArgument(Transfer transfer)
+        public Object getArgument(Injector injector)
         {
-            return transfer.getController()
+            return injector.getInstance(Key.get(Object.class, Controller.class))
                            .getClass()
                            .getPackage()
                            .getName()
@@ -68,9 +73,9 @@ public class FormatArguments
 
     public final static FormatArgument CONTROLLER_CLASS_NAME = new FormatArgument()
     {
-        public Object getArgument(Transfer transfer)
+        public Object getArgument(Injector injector)
         {
-            Object controller = transfer.getController();
+            Object controller = injector.getInstance(Key.get(Object.class, Controller.class));
             String name = controller.getClass().getCanonicalName();
             String pkg = controller.getClass().getPackage().getName();
             return name.substring(pkg.length() + 1).replace('.', '/');

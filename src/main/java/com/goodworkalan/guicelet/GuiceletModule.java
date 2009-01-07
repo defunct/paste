@@ -8,6 +8,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.guicelet.faults.Faults;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
@@ -83,16 +84,20 @@ public class GuiceletModule extends AbstractModule
         bind(Parameters.class).annotatedWith(Request.class)
             .toProvider(new NullProvider<Parameters>())
             .in(RequestScoped.class);
+        
+        bind(JanitorQueue.class).annotatedWith(Request.class)
+            .toProvider(new NullProvider<JanitorQueue>())
+            .in(RequestScoped.class);
+        
+        bind(new TypeLiteral<Map<Object, Object>>() { }).annotatedWith(Faults.class)
+            .toProvider(new NullProvider<Map<Object,Object>>())
+            .in(RequestScoped.class);
 
         bind(Parameters.class).annotatedWith(Binding.class)
             .toProvider(new NullProvider<Parameters>())
             .in(ControllerScoped.class);
         bind(Object.class).annotatedWith(Controller.class)
             .toProvider(new NullProvider<Parameters>())
-            .in(ControllerScoped.class);
-
-        bind(JanitorQueue.class).annotatedWith(Request.class)
-            .toProvider(new NullProvider<JanitorQueue>())
             .in(ControllerScoped.class);
     }
 }

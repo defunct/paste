@@ -1,8 +1,8 @@
 package com.goodworkalan.guicelet.paths;
 
-import com.goodworkalan.guicelet.Transfer;
+import com.google.inject.Injector;
 
 public interface FormatArgument
 {
-    public Object getArgument(Transfer transfer);
+    public Object getArgument(Injector injector);
 }

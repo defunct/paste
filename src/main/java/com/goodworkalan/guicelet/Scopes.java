@@ -1,5 +1,6 @@
 package com.goodworkalan.guicelet;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.guicelet.faults.Faults;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
@@ -45,6 +47,8 @@ public class Scopes
         scope.seed(Key.get(Parameters.class, Request.class), parameters.get(Parameters.REQUEST));
 
         scope.seed(Key.get(JanitorQueue.class, Request.class), new JanitorQueue(requestJanitors));
+        
+        scope.seed(Key.get(new TypeLiteral<Map<Object, Object>>() { }, Faults.class), new HashMap<Object, Object>());
     }
     
     @SuppressWarnings("unchecked")

@@ -9,13 +9,14 @@ import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.Actor;
 import com.goodworkalan.guicelet.Annotations;
 import com.goodworkalan.guicelet.GuiceletException;
-import com.goodworkalan.guicelet.RequestScoped;
+import com.google.inject.Inject;
 
 public class InvokeActor implements Actor
 {
     private final Annotations annotations;
     
-    public InvokeActor(@RequestScoped Annotations annotations)
+    @Inject
+    public InvokeActor(Annotations annotations)
     {
         this.annotations = annotations;
     }
