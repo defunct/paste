@@ -1,7 +1,6 @@
 package com.goodworkalan.guicelet;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
@@ -37,7 +36,7 @@ public class InterceptingHttpResponse extends HttpServletResponseWrapper
     {
         if (writer == null)
         {
-            writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), getCharacterEncoding()));
+            writer = new PrintWriter(new InterceptingWriter(interception, super.getWriter()));
         }
         return writer;
     }

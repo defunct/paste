@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.guicelet.Controller;
+import com.goodworkalan.guicelet.Evaluator;
 import com.goodworkalan.guicelet.Renderer;
 import com.goodworkalan.guicelet.RequestScoped;
 import com.goodworkalan.guicelet.paths.PathFormatter;
@@ -45,6 +46,7 @@ public class ForwardRenderer implements Renderer
     {
         String path = pathFormatter.format(configuration.getFormat(), configuration.getFormatArguments());
         request.setAttribute(configuration.getProperty(), controller);
+        request.setAttribute("evaluator", new Evaluator(controller));
         RequestDispatcher dispatcher = request.getRequestDispatcher(path);
         dispatcher.forward(request, response);
     }
