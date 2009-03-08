@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.diverge.RuleMap;
+import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Mapping;
 import com.goodworkalan.dovetail.TreeMapper;

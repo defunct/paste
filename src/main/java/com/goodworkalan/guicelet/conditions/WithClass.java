@@ -1,6 +1,6 @@
 package com.goodworkalan.guicelet.conditions;
 
-import com.goodworkalan.diverge.Condition;
+import com.goodworkalan.deviate.Condition;
 
 public class WithClass implements Condition
 {

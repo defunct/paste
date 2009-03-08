@@ -2,9 +2,9 @@ package com.goodworkalan.guicelet;
 
 import java.util.List;
 
-import com.goodworkalan.diverge.Equals;
-import com.goodworkalan.diverge.RuleMapBuilder;
-import com.goodworkalan.diverge.RuleSetBuilder;
+import com.goodworkalan.deviate.Equals;
+import com.goodworkalan.deviate.RuleMapBuilder;
+import com.goodworkalan.deviate.RuleSetBuilder;
 
 public class ViewControllerBinder extends ViewBinder
 {

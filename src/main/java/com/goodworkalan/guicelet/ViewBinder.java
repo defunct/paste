@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.goodworkalan.diverge.Equals;
-import com.goodworkalan.diverge.RuleMapBuilder;
-import com.goodworkalan.diverge.RuleSetBuilder;
-import com.goodworkalan.diverge.RuleSetBuilderList;
+import com.goodworkalan.deviate.Equals;
+import com.goodworkalan.deviate.RuleMapBuilder;
+import com.goodworkalan.deviate.RuleSetBuilder;
+import com.goodworkalan.deviate.RuleSetBuilderList;
 
 public class ViewBinder
 {

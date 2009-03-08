@@ -2,7 +2,7 @@ package com.goodworkalan.guicelet;
 
 import java.util.List;
 
-import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 

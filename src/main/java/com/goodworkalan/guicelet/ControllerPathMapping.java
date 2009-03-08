@@ -3,7 +3,7 @@ package com.goodworkalan.guicelet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 
 public class ControllerPathMapping

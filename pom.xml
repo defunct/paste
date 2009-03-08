@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>com.goodworkalan</groupId>
-            <artifactId>diverge</artifactId>
+            <artifactId>deviate</artifactId>
             <version>0.1.X</version> 
         </dependency>
         <dependency>

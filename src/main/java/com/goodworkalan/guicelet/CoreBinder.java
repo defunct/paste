@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.goodworkalan.diverge.RuleMap;
-import com.goodworkalan.diverge.RuleMapBuilder;
+import com.goodworkalan.deviate.RuleMap;
+import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.GlobTree;

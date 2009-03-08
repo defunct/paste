@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.diverge.RuleMap;
+import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.guicelet.forward.Forward;
 
 public class BinderTest
