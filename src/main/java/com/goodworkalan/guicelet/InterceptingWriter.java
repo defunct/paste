@@ -3,24 +3,30 @@ package com.goodworkalan.guicelet;
 import java.io.IOException;
 import java.io.Writer;
 
+// TODO Document.
 public class InterceptingWriter extends Writer
 {
+    // TODO Document.
     private final Interception interception;
     
+    // TODO Document.
     private final Writer delegate;
     
+    // TODO Document.
     public InterceptingWriter(Interception interception, Writer delegate)
     {
         this.interception = interception;
         this.delegate = delegate;
     }
 
+    // TODO Document.
     @Override
     public void write(int c) throws IOException
     {
         delegate.write(c);
     }
 
+    // TODO Document.
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException
     {
@@ -28,6 +34,7 @@ public class InterceptingWriter extends Writer
         delegate.write(cbuf, off, len);
     }
 
+    // TODO Document.
     @Override
     public void flush() throws IOException
     {
@@ -35,6 +42,7 @@ public class InterceptingWriter extends Writer
         delegate.flush();
     }
     
+    // TODO Document.
     @Override
     public void close() throws IOException
     {

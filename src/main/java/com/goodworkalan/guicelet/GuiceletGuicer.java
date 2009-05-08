@@ -21,22 +21,31 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 
+// TODO Document.
 public class GuiceletGuicer
 {
+    // TODO Document.
     private final SessionScope sessionScope;
 
+    // TODO Document.
     private final BasicScope requestScope;
     
+    // TODO Document.
     private final BasicScope controllerScope;
     
+    // TODO Document.
     private final Injector injector;
 
+    // TODO Document.
     private final List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings;
 
+    // TODO Document.
     private final RuleMap<ViewBinding> mapOfViewBindings;
 
+    // TODO Document.
     private final List<Janitor> janitors;
 
+    // TODO Document.
     public GuiceletGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
                           RuleMap<ViewBinding> mapOfViewBindings,
                           List<Module> modules)
@@ -55,6 +64,7 @@ public class GuiceletGuicer
         this.mapOfViewBindings = mapOfViewBindings;
     }
 
+    // TODO Document.
     public void filter(HttpServletRequest request,
                        HttpServletResponse response,
                        FilterChain chain)
@@ -66,6 +76,7 @@ public class GuiceletGuicer
                interception, chain);
     }
 
+    // TODO Document.
     private void filter(HttpServletRequest request,
                         HttpServletResponse response,
                         Interception interception,
@@ -85,6 +96,7 @@ public class GuiceletGuicer
         }
     }
     
+    // TODO Document.
     private void filter(HttpServletRequest request,
                         HttpServletResponse response,
                         List<Janitor> janitors,
@@ -199,6 +211,7 @@ public class GuiceletGuicer
         }
     }
     
+    // TODO Document.
     private void cleanUp(List<Janitor> listOfJanitors)
     {
         for (Janitor janitor : listOfJanitors)
@@ -217,6 +230,7 @@ public class GuiceletGuicer
         }
     }
     
+    // TODO Document.
     public void destroy()
     {
         cleanUp(janitors);

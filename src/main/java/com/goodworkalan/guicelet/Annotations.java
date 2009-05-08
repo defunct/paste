@@ -4,12 +4,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.inject.Inject;
 
+//TODO Document.
 public class Annotations
 {
+    // TODO Document.
     private final HttpServletRequest request;
     
+    // TODO Document.
     private final ParametersServer parameters;
     
+    // TODO Document.
     @Inject
     public Annotations(ParametersServer parameters,
                        HttpServletRequest request)
@@ -18,6 +22,7 @@ public class Annotations
         this.request = request;
     }
 
+    // TODO Document.
     public boolean invoke(String[] on, String param, String[] methods)
     {
         Parameters merged = parameters.merge();

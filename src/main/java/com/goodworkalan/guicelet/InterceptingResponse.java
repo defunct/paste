@@ -8,20 +8,26 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 
+// TODO Document.
 public class InterceptingResponse extends ServletResponseWrapper
 {
+    // TODO Document.
     private final Interception interception;
 
+    // TODO Document.
     private PrintWriter writer;
     
+    // TODO Document.
     private ServletOutputStream out;
     
+    // TODO Document.
     public InterceptingResponse(Interception interception, ServletResponse response)
     {
         super(response);
         this.interception = interception;
     }
     
+    // TODO Document.
     @Override
     public ServletOutputStream getOutputStream() throws IOException
     {
@@ -32,6 +38,7 @@ public class InterceptingResponse extends ServletResponseWrapper
         return out;
     }
 
+    // TODO Document.
     @Override
     public PrintWriter getWriter() throws IOException
     {
@@ -42,6 +49,7 @@ public class InterceptingResponse extends ServletResponseWrapper
         return writer;
     }
     
+    // TODO Document.
     @Override
     public void flushBuffer() throws IOException
     {

@@ -1,6 +1,8 @@
 package com.goodworkalan.guicelet;
 
+// TODO Document.
 public interface Janitor
 {
-    public void cleanUp();
+    // TODO Document.
+   public void cleanUp();
 }

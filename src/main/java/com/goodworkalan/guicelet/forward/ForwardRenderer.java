@@ -14,19 +14,26 @@ import com.goodworkalan.guicelet.RequestScoped;
 import com.goodworkalan.guicelet.paths.PathFormatter;
 import com.google.inject.Inject;
 
+// TODO Document.
 @RequestScoped
 public class ForwardRenderer implements Renderer
 {
+    // TODO Document.
     private final PathFormatter pathFormatter;
     
+    // TODO Document.
     private final HttpServletRequest request;
     
+    // TODO Document.
     private final HttpServletResponse response;
     
+    // TODO Document.
     private final Object controller;
     
+    // TODO Document.
     private final Configuration configuration;
     
+    // TODO Document.
     @Inject
     public ForwardRenderer(
             PathFormatter pathFormatter,
@@ -42,6 +49,7 @@ public class ForwardRenderer implements Renderer
         this.configuration = configuration;
     }
     
+    // TODO Document.
     public void render() throws ServletException, IOException
     {
         String path = pathFormatter.format(configuration.getFormat(), configuration.getFormatArguments());

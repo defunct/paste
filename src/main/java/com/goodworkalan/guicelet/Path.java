@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 import com.google.inject.BindingAnnotation;
 
+// TODO Document.
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @BindingAnnotation

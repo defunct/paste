@@ -10,18 +10,25 @@ import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.deviate.RuleSetBuilder;
 import com.goodworkalan.deviate.RuleSetBuilderList;
 
+// TODO Document.
 public class ViewBinder
 {
+    // TODO Document.
     private final ViewBinder parent;
     
+    // TODO Document.
     protected final RuleMapBuilder<ViewBinding> mapOfBindings;
     
+    // TODO Document.
     protected final RuleSetBuilder<ViewBinding> from;
     
+    // TODO Document.
     protected final List<RuleSetBuilder<ViewBinding>> listOfSetOfRules;
     
+    // TODO Document.
     private int priority;
     
+    // TODO Document.
     public ViewBinder(ViewBinder parent, RuleMapBuilder<ViewBinding> mapOfBindings, List<RuleSetBuilder<ViewBinding>> listOfSetOfRules) 
     {
         this.parent = parent;
@@ -30,6 +37,7 @@ public class ViewBinder
         this.from = listOfSetOfRules.get(0).duplicate();
     }
 
+    // TODO Document.
     public List<RuleSetBuilder<ViewBinding>> newView()
     {
         if (parent == null && false)
@@ -39,21 +47,25 @@ public class ViewBinder
         return Collections.singletonList(new RuleSetBuilderList<ViewBinding>(listOfSetOfRules).duplicate());
     }
 
+    // TODO Document.
     public ViewBinder view()
     {
         return new ViewBinder(this, mapOfBindings, newView());
     }
     
+    // TODO Document.
     public ViewBinder end()
     {
         return parent;
     }
     
+    // TODO Document.
     public ViewControllerBinder controller(Class<?> controllerClass)
     {
         return new ViewControllerBinder(parent, mapOfBindings, listOfSetOfRules).or(controllerClass);
     }
     
+    // TODO Document.
     public ViewBinder method(String...methods)
     {
         for (String method : methods)
@@ -63,12 +75,14 @@ public class ViewBinder
         return this;
     }
     
+    // TODO Document.
     public ViewBinder exception(Class<? extends Throwable> exceptionClass)
     {
         listOfSetOfRules.get(0).check(BindKey.EXCEPTION, new Equals(exceptionClass));
         return this;
     }
     
+    // TODO Document.
     public ViewBinder or()
     {
         List<RuleSetBuilder<ViewBinding>> shift = new ArrayList<RuleSetBuilder<ViewBinding>>();
@@ -77,12 +91,14 @@ public class ViewBinder
         return new ViewBinder(parent, mapOfBindings, shift);
     }
     
+    // TODO Document.
     public ViewBinder priority(int priority)
     {
         this.priority = priority;
         return this;
     }
 
+    // TODO Document.
     public <T extends RenderModule> T with(Class<T> renderClass)
     {
         Constructor<T> constructor;

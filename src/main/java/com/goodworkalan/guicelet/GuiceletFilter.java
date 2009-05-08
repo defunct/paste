@@ -15,12 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Module;
 
+// TODO Document.
 public class GuiceletFilter implements Filter
 {
+    // TODO Document.
     private static final long serialVersionUID = 20081122L;
     
+    // TODO Document.
     private GuiceletGuicer guicer;
     
+    // TODO Document.
     public void init(FilterConfig config) throws ServletException
     {
         List<Module> listOfModules = new ArrayList<Module>();
@@ -70,6 +74,7 @@ public class GuiceletFilter implements Filter
                                     listOfModules);
     }
 
+    // TODO Document.
     public void doFilter(ServletRequest request,
                          ServletResponse response,
                          FilterChain chain)
@@ -79,6 +84,7 @@ public class GuiceletFilter implements Filter
                       (HttpServletResponse) response, chain);
     }
     
+    // TODO Document.
     public void destroy()
     {
         guicer.destroy();

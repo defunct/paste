@@ -2,20 +2,26 @@ package com.goodworkalan.guicelet.redirect;
 
 import com.goodworkalan.guicelet.Parameters;
 
+// TODO Document.
 public class Redirection extends RuntimeException
 {
+    // TODO Document.
     private static final long serialVersionUID = 1L;
 
+    // TODO Document.
     private final String where;
     
+    // TODO Document.
     private final Parameters parameters;
     
+    // TODO Document.
     public Redirection(String where)
     {
         this.where = where;
         this.parameters = new Parameters();
     }
     
+    // TODO Document.
     public void redirect(Redirector redirector)
     {
         for (String name : parameters.keySet())
@@ -28,6 +34,7 @@ public class Redirection extends RuntimeException
         redirector.redirect(where);
     }
     
+    // TODO Document.
     public Redirection parameter(String name, String value)
     {
         parameters.add(name, value);

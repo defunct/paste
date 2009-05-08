@@ -14,14 +14,17 @@ import com.google.inject.Inject;
  */
 public class BeanActor implements Actor
 {
+    // TODO Document.
     private final ParametersServer parameters;
     
+    // TODO Document.
     @Inject
     public BeanActor(ParametersServer parameters)
     {
         this.parameters = parameters;
     }
     
+    // TODO Document.
     public void actUpon(Object controller)
     {
         Parameters merged = parameters.merge();

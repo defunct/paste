@@ -9,22 +9,27 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+// TODO Document.
 public class InterceptingRequest extends HttpServletRequestWrapper
 {
+    // TODO Document.
     private final Interception interception;
     
+    // TODO Document.
     public InterceptingRequest(Interception interception, HttpServletRequest request)
     {
         super(request);
         this.interception = interception;
     }
     
+    // TODO Document.
     @Override
     public ServletResponse getServletResponse()
     {
         return new InterceptingResponse(interception, super.getServletResponse());
     }
     
+    // TODO Document.
     @Override
     public RequestDispatcher getRequestDispatcher(String path)
     {

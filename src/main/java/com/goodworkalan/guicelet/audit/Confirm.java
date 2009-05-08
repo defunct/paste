@@ -2,15 +2,19 @@ package com.goodworkalan.guicelet.audit;
 
 import com.goodworkalan.guicelet.GuiceletException;
 
+// TODO Document.
 public class Confirm extends AuditBuilder
 {
+    // TODO Document.
     private String compare;
     
+    // TODO Document.
     public Confirm(AuditPath auditPath)
     {
         super(auditPath);
     }
     
+    // TODO Document.
     public Confirm compare(String compare)
     {
         if (compare == null)
@@ -21,9 +25,11 @@ public class Confirm extends AuditBuilder
         return this;
     }
 
+    // TODO Document.
     @Override
     public Audit newAudit()
     {
+        // TODO Document.
         return new Audit()
         {
             public void audit(Reporter reporter, Tree tree)

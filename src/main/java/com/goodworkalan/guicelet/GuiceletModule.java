@@ -12,16 +12,22 @@ import com.goodworkalan.guicelet.faults.Faults;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
+// TODO Document.
 public class GuiceletModule extends AbstractModule
 {
+    // TODO Document.
     private final SessionScope sessionScope;
     
+    // TODO Document.
     private final BasicScope requestScope;
     
+    // TODO Document.
     private final BasicScope controllerScope;
     
+    // TODO Document.
     private final List<Janitor> servletJanitors;
     
+    // TODO Document.
     public GuiceletModule(SessionScope sessionScope,
                           BasicScope requestScope,
                           BasicScope controllerScope,
@@ -33,6 +39,7 @@ public class GuiceletModule extends AbstractModule
         this.servletJanitors = servletJanitors;
     }
 
+    // TODO Document.
     @Override
     protected void configure()
     {

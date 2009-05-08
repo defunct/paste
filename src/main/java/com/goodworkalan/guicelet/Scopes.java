@@ -14,8 +14,10 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
+// TODO Document.
 public class Scopes
 {
+    // TODO Document.
     public static void enterRequest(
                 BasicScope scope,
                 HttpServletRequest request, HttpServletResponse response,
@@ -51,12 +53,14 @@ public class Scopes
         scope.seed(Key.get(new TypeLiteral<Map<Object, Object>>() { }, Faults.class), new HashMap<Object, Object>());
     }
     
+    // TODO Document.
     @SuppressWarnings("unchecked")
     private static Map<String, String[]> getParameterMap(HttpServletRequest request)
     {
         return request.getParameterMap();
     }
     
+    // TODO Document.
     public static void enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Parameters bindings)
     {
         scope.enter();

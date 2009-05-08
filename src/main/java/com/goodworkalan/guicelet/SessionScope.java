@@ -7,15 +7,19 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 
+// TODO Document.
 public class SessionScope implements Scope
 {
+    // TODO Document.
     private final static ThreadLocal<HttpServletRequest> request = new ThreadLocal<HttpServletRequest>();
     
+    // TODO Document.
     public static void set(HttpServletRequest value)
     {
         request.set(value);
     }
 
+    // TODO Document.
     public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped)
     {
         final String name = key.toString();

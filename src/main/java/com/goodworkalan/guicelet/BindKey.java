@@ -1,5 +1,6 @@
 package com.goodworkalan.guicelet;
 
+// TODO Document.
 public enum BindKey
 {
     PACKAGE,

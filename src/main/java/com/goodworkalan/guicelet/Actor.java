@@ -1,9 +1,8 @@
 package com.goodworkalan.guicelet;
 
-
+// TODO Document.
 public interface Actor
 {
-    // DOC Write some stuff.
-    // TODO SNET DOC
+    // TODO Document.
     public void actUpon(Object controller);
 }

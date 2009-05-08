@@ -17,14 +17,19 @@ import com.goodworkalan.guicelet.faults.Invalid;
 import com.goodworkalan.guicelet.faults.RaiseInvalid;
 import com.google.inject.Inject;
 
+// TODO Document.
 public class AuditActor implements Actor
 {
+    // TODO Document.
     private final Annotations annotations;
 
+    // TODO Document.
     private final Map<Object, Object> faults;
     
+    // TODO Document.
     private final ParametersServer parameters;
     
+    // TODO Document.
     @Inject
     public AuditActor(Annotations annotations,
                       @Faults Map<Object, Object> faults,
@@ -35,6 +40,7 @@ public class AuditActor implements Actor
         this.parameters = parameters;
     }
     
+    // TODO Document.
     public void actUpon(Object controller)
     {
         Parameters merged = parameters.merge();

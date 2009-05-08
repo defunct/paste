@@ -3,15 +3,19 @@ package com.goodworkalan.guicelet;
 import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 
+// TODO Document.
 public class Evaluator
 {
+    // TODO Document.
     private final Object controller;
     
+    // TODO Document.
     public Evaluator(Object controller)
     {
         this.controller = controller;
     }
 
+    // TODO Document.
     public String get(String expression)
     {
         try

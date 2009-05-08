@@ -7,8 +7,10 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 
+// TODO Document.
 public class FormatArguments
 {
+    // TODO Document.
     public final static FormatArgument REQUEST_PATH = new FormatArgument()
     {
         public Object getArgument(Injector injector)
@@ -17,6 +19,7 @@ public class FormatArguments
         }
     };
     
+    // TODO Document.
     public final static FormatArgument REQUEST_DIRECTORY_NAME = new FormatArgument()
     {
         public Object getArgument(Injector injector)
@@ -30,6 +33,7 @@ public class FormatArguments
         }
     };
 
+    // TODO Document.
     public final static FormatArgument REQUEST_FILE_NAME = new FormatArgument()
     {
         public Object getArgument(Injector injector)
@@ -48,6 +52,7 @@ public class FormatArguments
         }
     };
     
+    // TODO Document.
     public final static FormatArgument CONTROLLER_CLASS_AS_PATH = new FormatArgument()
     {
         public Object getArgument(Injector injector)
@@ -59,6 +64,7 @@ public class FormatArguments
         }
     };
 
+    // TODO Document.
     public final static FormatArgument CONTROLLER_PACKAGE_AS_PATH = new FormatArgument()
     {
         public Object getArgument(Injector injector)
@@ -71,6 +77,7 @@ public class FormatArguments
         }
     };
 
+    // TODO Document.
     public final static FormatArgument CONTROLLER_CLASS_NAME = new FormatArgument()
     {
         public Object getArgument(Injector injector)

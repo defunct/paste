@@ -6,17 +6,22 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO Document.
 @RequestScoped
 public class ParametersServer
 {
+    // TODO Document.
     private final Map<Key, Parameters> values = new LinkedHashMap<Key, Parameters>();
     
+    // TODO Document.
     private final List<Key> order = new ArrayList<Key>();
     
+    // TODO Document.
     public ParametersServer()
     {
     }
     
+    // TODO Document.
     public Parameters get(Object key)
     {
         Key boxed = new Key(key);
@@ -30,11 +35,13 @@ public class ParametersServer
         return parameters;
     }
     
+    // TODO Document.
     public Parameters merge()
     {
         return merge(Parameters.BINDING, Parameters.REQUEST);
     }
     
+    // TODO Document.
     public Parameters merge(Object...keys)
     {
         HashSet<Key> seen = new HashSet<Key>();
@@ -60,15 +67,19 @@ public class ParametersServer
         return Parameters.merge(parameters);
     }
     
+    // TODO Document.
     private final static class Key
     {
+        // TODO Document.
         private final Object object;
         
+        // TODO Document.
         public Key(Object object)
         {
             this.object = object;
         }
         
+        // TODO Document.
         @Override
         public boolean equals(Object that)
         {
@@ -79,6 +90,7 @@ public class ParametersServer
             return false;
         }
         
+        // TODO Document.
         @Override
         public int hashCode()
         {

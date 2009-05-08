@@ -9,22 +9,28 @@ import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.google.inject.Provider;
 
+// TODO Document.
 public class Forward extends RenderModule
 {
+    // TODO Document.
     private String format = "/%s.ftl";
     
+    // TODO Document.
     private String property = "controller";
     
+    // TODO Document.
     private FormatArgument[] formatArguments = new FormatArgument[]
     {
             CONTROLLER_CLASS_AS_PATH
     };
 
+    // TODO Document.
     public Forward(ViewBinder viewBinder)
     {
         super(viewBinder);
     }
     
+    // TODO Document.
     @Override
     protected void configure()
     {
@@ -38,12 +44,14 @@ public class Forward extends RenderModule
         }).in(ControllerScoped.class);
     }
     
+    // TODO Document.
     public Forward property(String property)
     {
         this.property = property;
         return this;
     }
     
+    // TODO Document.
     public Forward format(String format, FormatArgument...formatArguments)
     {
         this.format = format;

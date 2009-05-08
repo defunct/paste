@@ -7,14 +7,19 @@ import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.GuiceletException;
 
 // FIXME Combine with reporter.
+// TODO Document.
 public class Tree
 {
+    // TODO Document.
     private final Map<Object, Object> map;
     
+    // TODO Document.
     private final Object context;
     
+    // TODO Document.
     private final Object value;
     
+    // TODO Document.
     public Tree(Object context, Object value, Map<Object, Object> map)
     {
         this.map = map;
@@ -22,16 +27,19 @@ public class Tree
         this.value = value;
     }
     
+    // TODO Document.
     public Object getContext()
     {
         return context;
     }
     
+    // TODO Document.
     public Object getValue()
     {
         return value;
     }
     
+    // TODO Document.
     public Object getValue(String path)
     {
         PropertyPath property;
@@ -53,6 +61,7 @@ public class Tree
         }
     }
     
+    // TODO Document.
     public Object getContextValue(String path)
     {
         PropertyPath property;

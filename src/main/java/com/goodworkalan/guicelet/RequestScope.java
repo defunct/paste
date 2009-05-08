@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
+// TODO Document.
 public class RequestScope extends BasicScope
 {
+    // TODO Document.
     public void init(HttpServletRequest request, HttpServletResponse response)
     {
         enter();
@@ -25,6 +27,7 @@ public class RequestScope extends BasicScope
         seed(Key.get(new TypeLiteral<Map<String, String[]>>() {}, RequestParameters.class), getParameterMap(request));
     }
     
+    // TODO Document.
     @SuppressWarnings("unchecked")
     private Map<String, String[]> getParameterMap(HttpServletRequest request)
     {

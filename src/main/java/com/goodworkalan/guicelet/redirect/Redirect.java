@@ -8,19 +8,25 @@ import com.goodworkalan.guicelet.ViewBinder;
 import com.goodworkalan.guicelet.paths.FormatArgument;
 import com.google.inject.Provider;
 
+// TODO Document.
 public class Redirect extends RenderModule
 {
+    // TODO Document.
     private int status = 303;
 
+    // TODO Document.
     private String format;
     
+    // TODO Document.
     private FormatArgument[] formatArguments = new FormatArgument[0];
     
+    // TODO Document.
     public Redirect(ViewBinder binder)
     {
         super(binder);
     }
 
+    // TODO Document.
     @Override
     protected void configure()
     {
@@ -34,6 +40,7 @@ public class Redirect extends RenderModule
         });
     }
     
+    // TODO Document.
     public Redirect status(int status)
     {
         if (!isRedirectStatus(status))
@@ -44,6 +51,7 @@ public class Redirect extends RenderModule
         return this;
     }
     
+    // TODO Document.
     public Redirect format(String format, FormatArgument...formatArguments)
     {
         this.format = format;

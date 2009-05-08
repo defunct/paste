@@ -14,12 +14,16 @@ import com.google.inject.Inject;
  * 
  * @author Alan Gutierrez
  */
+// TODO Document.
 public class Redirector
 {
+    // TODO Document.
     private final HttpServletRequest request;
     
+    // TODO Document.
     private final Headers headers;
     
+    // TODO Document.
     @Inject
     public Redirector(HttpServletRequest request, @Response Headers headers)
     {
@@ -27,11 +31,13 @@ public class Redirector
         this.headers = headers;
     }
     
+    // TODO Document.
     public void redirect(String where)
     {
         redirect(where, 303);
     }
     
+    // TODO Document.
     public void redirect(String where, int status)
     {
         if (!isRedirectStatus(status))

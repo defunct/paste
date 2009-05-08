@@ -12,18 +12,23 @@ import com.goodworkalan.guicelet.GuiceletException;
 import com.goodworkalan.guicelet.faults.Fault;
 import com.goodworkalan.guicelet.faults.FaultMessages;
 
+// TODO Document.
 public class Auditor
 {
+    // TODO Document.
     private final Object controller;
 
+    // TODO Document.
     private final List<AuditAction> listOfAuditActions;
 
+    // TODO Document.
     public Auditor(Object controller)
     {
         this.controller = controller;
         this.listOfAuditActions = new ArrayList<AuditAction>();
     }
     
+    // TODO Document.
     public AuditPath audit(String contextPath, String path)
     {
         List<AuditBuilder> listOfAuditBuilders = new ArrayList<AuditBuilder>();
@@ -32,12 +37,14 @@ public class Auditor
         return auditPath;
     }
 
+    // TODO Document.
     public AuditPath audit(String path)
     {
         return audit("this", path);
     }
     
     // FIXME Move to AuditActor.
+    // TODO Document.
     public void audit(Map<Object, Object> faults, Map<Object, Object> request)
     {
         try

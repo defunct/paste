@@ -15,18 +15,23 @@ import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.guicelet.GuiceletException;
 
+// TODO Document.
 public class FaultMessages
 {
+    // TODO Document.
     private final Object controller;
     
+    // TODO Document.
     private final ResourceBundle bundle;
     
+    // TODO Document.
     public FaultMessages(Object controller)
     {
         this.controller = controller;
         this.bundle = findResourceBundle(controller);
     }
     
+    // TODO Document.
     private static ResourceBundle findResourceBundle(Object controller)
     {
         String packageName = controller.getClass().getPackage().getName();
@@ -35,6 +40,7 @@ public class FaultMessages
                 Locale.getDefault(), controller.getClass().getClassLoader());
     }
     
+    // TODO Document.
     public String getMessage(String propertyPath, String key) 
     {
         String className = controller.getClass().getCanonicalName();
@@ -62,14 +68,17 @@ public class FaultMessages
         }
     }
     
+    // TODO Document.
     private final Pattern MESSAGE = Pattern.compile(
             "\\s*\\(\\s*" + glob() + "(?:\\s*,\\s*" + glob() + ")\\s*)\\s*(.*)"
             );
-
+    
+    // TODO Document.
     private final Pattern GLOB = Pattern.compile(
         "\\s*(" + glob() + ")\\s*,?"
         );
 
+    // TODO Document.
     public String format(String stem, String key, Map<Object, Object> map)
     {
         String format = getMessage(stem, key);

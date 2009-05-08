@@ -10,25 +10,31 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// TODO Document.
 public class Headers
 extends StringListMap
 {
+    // TODO Document.
     private int status;
 
+    // TODO Document.
     private final String method;
 
+    // TODO Document.
     @SuppressWarnings("unchecked")
     private final static Enumeration<String> getNames(HttpServletRequest request)
     {
         return request.getHeaderNames();
     }
 
+    // TODO Document.
     @SuppressWarnings("unchecked")
     private final static Enumeration<String> getHeaders(HttpServletRequest request, String name)
     {
         return request.getHeaders(name);
     }
 
+    // TODO Document.
     public static Headers fromRequest(HttpServletRequest request)
     {
         Map<String, List<String>> mapOfHeaders = new HashMap<String, List<String>>();
@@ -51,6 +57,7 @@ extends StringListMap
         return new Headers(mapOfHeaders, request.getMethod(), 200);
     }
     
+    // TODO Document.
     public Headers(Map<String, List<String>> map, String method, int status)
     {
         super(map);
@@ -58,16 +65,19 @@ extends StringListMap
         this.status = status;
     }
 
+    // TODO Document.
     public Headers(Map<String, List<String>> map, String method)
     {
         this(map, method, 0);
     }
 
+    // TODO Document.
     public Headers(String method)
     {
         this(new HashMap<String, List<String>>(), method, 0);
     }
     
+    // TODO Document.
     public void setStatus(int status)
     {
         if (this.status < 0)
@@ -81,16 +91,19 @@ extends StringListMap
         this.status = status;
     }
     
+    // TODO Document.
     public int getStatus()
     {
         return status == Integer.MIN_VALUE ? 0 : Math.abs(status);
     }
     
+    // TODO Document.
     public String getMethod()
     {
         return method;
     }
 
+    // TODO Document.
     public void send(HttpServletResponse response)
     {
         response.setStatus(getStatus());

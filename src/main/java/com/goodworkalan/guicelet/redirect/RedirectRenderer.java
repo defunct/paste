@@ -17,20 +17,28 @@ import com.goodworkalan.guicelet.Request;
 import com.goodworkalan.guicelet.paths.PathFormatter;
 import com.google.inject.Inject;
 
+// TODO Document.
 public class RedirectRenderer implements Renderer
 {
+    // TODO Document.
     private final PathFormatter pathFormatter;
     
+    // TODO Document.
     private final HttpServletResponse response;
     
+    // TODO Document.
     private final Object controller;
     
+    // TODO Document.
     private final Redirector redirector;
 
+    // TODO Document.
     private final Headers headers;
 
+    // TODO Document.
     private final Configuration configuration;
     
+    // TODO Document.
     @Inject
     public RedirectRenderer(
             PathFormatter pathFormatter,
@@ -48,6 +56,7 @@ public class RedirectRenderer implements Renderer
         this.configuration = configuration;
     }
 
+    // TODO Document.
     public void render() throws ServletException, IOException
     {
         if (headers.get("Location") == null)
@@ -93,6 +102,7 @@ public class RedirectRenderer implements Renderer
         response.getWriter().append(page);
     }
     
+    // TODO Document.
     private String getPageFormat() throws IOException
     {
         Reader reader = new InputStreamReader(RedirectRenderer.class.getResourceAsStream("redirect.html"));

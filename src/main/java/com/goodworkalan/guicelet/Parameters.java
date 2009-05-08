@@ -21,20 +21,25 @@ import java.util.Map;
 public class Parameters
 extends StringListMap
 {
+    // TODO Document.
     public final static Object REQUEST = new Object();
     
+    // TODO Document.
     public final static Object BINDING = new Object();
     
+    // TODO Document.
     public Parameters()
     {
         super(new HashMap<String, List<String>>());
     }
     
+    // TODO Document.
     private Parameters(Map<String, List<String>> parameters)
     {
         super(parameters);
     }
 
+    // TODO Document.
     public final static Parameters fromStringArrayMap(Map<String, String[]> map)
     {
         Parameters parameters = new Parameters();
@@ -48,6 +53,7 @@ extends StringListMap
         return parameters;
     }
     
+    // TODO Document.
     public final static Parameters fromStringMap(Map<String, String> map)
     {
         Parameters parameters = new Parameters();
@@ -58,12 +64,14 @@ extends StringListMap
         return parameters;
     }
 
+    // TODO Document.
     public static Parameters merge(Map<?, Parameters> parameters)
     {
         Parameters[] merge = parameters.values().toArray(new Parameters[parameters.size()]);
         return Parameters.merge(merge);
     }
     
+    // TODO Document.
     public final static Parameters merge(Parameters...parameters)
     {
         Parameters merged = new Parameters();
