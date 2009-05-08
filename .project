@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>guicelet</name>
+  <name>sprocket</name>
   <comment>A MVC web framework that uses Google Guice for
     constructor depenency injection of controllers, faciliating reuse by
     carefully separating URL binding from depenency injected controllers
