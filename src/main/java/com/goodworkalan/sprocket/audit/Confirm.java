@@ -1,6 +1,6 @@
 package com.goodworkalan.sprocket.audit;
 
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 
 // TODO Document.
 public class Confirm extends AuditBuilder
@@ -36,7 +36,7 @@ public class Confirm extends AuditBuilder
             {
                 if (compare == null)
                 {
-                    throw new GuiceletException();
+                    throw new SprocketException();
                 }
                 String string = (String) tree.getContextValue(compare);
                 if (!string.equals(tree.getValue()))

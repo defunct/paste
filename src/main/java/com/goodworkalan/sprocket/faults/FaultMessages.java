@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 
 // TODO Document.
 public class FaultMessages
@@ -98,7 +98,7 @@ public class FaultMessages
                 }
                 catch (PathException e)
                 {
-                    throw new GuiceletException(e);
+                    throw new SprocketException(e);
                 }
             }
             return String.format(message.group(2), arguments.toArray());

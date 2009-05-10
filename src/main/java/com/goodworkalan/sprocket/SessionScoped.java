@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import com.google.inject.ScopeAnnotation;
 
 // TODO Document.
-@Target({ ElementType.TYPE, ElementType.PARAMETER })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @ScopeAnnotation
 public @interface SessionScoped

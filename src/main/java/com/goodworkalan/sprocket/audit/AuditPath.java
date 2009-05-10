@@ -3,7 +3,7 @@ package com.goodworkalan.sprocket.audit;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 
 // TODO Document.
 public class AuditPath
@@ -27,7 +27,7 @@ public class AuditPath
         }
         catch (Exception e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
         T audit;
         try
@@ -36,7 +36,7 @@ public class AuditPath
         }
         catch (Exception e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
         listOfAuditBuilders.add(audit);
         return audit;

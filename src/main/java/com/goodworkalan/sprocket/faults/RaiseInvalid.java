@@ -17,12 +17,22 @@ public class RaiseInvalid implements Actor
         this.faults = faults;
     }
 
-    // TODO Document.
-    public void actUpon(Object controller)
+    /**
+     * If there are mistakes in the data submission, raise an invalid
+     */
+    public Throwable actUpon(Object controller)
     {
         if (faults.size() == 0)
         {
-            throw new Invalid();
+            try
+            {
+                throw new Invalid();
+            }
+            catch (Invalid e)
+            {
+                return e;
+            }
         }
+        return null;
     }
 }

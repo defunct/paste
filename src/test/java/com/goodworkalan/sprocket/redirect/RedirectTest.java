@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.testng.annotations.Test;
 
 import com.goodworkalan.sprocket.BasicScope;
-import com.goodworkalan.sprocket.GuiceletModule;
+import com.goodworkalan.sprocket.SprocketModule;
 import com.goodworkalan.sprocket.Janitor;
 import com.goodworkalan.sprocket.Parameters;
 import com.goodworkalan.sprocket.Scopes;
@@ -40,7 +40,7 @@ public class RedirectTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        GuiceletModule guicelet = new GuiceletModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        SprocketModule guicelet = new SprocketModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());

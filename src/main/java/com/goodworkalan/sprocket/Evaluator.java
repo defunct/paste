@@ -26,7 +26,7 @@ public class Evaluator
         }
         catch (PathException e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.goodworkalan.sprocket.invoke;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.sprocket.Actor;
 import com.goodworkalan.sprocket.Annotations;
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 import com.google.inject.Inject;
 
 // TODO Document.
@@ -25,7 +26,7 @@ public class InvokeActor implements Actor
     }
 
     // TODO Document.
-    public void actUpon(Object controller)
+    public Throwable actUpon(Object controller)
     {
         for (Method method : controller.getClass().getMethods())
         {
@@ -42,7 +43,7 @@ public class InvokeActor implements Actor
                     }
                     catch (PathException e)
                     {
-                        throw new GuiceletException(e);
+                        throw new SprocketException(e);
                     }
                     try
                     {
@@ -50,18 +51,25 @@ public class InvokeActor implements Actor
                     }
                     catch (PathException e)
                     {
-                        throw new GuiceletException(e);
+                        throw new SprocketException(e);
                     }
                 }
                 try
                 {
                     method.invoke(controller, arguments.toArray());
                 }
+                catch (InvocationTargetException e)
+                {
+                    return e.getCause();
+                }
                 catch (Exception e)
                 {
-                    throw new GuiceletException(e);
+                    throw new SprocketException(e);
                 }
+                
             }
         }
+
+        return null;
     }
 }

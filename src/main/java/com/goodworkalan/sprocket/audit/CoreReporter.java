@@ -2,7 +2,7 @@ package com.goodworkalan.sprocket.audit;
 
 import java.util.Map;
 
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 
 // TODO Document.
 public class CoreReporter implements Reporter
@@ -30,7 +30,7 @@ public class CoreReporter implements Reporter
     {
         if (!name.matches("[\\w][\\w\\d]+"))
         {
-            throw new GuiceletException();
+            throw new SprocketException();
         }
         invalid = true;
         CoreReport report = new CoreReport();

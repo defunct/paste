@@ -1,9 +1,10 @@
 package com.goodworkalan.sprocket.redirect;
 
 import com.goodworkalan.sprocket.Parameters;
+import com.goodworkalan.sprocket.Stop;
 
 // TODO Document.
-public class Redirection extends RuntimeException
+public class Redirection extends Stop
 {
     // TODO Document.
     private static final long serialVersionUID = 1L;

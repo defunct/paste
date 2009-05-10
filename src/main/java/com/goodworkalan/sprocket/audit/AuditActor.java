@@ -9,7 +9,7 @@ import com.goodworkalan.dspl.PropertyPath;
 import com.goodworkalan.sprocket.Actor;
 import com.goodworkalan.sprocket.Actors;
 import com.goodworkalan.sprocket.Annotations;
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 import com.goodworkalan.sprocket.Parameters;
 import com.goodworkalan.sprocket.ParametersServer;
 import com.goodworkalan.sprocket.faults.Faults;
@@ -41,7 +41,7 @@ public class AuditActor implements Actor
     }
     
     // TODO Document.
-    public void actUpon(Object controller)
+    public Throwable actUpon(Object controller)
     {
         Parameters merged = parameters.merge();
         
@@ -82,7 +82,7 @@ public class AuditActor implements Actor
                 }
                 catch (Exception e)
                 {
-                    throw new GuiceletException(e);
+                    throw new SprocketException(e);
                 }
                 auditor.audit(faults, map);
             }
@@ -103,5 +103,7 @@ public class AuditActor implements Actor
         {
             throw new Invalid();
         }
+        
+        return null;
     }
 }

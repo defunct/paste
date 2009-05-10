@@ -108,7 +108,7 @@ public class ViewBinder
         }
         catch (Exception e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
         ViewBinder end = new ViewBinder(parent, mapOfBindings, Collections.singletonList(from.duplicate()));
         T module;
@@ -118,7 +118,7 @@ public class ViewBinder
         }
         catch (Exception e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
         for (RuleSetBuilder<ViewBinding> setOfRules : listOfSetOfRules)
         {

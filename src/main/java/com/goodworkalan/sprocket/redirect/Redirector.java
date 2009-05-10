@@ -54,7 +54,7 @@ public class Redirector
             String path = location.getPath();
             if (path.length() != 0 && path.charAt(0) == '/')
             {
-                path = request.getServletPath() + path;
+                path = request.getContextPath() + path;
                 headers.add("Location", uri.resolve(path).toString());
             }
             else

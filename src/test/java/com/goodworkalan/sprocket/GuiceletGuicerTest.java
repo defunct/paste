@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.testng.annotations.Test;
 
 import com.goodworkalan.sprocket.CoreBinder;
-import com.goodworkalan.sprocket.GuiceletGuicer;
+import com.goodworkalan.sprocket.SprocketGuicer;
 import com.goodworkalan.sprocket.forward.Forward;
 import com.google.inject.Module;
 
@@ -36,7 +36,7 @@ public class GuiceletGuicerTest
         binder.controllers(Object.class)
               .bind("/queue/{user}")
               .to(BindingController.class);
-        GuiceletGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList());
+        SprocketGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList());
         guicer.filter(request, response, chain);
     }
     
@@ -62,7 +62,7 @@ public class GuiceletGuicerTest
                       .when().method("POST").to(Object.class)
                   .bind("/index").to(Object.class);
         
-        GuiceletGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList());
+        SprocketGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList());
         guicer.filter(request, response, chain);
     }
     

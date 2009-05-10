@@ -43,7 +43,6 @@ public class RedirectRendererTest
         RedirectRenderer renderer = new RedirectRenderer(
                 formatter,
                 response,
-                new Object(),
                 redirector,
                 headers,
                 configuration);
@@ -71,7 +70,6 @@ public class RedirectRendererTest
         RedirectRenderer renderer = new RedirectRenderer(
                 formatter,
                 response,
-                new Pseudo(),
                 redirector,
                 headers,
                 configuration);

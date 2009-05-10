@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.goodworkalan.dspl.PathException;
 import com.goodworkalan.dspl.PropertyPath;
-import com.goodworkalan.sprocket.GuiceletException;
+import com.goodworkalan.sprocket.SprocketException;
 
 // FIXME Combine with reporter.
 // TODO Document.
@@ -49,7 +49,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
         try
         {
@@ -57,7 +57,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
     }
     
@@ -71,7 +71,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
         try
         {
@@ -79,7 +79,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new GuiceletException(e);
+            throw new SprocketException(e);
         }
     }
 }

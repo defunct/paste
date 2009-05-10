@@ -16,13 +16,15 @@ import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Mapping;
 import com.goodworkalan.dovetail.TreeMapper;
+import com.goodworkalan.sprocket.redirect.Redirection;
+import com.goodworkalan.sprocket.redirect.Redirector;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 
 // TODO Document.
-public class GuiceletGuicer
+public class SprocketGuicer
 {
     // TODO Document.
     private final SessionScope sessionScope;
@@ -46,7 +48,7 @@ public class GuiceletGuicer
     private final List<Janitor> janitors;
 
     // TODO Document.
-    public GuiceletGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
+    public SprocketGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
                           RuleMap<ViewBinding> mapOfViewBindings,
                           List<Module> modules)
     {
@@ -56,7 +58,7 @@ public class GuiceletGuicer
         this.janitors = new ArrayList<Janitor>();
         
         List<Module> pushGuicletModule = new ArrayList<Module>(modules);
-        pushGuicletModule.add(new GuiceletModule(sessionScope, requestScope, controllerScope, janitors));
+        pushGuicletModule.add(new SprocketModule(sessionScope, requestScope, controllerScope, janitors));
         
         this.injector = Guice.createInjector(pushGuicletModule);
 
@@ -83,6 +85,7 @@ public class GuiceletGuicer
                         FilterChain chain)
         throws IOException, ServletException
     {
+        sessionScope.enter(request);
         List<Janitor> janitors = new ArrayList<Janitor>();
         try
         {
@@ -93,6 +96,7 @@ public class GuiceletGuicer
             cleanUp(janitors);
             requestScope.exit();
             controllerScope.exit();
+            sessionScope.exit();
         }
     }
     
@@ -112,6 +116,7 @@ public class GuiceletGuicer
             path = path.substring(contextPath.length());
         }
 
+        Throwable throwable = null;
         boolean hasController = false;
         for (GlobTree<RuleMap<ControllerBinding>> tree : controllerBindings)
         {
@@ -158,7 +163,13 @@ public class GuiceletGuicer
                 {
                     Scopes.enterRequest(requestScope, request, response, janitors);
                 }
-                Scopes.enterController(controllerScope, injector, controllerClass, parameters);
+
+                throwable = Scopes.enterController(controllerScope, injector, controllerClass, parameters);
+                if (throwable != null)
+                {
+                    break;
+                }
+
                 Object controller = injector.getInstance(Key.get(Object.class, Controller.class));
                 hasController = true;
 
@@ -167,22 +178,32 @@ public class GuiceletGuicer
                 {
                     for (Class<?  extends Actor> actor : actors.value())
                     {
-                        injector.getInstance(actor).actUpon(controller);
+                        throwable = injector.getInstance(actor).actUpon(controller);
+                        if (throwable != null)
+                        {
+                            break;
+                        }
                     }
                 }
             }
         }
 
-        if (!interception.isIntercepted() && hasController)
+        if (throwable instanceof Redirection)
         {
-            Object controller = injector.getProvider(Key.get(Object.class, Controller.class)).get();
+            ((Redirection) throwable).redirect(injector.getInstance(Redirector.class));
+        }
+
+        if (hasController || throwable != null)
+        {
+            Object controller = hasController ? injector.getProvider(Key.get(Object.class, Controller.class)).get() : null;
             
             List<ViewBinding> views
                 = mapOfViewBindings
                     .test()
-                        .put(BindKey.PACKAGE, controller.getClass().getPackage().getName())
-                        .put(BindKey.CONTROLLER_CLASS, controller.getClass())
+                        .put(BindKey.PACKAGE, hasController ? controller.getClass().getPackage().getName() : null)
+                        .put(BindKey.CONTROLLER_CLASS, hasController ? controller.getClass() : null)
                         .put(BindKey.PATH, path)
+                        .put(BindKey.EXCEPTION, throwable != null ? throwable.getClass() : throwable)
                         .put(BindKey.METHOD, request.getMethod()).get();
             
             SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
@@ -196,6 +217,17 @@ public class GuiceletGuicer
                 ViewBinding view = prioritized.get(prioritized.firstKey());
                 injector.createChildInjector(view.getModule())
                         .getInstance(Renderer.class).render();
+            }
+            else if (throwable != null)
+            {
+                if (throwable instanceof RuntimeException)
+                {
+                    throw (RuntimeException) throwable;
+                }
+                else if (throwable instanceof Error)
+                {
+                    throw (Error) throwable;
+                }
             }
         }
         

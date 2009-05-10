@@ -8,10 +8,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.sprocket.faults.Faults;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 
 // TODO Document.
@@ -27,6 +29,8 @@ public class Scopes
        
         scope.seed(HttpServletRequest.class, request);
         scope.seed(ServletRequest.class, request);
+        
+        scope.seed(HttpSession.class, request.getSession(true));
             
         scope.seed(HttpServletResponse.class, response);
         scope.seed(ServletResponse.class, response);
@@ -59,9 +63,26 @@ public class Scopes
     {
         return request.getParameterMap();
     }
-    
-    // TODO Document.
-    public static void enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Parameters bindings)
+
+    /**
+     * Enter the controller scope creating a controller. Returns the Throwable
+     * thrown by the controller constructor if any. This unorthodox return value
+     * distinguishes an exception raised in the controller constructor from an
+     * exception raised during the creation of other objects in the method. That
+     * is, it is an explicit return of an exception raised during construction,
+     * that may be processed by the error handling of the web application.
+     * 
+     * @param scope
+     *            The controller scope.
+     * @param injector
+     *            The Guice injector.
+     * @param controllerClass
+     *            The class of the controller to create.
+     * @param bindings
+     *            The map of parameter bindings for the controller.
+     * @return The exception raised by controller, if any.
+     */
+    public static Throwable enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Parameters bindings)
     {
         scope.enter();
 
@@ -69,8 +90,22 @@ public class Scopes
         
         parameters.get(Parameters.BINDING).clear();
         parameters.get(Parameters.BINDING).putAll(bindings);
-
+        
         scope.seed(Key.get(Parameters.class, Binding.class), parameters.get(Parameters.BINDING));
-        scope.seed(Key.get(Object.class, Controller.class), injector.getInstance(controllerClass));
+
+        try
+        {
+            scope.seed(Key.get(Object.class, Controller.class), injector.getInstance(controllerClass));
+        }
+        catch (ProvisionException e)
+        {
+            if (e.getCause() != null)
+            {
+                return e.getCause();
+            }
+            throw e;
+        }
+        
+        return null;
     }
 }

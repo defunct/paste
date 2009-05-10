@@ -4,5 +4,5 @@ package com.goodworkalan.sprocket;
 public interface Actor
 {
     // TODO Document.
-    public void actUpon(Object controller);
+    public Throwable actUpon(Object controller);
 }

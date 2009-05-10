@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO Document.
+/**
+ * Maybe rename Mistake or Goof. Then Fault can be used for Abnormality.
+ */
 public class Fault extends HashMap<Object, Object>
 {
     // TODO Document.

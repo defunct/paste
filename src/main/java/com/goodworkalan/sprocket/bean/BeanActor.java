@@ -25,7 +25,7 @@ public class BeanActor implements Actor
     }
     
     // TODO Document.
-    public void actUpon(Object controller)
+    public Throwable actUpon(Object controller)
     {
         Parameters merged = parameters.merge();
         
@@ -52,5 +52,7 @@ public class BeanActor implements Actor
                 }
             }
         }
+        
+        return null;
     }
 }

@@ -68,8 +68,8 @@ public class CoreBinder implements Binder
     }
     
     // TODO Document.
-    public GuiceletGuicer newGuiceletGuicer(List<Module> modules)
+    public SprocketGuicer newGuiceletGuicer(List<Module> modules)
     {
-        return new GuiceletGuicer(getBindingTrees(), getMapOfRules(), modules);
+        return new SprocketGuicer(getBindingTrees(), getMapOfRules(), modules);
     }
 }

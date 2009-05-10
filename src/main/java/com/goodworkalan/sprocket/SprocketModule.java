@@ -7,13 +7,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.sprocket.faults.Faults;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
 // TODO Document.
-public class GuiceletModule extends AbstractModule
+public class SprocketModule extends AbstractModule
 {
     // TODO Document.
     private final SessionScope sessionScope;
@@ -28,7 +29,7 @@ public class GuiceletModule extends AbstractModule
     private final List<Janitor> servletJanitors;
     
     // TODO Document.
-    public GuiceletModule(SessionScope sessionScope,
+    public SprocketModule(SessionScope sessionScope,
                           BasicScope requestScope,
                           BasicScope controllerScope,
                           List<Janitor> servletJanitors)
@@ -49,7 +50,13 @@ public class GuiceletModule extends AbstractModule
         
         bind(JanitorQueue.class)
             .annotatedWith(Servlet.class)
-            .toInstance( new JanitorQueue(servletJanitors));
+            .toInstance(new JanitorQueue(servletJanitors));
+        
+        // Need to bind to null provider so that they are bound when you 
+        // set the request scope.
+        bind(HttpSession.class)
+            .toProvider(new NullProvider<HttpSession>())
+            .in(RequestScoped.class);
         
         bind(HttpServletRequest.class)
             .toProvider(new NullProvider<HttpServletRequest>())
