@@ -21,7 +21,7 @@ public class Evaluator
         try
         {
             PropertyPath property = new PropertyPath(expression);
-            Object object = property.get(controller, false);
+            Object object = property.get(controller);
             return object == null ? null : object.toString();
         }
         catch (PathException e)
