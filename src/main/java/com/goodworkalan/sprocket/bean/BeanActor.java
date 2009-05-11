@@ -1,7 +1,7 @@
 package com.goodworkalan.sprocket.bean;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.sprocket.Actor;
 import com.goodworkalan.sprocket.Parameters;
 import com.goodworkalan.sprocket.ParametersServer;

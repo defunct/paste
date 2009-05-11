@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.sprocket.Actor;
 import com.goodworkalan.sprocket.Actors;
 import com.goodworkalan.sprocket.Annotations;

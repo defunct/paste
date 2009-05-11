@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.sprocket.Actor;
 import com.goodworkalan.sprocket.Annotations;
 import com.goodworkalan.sprocket.SprocketException;

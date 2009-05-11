@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.sprocket.audit.Auditor;
 import com.goodworkalan.sprocket.audit.Confirm;
 import com.goodworkalan.sprocket.audit.Required;

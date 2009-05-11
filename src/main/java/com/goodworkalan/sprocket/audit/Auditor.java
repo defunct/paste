@@ -5,9 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyGlob;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyGlob;
+import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.sprocket.SprocketException;
 import com.goodworkalan.sprocket.faults.Fault;
 import com.goodworkalan.sprocket.faults.FaultMessages;

@@ -1,7 +1,7 @@
 package com.goodworkalan.sprocket;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyPath;
 
 // TODO Document.
 public class Evaluator

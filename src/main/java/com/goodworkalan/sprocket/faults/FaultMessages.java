@@ -1,6 +1,6 @@
 package com.goodworkalan.sprocket.faults;
 
-import static com.goodworkalan.dspl.Patterns.glob;
+import static com.goodworkalan.infuse.Patterns.glob;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.goodworkalan.dspl.PathException;
-import com.goodworkalan.dspl.PropertyPath;
+import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.sprocket.SprocketException;
 
 // TODO Document.
