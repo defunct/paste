@@ -50,7 +50,6 @@ public class RedirectRendererTest
         renderer.render();
     }
 
-    @Test
     public void badLocation() throws ServletException, IOException
     {
         HttpServletRequest request = mock(HttpServletRequest.class);

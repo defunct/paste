@@ -36,7 +36,7 @@ public class RedirectorTest
     public void absolute()
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getServletPath()).thenReturn("/foo");
+        when(request.getContextPath()).thenReturn("/foo");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
         Headers headers = new Headers("GET");
