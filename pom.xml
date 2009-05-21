@@ -4,11 +4,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.goodworkalan</groupId>
-    <artifactId>sprocket</artifactId>
+    <artifactId>paste</artifactId>
     <packaging>jar</packaging>
     <version>0.1.X</version>
 
-    <name>sprocket</name>
+    <name>paste</name>
     <description>A MVC web framework that uses Google Guice for
     constructor depenency injection of controllers, faciliating reuse by
     carefully separating URL binding from depenency injected controllers
