@@ -2,16 +2,18 @@ package com.goodworkalan.paste;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.Headers;
+import com.goodworkalan.paste.ResponseHeaders;
 
 public class HeadersTest
 {
     @Test
     public void methodConstructor()
     {
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         assertEquals(headers.getMethod(), "GET");
     }
 }

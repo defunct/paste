@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.Headers;
+import com.goodworkalan.paste.ResponseHeaders;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.Response;
 import com.goodworkalan.paste.SprocketException;
@@ -29,7 +29,7 @@ public class RedirectRenderer implements Renderer
     private final Redirector redirector;
 
     // TODO Document.
-    private final Headers headers;
+    private final ResponseHeaders headers;
 
     // TODO Document.
     private final Configuration configuration;
@@ -40,7 +40,7 @@ public class RedirectRenderer implements Renderer
             PathFormatter pathFormatter,
             HttpServletResponse response,
             Redirector redirector,
-            @Response Headers headers,
+            @Response ResponseHeaders headers,
             Configuration configuration)
     {
         this.pathFormatter = pathFormatter;
@@ -65,7 +65,7 @@ public class RedirectRenderer implements Renderer
         {
             throw new SprocketException();
         }
-        else if (headers.get("Location") == null)
+        else if (headers.getFirst("Location") == null)
         {
             throw new SprocketException();
         }
@@ -85,7 +85,7 @@ public class RedirectRenderer implements Renderer
  
         String page = 
             String.format(getPageFormat(),
-                          headers.getStatus(), headers.get("Location"));
+                          headers.getStatus(), headers.getFirst("Location"));
         response.getWriter().append(page);
     }
 

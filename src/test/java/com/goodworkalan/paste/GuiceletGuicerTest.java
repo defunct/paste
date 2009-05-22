@@ -18,6 +18,7 @@ import com.goodworkalan.paste.SprocketGuicer;
 import com.goodworkalan.paste.forward.Forward;
 import com.google.inject.Module;
 
+// FIXME Rename.
 public class GuiceletGuicerTest
 {
     @Test

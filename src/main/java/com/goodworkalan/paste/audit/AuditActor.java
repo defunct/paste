@@ -9,8 +9,9 @@ import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Actors;
 import com.goodworkalan.paste.Annotations;
+import com.goodworkalan.paste.Controller;
+import com.goodworkalan.paste.NamedValueList;
 import com.goodworkalan.paste.Parameters;
-import com.goodworkalan.paste.ParametersServer;
 import com.goodworkalan.paste.SprocketException;
 import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.faults.Invalid;
@@ -27,13 +28,13 @@ public class AuditActor implements Actor
     private final Map<Object, Object> faults;
     
     // TODO Document.
-    private final ParametersServer parameters;
+    private final NamedValueList parameters;
     
     // TODO Document.
     @Inject
     public AuditActor(Annotations annotations,
                       @Faults Map<Object, Object> faults,
-                      ParametersServer parameters)
+                      @Controller Parameters parameters)
     {
         this.annotations = annotations;
         this.faults = faults;
@@ -43,13 +44,11 @@ public class AuditActor implements Actor
     // TODO Document.
     public Throwable actUpon(Object controller)
     {
-        Parameters merged = parameters.merge();
-        
         Map<Object, Object> map = new HashMap<Object, Object>();
         
-        for (String key : merged.keySet())
+        for (String key : parameters.getNames())
         {
-            String value = merged.getFirst(key);
+            String value = parameters.getFirst(key);
             
             PropertyPath path;
             try

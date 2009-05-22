@@ -5,13 +5,12 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.testng.annotations.Test;
-
-import com.goodworkalan.paste.Annotations;
-import com.goodworkalan.paste.Parameters;
-import com.goodworkalan.paste.ParametersServer;
 
 public class AnnotationsTest
 {
@@ -19,7 +18,7 @@ public class AnnotationsTest
     public void any()
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        Annotations annotations = new Annotations(new ParametersServer(), request);
+        Annotations annotations = new Annotations(new Parameters(new ArrayList<NamedValue>()), request);
         assertTrue(annotations.invoke(new String[] {}, "", new String[0]));
     }
 
@@ -27,9 +26,9 @@ public class AnnotationsTest
     public void on()
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        ParametersServer parameters = new ParametersServer();
-        parameters.get(Parameters.BINDING).add("save", "Save");
-        Annotations annotations = new Annotations(parameters, request);
+        List<NamedValue> parameters = new ArrayList<NamedValue>();
+        parameters.add(new NamedValue(NamedValue.REQUEST, "save", "Save"));
+        Annotations annotations = new Annotations(new Parameters(parameters), request);
         assertTrue(annotations.invoke(new String[] { "save" }, "", new String[0]));
         assertFalse(annotations.invoke(new String[] { "cancel" }, "", new String[0]));
     }
@@ -38,9 +37,9 @@ public class AnnotationsTest
     public void param()
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        ParametersServer parameters = new ParametersServer();
-        parameters.get(Parameters.BINDING).add("on", "save");
-        Annotations annotations = new Annotations(parameters, request);
+        List<NamedValue> parameters = new ArrayList<NamedValue>();
+        parameters.add(new NamedValue(NamedValue.REQUEST, "on", "save"));
+        Annotations annotations = new Annotations(new Parameters(parameters), request);
         assertTrue(annotations.invoke(new String[] { "save" }, "on", new String[0]));
         assertFalse(annotations.invoke(new String[] { "cancel" }, "on", new String[0]));
         assertFalse(annotations.invoke(new String[] { "save" }, "off", new String[0]));
@@ -51,7 +50,7 @@ public class AnnotationsTest
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("POST");
-        Annotations annotations = new Annotations(new ParametersServer(), request);
+        Annotations annotations = new Annotations(new Parameters(new ArrayList<NamedValue>()), request);
         assertTrue(annotations.invoke(new String[0], "", new String[] { "POST" }));
         assertFalse(annotations.invoke(new String[0], "", new String[] { "GET" }));
     }

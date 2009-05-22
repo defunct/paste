@@ -1,5 +1,6 @@
 package com.goodworkalan.paste;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,8 @@ public class Scopes
     // TODO Document.
     public static void enterRequest(
                 BasicScope scope,
-                HttpServletRequest request, HttpServletResponse response,
+                HttpServletRequest request,
+                HttpServletResponse response,
                 List<Janitor> requestJanitors)
     {
         scope.enter();
@@ -42,15 +44,21 @@ public class Scopes
 
         scope.seed(Key.get(String.class, WelcomeFile.class), "index");
 
-        scope.seed(Key.get(Headers.class, Request.class), Headers.fromRequest(request));
-        scope.seed(Key.get(Headers.class, Response.class), new Headers(request.getMethod()));
+        scope.seed(Key.get(NamedValueList.class, Request.class), ResponseHeaders.fromRequest(request));
+        scope.seed(ResponseHeaders.class, new ResponseHeaders(new ArrayList<NamedValue>(), request.getMethod()));
     
-        ParametersServer parameters = new ParametersServer();
-        parameters.get(Parameters.BINDING);
-        parameters.get(Parameters.REQUEST).putAll(Parameters.fromStringArrayMap(getParameterMap(request)));
-        scope.seed(ParametersServer.class, parameters);
-        scope.seed(Key.get(Parameters.class, Binding.class), parameters.get(Parameters.BINDING));
-        scope.seed(Key.get(Parameters.class, Request.class), parameters.get(Parameters.REQUEST));
+        ArrayList<NamedValue> parameters = new ArrayList<NamedValue>();
+        
+        for (Map.Entry<String, String[]> entry : getParameterMap(request).entrySet())
+        {
+            for (String value : entry.getValue())
+            {
+                parameters.add(new NamedValue(NamedValue.REQUEST, entry.getKey(), value));
+            }
+        }
+        
+        scope.seed(Key.get(new TypeLiteral<List<NamedValue>>() {}, Request.class), parameters);
+        scope.seed(Key.get(Parameters.class, Request.class), new Parameters(parameters));
 
         scope.seed(Key.get(JanitorQueue.class, Request.class), new JanitorQueue(requestJanitors));
         
@@ -82,17 +90,21 @@ public class Scopes
      *            The map of parameter bindings for the controller.
      * @return The exception raised by controller, if any.
      */
-    public static Throwable enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Parameters bindings)
+    public static Throwable enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Map<String, String> mappings)
     {
         scope.enter();
 
-        ParametersServer parameters = injector.getInstance(ParametersServer.class);
+        List<NamedValue> parameters = new ArrayList<NamedValue>();
+        for (Map.Entry<String, String> entry : mappings.entrySet())
+        {
+            parameters.add(new NamedValue(NamedValue.DOVETAIL, entry.getKey(), entry.getValue()));
+        }
         
-        parameters.get(Parameters.BINDING).clear();
-        parameters.get(Parameters.BINDING).putAll(bindings);
+        parameters.addAll(injector.getInstance(Key.get(new TypeLiteral<List<NamedValue>>() {}, Request.class)));
         
-        scope.seed(Key.get(Parameters.class, Binding.class), parameters.get(Parameters.BINDING));
-
+        scope.seed(Key.get(new TypeLiteral<List<NamedValue>>() {}, Controller.class), parameters);
+        scope.seed(Key.get(Parameters.class, Controller.class), new Parameters(parameters));
+        
         try
         {
             scope.seed(Key.get(Object.class, Controller.class), injector.getInstance(controllerClass));

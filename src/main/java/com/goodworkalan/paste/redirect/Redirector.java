@@ -5,7 +5,7 @@ import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.goodworkalan.paste.Headers;
+import com.goodworkalan.paste.ResponseHeaders;
 import com.goodworkalan.paste.Response;
 import com.google.inject.Inject;
 
@@ -21,11 +21,11 @@ public class Redirector
     private final HttpServletRequest request;
     
     // TODO Document.
-    private final Headers headers;
+    private final ResponseHeaders headers;
     
     // TODO Document.
     @Inject
-    public Redirector(HttpServletRequest request, @Response Headers headers)
+    public Redirector(HttpServletRequest request, @Response ResponseHeaders headers)
     {
         this.request = request;
         this.headers = headers;

@@ -9,6 +9,7 @@ import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,15 +18,11 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.Janitor;
-import com.goodworkalan.paste.Parameters;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.Scopes;
 import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.SprocketModule;
 import com.goodworkalan.paste.ViewBinder;
-import com.goodworkalan.paste.forward.Configuration;
-import com.goodworkalan.paste.forward.Forward;
-import com.goodworkalan.paste.forward.ForwardRenderer;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -58,7 +55,7 @@ public class ForwardTest
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
+        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
@@ -92,7 +89,7 @@ public class ForwardTest
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
+        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
@@ -127,7 +124,7 @@ public class ForwardTest
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
+        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         

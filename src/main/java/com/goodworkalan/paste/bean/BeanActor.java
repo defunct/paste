@@ -3,8 +3,8 @@ package com.goodworkalan.paste.bean;
 import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.Actor;
+import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Parameters;
-import com.goodworkalan.paste.ParametersServer;
 import com.google.inject.Inject;
 
 /**
@@ -15,11 +15,11 @@ import com.google.inject.Inject;
 public class BeanActor implements Actor
 {
     // TODO Document.
-    private final ParametersServer parameters;
+    private final Parameters parameters;
     
     // TODO Document.
     @Inject
-    public BeanActor(ParametersServer parameters)
+    public BeanActor(@Controller Parameters parameters)
     {
         this.parameters = parameters;
     }
@@ -27,11 +27,9 @@ public class BeanActor implements Actor
     // TODO Document.
     public Throwable actUpon(Object controller)
     {
-        Parameters merged = parameters.merge();
-        
-        for (String key : merged.keySet())
+        for (String key : parameters.getNames())
         {
-            String value = merged.getFirst(key);
+            String value = parameters.getFirst(key);
             if (value != null)
             {
                 PropertyPath path = null;

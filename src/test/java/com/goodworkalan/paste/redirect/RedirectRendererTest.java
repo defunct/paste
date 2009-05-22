@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.Headers;
+import com.goodworkalan.paste.NamedValue;
+import com.goodworkalan.paste.ResponseHeaders;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.goodworkalan.paste.redirect.Configuration;
@@ -35,7 +37,7 @@ public class RedirectRendererTest
         
         PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         Redirector redirector = new Redirector(request, headers);
         
         Configuration configuration = new Configuration(303, "home", new FormatArgument[0]);
@@ -61,7 +63,7 @@ public class RedirectRendererTest
         
         PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         Redirector redirector = new Redirector(request, headers);
         
         Configuration configuration = new Configuration(303, null, null);

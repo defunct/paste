@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,13 +14,10 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.Janitor;
-import com.goodworkalan.paste.Parameters;
 import com.goodworkalan.paste.Scopes;
 import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.SprocketModule;
 import com.goodworkalan.paste.ViewBinder;
-import com.goodworkalan.paste.redirect.Configuration;
-import com.goodworkalan.paste.redirect.Redirect;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -44,7 +42,7 @@ public class RedirectTest
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new Parameters());
+        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder binder = mock(ViewBinder.class);
         

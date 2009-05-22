@@ -1,24 +1,23 @@
 package com.goodworkalan.paste;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // TODO Document.
-public class Headers
-extends StringListMap
+public class ResponseHeaders
+extends NamedValueList
 {
     // TODO Document.
     private int status;
 
     // TODO Document.
     private final String method;
+    
+    private final List<NamedValue> namedValues;
 
     // TODO Document.
     @SuppressWarnings("unchecked")
@@ -35,46 +34,31 @@ extends StringListMap
     }
 
     // TODO Document.
-    public static Headers fromRequest(HttpServletRequest request)
+    public static NamedValueList fromRequest(HttpServletRequest request)
     {
-        Map<String, List<String>> mapOfHeaders = new HashMap<String, List<String>>();
+        List<NamedValue> headers = new ArrayList<NamedValue>();
 
         Enumeration<String> names = getNames(request);
         while (names.hasMoreElements())
         {
-            List<String> listOfValues = new ArrayList<String>();
-
             String name = names.nextElement();
             Enumeration<String> values = getHeaders(request, name);
             while (values.hasMoreElements())
             {
-                listOfValues.add(values.nextElement());
+                headers.add(new NamedValue(NamedValue.REQUEST, name, values.nextElement()));
             }
             
-            mapOfHeaders.put(name, Collections.unmodifiableList(listOfValues));
         }
 
-        return new Headers(mapOfHeaders, request.getMethod(), 200);
+        return new NamedValueList(headers);
     }
     
     // TODO Document.
-    public Headers(Map<String, List<String>> map, String method, int status)
+    public ResponseHeaders(List<NamedValue> namedValues, String method)
     {
-        super(map);
+        super(namedValues);
+        this.namedValues = namedValues;
         this.method = method;
-        this.status = status;
-    }
-
-    // TODO Document.
-    public Headers(Map<String, List<String>> map, String method)
-    {
-        this(map, method, 0);
-    }
-
-    // TODO Document.
-    public Headers(String method)
-    {
-        this(new HashMap<String, List<String>>(), method, 0);
     }
     
     // TODO Document.
@@ -102,17 +86,19 @@ extends StringListMap
     {
         return method;
     }
+    
+    public void add(String name, String value)
+    {
+        namedValues.add(new NamedValue(NamedValue.RESPONSE, name, value));
+    }
 
     // TODO Document.
     public void send(HttpServletResponse response)
     {
         response.setStatus(getStatus());
-        for (Map.Entry<String, List<String>> header : entrySet())
+        for (NamedValue namedValue : namedValues)
         {
-            for (String value : header.getValue())
-            {
-                response.addHeader(header.getKey(), value);
-            }
+            response.addHeader(namedValue.getName(), namedValue.getValue());
         }
     }
 }

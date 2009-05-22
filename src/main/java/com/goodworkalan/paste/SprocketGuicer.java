@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -129,8 +130,8 @@ public class SprocketGuicer
             if (tree.match(mapper, path))
             {
                 long highest = Long.MIN_VALUE;
-                Parameters parameters = null;
                 Class<?> controllerClass = null;
+                Map<String, String> mappings = null;
 
                 for (Mapping<RuleMap<ControllerBinding>> mapping : mapper.mappings())
                 {
@@ -145,7 +146,7 @@ public class SprocketGuicer
                         {
                             highest = binding.getPriority();
                             controllerClass = binding.getController();
-                            parameters = Parameters.fromStringMap(mapping.getParameters());
+                            mappings = mapping.getParameters();
                         }
                     }
                 }
@@ -164,7 +165,7 @@ public class SprocketGuicer
                     Scopes.enterRequest(requestScope, request, response, janitors);
                 }
 
-                throwable = Scopes.enterController(controllerScope, injector, controllerClass, parameters);
+                throwable = Scopes.enterController(controllerScope, injector, controllerClass, mappings);
                 if (throwable != null)
                 {
                     break;

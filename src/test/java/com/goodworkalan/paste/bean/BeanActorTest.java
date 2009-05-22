@@ -1,27 +1,25 @@
 package com.goodworkalan.paste.bean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.paste.NamedValue;
 import com.goodworkalan.paste.Parameters;
-import com.goodworkalan.paste.ParametersServer;
-import com.goodworkalan.paste.bean.BeanActor;
 
 public class BeanActorTest
 {
     @Test
     public void constructor()
     {
-        Parameters parameters = new Parameters();
-        parameters.add("string['bar']['baz']", "foo");
-        parameters.add("string", "foo");
-        parameters.add("-bar", "foo");
-        parameters.put("bar", new ArrayList<String>());
-        parameters.add("bar.baz", "foo");
-        ParametersServer server = new ParametersServer();
-        server.get(Parameters.REQUEST).putAll(parameters);
-        BeanActor actor = new BeanActor(server);
+        List<NamedValue> parameters = new ArrayList<NamedValue>();
+        parameters.add(new NamedValue(NamedValue.REQUEST, "string['bar']['baz']", "foo"));
+        parameters.add(new NamedValue(NamedValue.REQUEST, "string", "foo"));
+        parameters.add(new NamedValue(NamedValue.REQUEST, "-bar", "foo"));
+//        parameters.put("bar", new ArrayList<String>());
+        parameters.add(new NamedValue(NamedValue.REQUEST, "bar.baz", "foo"));
+        BeanActor actor = new BeanActor(new Parameters(parameters));
         Widget widget = new Widget();
         actor.actUpon(widget);
     }

@@ -83,22 +83,34 @@ public class SprocketModule extends AbstractModule
             .toProvider(new NullProvider<String>())
             .in(RequestScoped.class);
 
-        bind(Headers.class).annotatedWith(Request.class)
-            .toProvider(new NullProvider<Headers>())
+        bind(ResponseHeaders.class).annotatedWith(Request.class)
+            .toProvider(new NullProvider<ResponseHeaders>())
             .in(RequestScoped.class);
         
-        bind(Headers.class).annotatedWith(Response.class)
-            .toProvider(new NullProvider<Headers>())
+        bind(ResponseHeaders.class).annotatedWith(Response.class)
+            .toProvider(new NullProvider<ResponseHeaders>())
             .in(RequestScoped.class);
         
-        bind(ParametersServer.class)
-            .toProvider(new NullProvider<ParametersServer>())
-            .in(RequestScoped.class);
-      
-        bind(Parameters.class).annotatedWith(Request.class)
+        bind(Parameters.class)
+            .annotatedWith(Request.class)
             .toProvider(new NullProvider<Parameters>())
             .in(RequestScoped.class);
         
+        bind(new TypeLiteral<List<NamedValue>>() { })
+            .annotatedWith(Request.class)
+            .toProvider(new NullProvider<List<NamedValue>>())
+            .in(RequestScoped.class);
+        
+        bind(Parameters.class)
+            .annotatedWith(Controller.class)
+            .toProvider(new NullProvider<Parameters>())
+            .in(ControllerScoped.class);
+        
+        bind(new TypeLiteral<List<NamedValue>>() { })
+            .annotatedWith(Controller.class)
+            .toProvider(new NullProvider<List<NamedValue>>())
+            .in(ControllerScoped.class);
+      
         bind(JanitorQueue.class).annotatedWith(Request.class)
             .toProvider(new NullProvider<JanitorQueue>())
             .in(RequestScoped.class);
@@ -107,10 +119,8 @@ public class SprocketModule extends AbstractModule
             .toProvider(new NullProvider<Map<Object,Object>>())
             .in(RequestScoped.class);
 
-        bind(Parameters.class).annotatedWith(Binding.class)
-            .toProvider(new NullProvider<Parameters>())
-            .in(ControllerScoped.class);
-        bind(Object.class).annotatedWith(Controller.class)
+        bind(Object.class)
+            .annotatedWith(Controller.class)
             .toProvider(new NullProvider<Parameters>())
             .in(ControllerScoped.class);
     }

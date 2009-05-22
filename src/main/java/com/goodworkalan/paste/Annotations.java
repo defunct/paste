@@ -11,11 +11,11 @@ public class Annotations
     private final HttpServletRequest request;
     
     // TODO Document.
-    private final ParametersServer parameters;
+    private final NamedValueList parameters;
     
     // TODO Document.
     @Inject
-    public Annotations(ParametersServer parameters,
+    public Annotations(@Request Parameters parameters,
                        HttpServletRequest request)
     {
         this.parameters = parameters;
@@ -25,13 +25,12 @@ public class Annotations
     // TODO Document.
     public boolean invoke(String[] on, String param, String[] methods)
     {
-        Parameters merged = parameters.merge();
         boolean audit = on.length == 0;
         if (!audit)
         {
             if (!"".equals(param))
             {
-                String value = merged.getFirst(param);
+                String value = parameters.getFirst(param);
                 if (value != null)
                 {
                     for (int i = 0; !audit && i < on.length; i++)
@@ -44,7 +43,7 @@ public class Annotations
             {
                 for (int i = 0; !audit &&  i < on.length; i++)
                 {
-                    audit = merged.containsKey(on[i]);
+                    audit = parameters.hasName(on[i]);
                 }
             }
         }

@@ -2,6 +2,8 @@ package com.goodworkalan.paste.redirect;
 
 import static org.testng.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -9,7 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.Headers;
+import com.goodworkalan.paste.NamedValue;
+import com.goodworkalan.paste.ResponseHeaders;
 import com.goodworkalan.paste.redirect.Redirector;
 
 public class RedirectorTest
@@ -18,7 +21,7 @@ public class RedirectorTest
     public void constructor()  
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         new Redirector(request, headers);
     }
 
@@ -26,7 +29,7 @@ public class RedirectorTest
     public void badStatus()
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("/foo", 200);
@@ -39,7 +42,7 @@ public class RedirectorTest
         when(request.getContextPath()).thenReturn("/foo");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("/bar");
@@ -53,7 +56,7 @@ public class RedirectorTest
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("bar");
@@ -67,7 +70,7 @@ public class RedirectorTest
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("");
@@ -80,7 +83,7 @@ public class RedirectorTest
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         
         Redirector redirector = new Redirector(request, headers);
         redirector.redirect("http://netscape.com/");
@@ -93,7 +96,7 @@ public class RedirectorTest
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        Headers headers = new Headers("GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
         
         Redirector redirector = new Redirector(request, headers);
 
