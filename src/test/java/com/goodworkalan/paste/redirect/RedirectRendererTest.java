@@ -37,7 +37,7 @@ public class RedirectRendererTest
         
         PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
-        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>());
         Redirector redirector = new Redirector(request, headers);
         
         Configuration configuration = new Configuration(303, "home", new FormatArgument[0]);
@@ -63,7 +63,7 @@ public class RedirectRendererTest
         
         PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
-        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>());
         Redirector redirector = new Redirector(request, headers);
         
         Configuration configuration = new Configuration(303, null, null);

@@ -21,7 +21,7 @@ import com.goodworkalan.paste.Janitor;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.Scopes;
 import com.goodworkalan.paste.SessionScope;
-import com.goodworkalan.paste.SprocketModule;
+import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.ViewBinder;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Guice;
@@ -51,7 +51,7 @@ public class ForwardTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        SprocketModule guicelet = new SprocketModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
@@ -85,7 +85,7 @@ public class ForwardTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        SprocketModule guicelet = new SprocketModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
@@ -120,7 +120,7 @@ public class ForwardTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        SprocketModule guicelet = new SprocketModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());

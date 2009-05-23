@@ -2,19 +2,19 @@ package com.goodworkalan.paste;
 
 // TODO Document.
 // FIXME Add error code.
-public class SprocketException extends RuntimeException
+public class PasteException extends RuntimeException
 {
     // TODO Document.
     private static final long serialVersionUID = 20081126L;
 
     // TODO Document.
-    public SprocketException()
+    public PasteException()
     {
         super(null, null);
     }
 
     // TODO Document.
-    public SprocketException(Throwable cause)
+    public PasteException(Throwable cause)
     {
         super(null, cause);
     }

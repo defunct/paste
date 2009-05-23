@@ -23,7 +23,7 @@ public class RedirectionTest
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>());
         
         Redirector redirector = new Redirector(request, headers);
         

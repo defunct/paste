@@ -9,7 +9,7 @@ import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Annotations;
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 import com.google.inject.Inject;
 
 // TODO Document.
@@ -43,7 +43,7 @@ public class InvokeActor implements Actor
                     }
                     catch (PathException e)
                     {
-                        throw new SprocketException(e);
+                        throw new PasteException(e);
                     }
                     try
                     {
@@ -51,7 +51,7 @@ public class InvokeActor implements Actor
                     }
                     catch (PathException e)
                     {
-                        throw new SprocketException(e);
+                        throw new PasteException(e);
                     }
                 }
                 try
@@ -64,7 +64,7 @@ public class InvokeActor implements Actor
                 }
                 catch (Exception e)
                 {
-                    throw new SprocketException(e);
+                    throw new PasteException(e);
                 }
                 
             }

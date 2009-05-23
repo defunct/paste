@@ -18,14 +18,6 @@ public class NamedValueList implements Iterable<NamedValue>
 {
     /** The list of named values. */
     private final List<NamedValue> namedValues;
-    
-    /**
-     * Create an empty named value list.
-     */
-    public NamedValueList()
-    {
-        this(new ArrayList<NamedValue>());
-    }
 
     /**
      * Create a named value list from the given list of named values.

@@ -108,7 +108,7 @@ public class ViewBinder
         }
         catch (Exception e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
         ViewBinder end = new ViewBinder(parent, mapOfBindings, Collections.singletonList(from.duplicate()));
         T module;
@@ -118,7 +118,7 @@ public class ViewBinder
         }
         catch (Exception e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
         for (RuleSetBuilder<ViewBinding> setOfRules : listOfSetOfRules)
         {

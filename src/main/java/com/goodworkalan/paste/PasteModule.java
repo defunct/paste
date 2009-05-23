@@ -14,7 +14,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
 // TODO Document.
-public class SprocketModule extends AbstractModule
+public class PasteModule extends AbstractModule
 {
     // TODO Document.
     private final SessionScope sessionScope;
@@ -29,7 +29,7 @@ public class SprocketModule extends AbstractModule
     private final List<Janitor> servletJanitors;
     
     // TODO Document.
-    public SprocketModule(SessionScope sessionScope,
+    public PasteModule(SessionScope sessionScope,
                           BasicScope requestScope,
                           BasicScope controllerScope,
                           List<Janitor> servletJanitors)
@@ -83,11 +83,18 @@ public class SprocketModule extends AbstractModule
             .toProvider(new NullProvider<String>())
             .in(RequestScoped.class);
 
-        bind(ResponseHeaders.class).annotatedWith(Request.class)
-            .toProvider(new NullProvider<ResponseHeaders>())
+        bind(NamedValueList.class).annotatedWith(Request.class)
+            .toProvider(new NullProvider<NamedValueList>())
+            .in(RequestScoped.class);
+        bind(RequestHeaders.class)
+            .toProvider(new NullProvider<RequestHeaders>())
             .in(RequestScoped.class);
         
-        bind(ResponseHeaders.class).annotatedWith(Response.class)
+        
+        bind(NamedValueList.class).annotatedWith(Response.class)
+            .toProvider(new NullProvider<NamedValueList>())
+            .in(RequestScoped.class);
+        bind(ResponseHeaders.class)
             .toProvider(new NullProvider<ResponseHeaders>())
             .in(RequestScoped.class);
         

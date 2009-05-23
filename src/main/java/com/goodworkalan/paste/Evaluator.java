@@ -26,7 +26,7 @@ public class Evaluator
         }
         catch (PathException e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
     }
 }

@@ -12,7 +12,7 @@ import com.goodworkalan.paste.Annotations;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.NamedValueList;
 import com.goodworkalan.paste.Parameters;
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.faults.Invalid;
 import com.goodworkalan.paste.faults.RaiseInvalid;
@@ -81,7 +81,7 @@ public class AuditActor implements Actor
                 }
                 catch (Exception e)
                 {
-                    throw new SprocketException(e);
+                    throw new PasteException(e);
                 }
                 auditor.audit(faults, map);
             }

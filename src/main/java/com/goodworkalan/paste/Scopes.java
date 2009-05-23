@@ -44,8 +44,13 @@ public class Scopes
 
         scope.seed(Key.get(String.class, WelcomeFile.class), "index");
 
-        scope.seed(Key.get(NamedValueList.class, Request.class), ResponseHeaders.fromRequest(request));
-        scope.seed(ResponseHeaders.class, new ResponseHeaders(new ArrayList<NamedValue>(), request.getMethod()));
+        RequestHeaders requestHeaders = RequestHeaders.fromHttpServerRequest(request);
+        scope.seed(Key.get(NamedValueList.class, Request.class), requestHeaders);
+        scope.seed(RequestHeaders.class, requestHeaders);
+
+        ResponseHeaders responseHeaders = new ResponseHeaders(new ArrayList<NamedValue>());
+        scope.seed(Key.get(NamedValueList.class, Response.class), responseHeaders);
+        scope.seed(ResponseHeaders.class, responseHeaders);
     
         ArrayList<NamedValue> parameters = new ArrayList<NamedValue>();
         
@@ -86,7 +91,7 @@ public class Scopes
      *            The Guice injector.
      * @param controllerClass
      *            The class of the controller to create.
-     * @param bindings
+     * @param mappings
      *            The map of parameter bindings for the controller.
      * @return The exception raised by controller, if any.
      */

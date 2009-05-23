@@ -1,6 +1,6 @@
 package com.goodworkalan.paste.audit;
 
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 
 // TODO Document.
 public class Confirm extends AuditBuilder
@@ -36,7 +36,7 @@ public class Confirm extends AuditBuilder
             {
                 if (compare == null)
                 {
-                    throw new SprocketException();
+                    throw new PasteException();
                 }
                 String string = (String) tree.getContextValue(compare);
                 if (!string.equals(tree.getValue()))

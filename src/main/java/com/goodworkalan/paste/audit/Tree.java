@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.PropertyPath;
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 
 // FIXME Combine with reporter.
 // TODO Document.
@@ -49,7 +49,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
         try
         {
@@ -57,7 +57,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
     }
     
@@ -71,7 +71,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
         try
         {
@@ -79,7 +79,7 @@ public class Tree
         }
         catch (PathException e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
     }
 }

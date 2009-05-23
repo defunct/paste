@@ -106,6 +106,6 @@ public class NamedValueListTest
     @Test
     public void hash()
     {
-        new NamedValueList().hashCode();
+        new NamedValueList(new ArrayList<NamedValue>()).hashCode();
     }
 }

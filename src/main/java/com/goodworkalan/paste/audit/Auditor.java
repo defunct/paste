@@ -8,7 +8,7 @@ import java.util.Map;
 import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.PropertyGlob;
 import com.goodworkalan.infuse.PropertyPath;
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.faults.Fault;
 import com.goodworkalan.paste.faults.FaultMessages;
 
@@ -92,7 +92,7 @@ public class Auditor
         }
         catch (PathException e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
     }
 }

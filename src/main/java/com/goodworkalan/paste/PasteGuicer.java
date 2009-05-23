@@ -25,7 +25,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 
 // TODO Document.
-public class SprocketGuicer
+public class PasteGuicer
 {
     // TODO Document.
     private final SessionScope sessionScope;
@@ -49,7 +49,7 @@ public class SprocketGuicer
     private final List<Janitor> janitors;
 
     // TODO Document.
-    public SprocketGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
+    public PasteGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
                           RuleMap<ViewBinding> mapOfViewBindings,
                           List<Module> modules)
     {
@@ -59,7 +59,7 @@ public class SprocketGuicer
         this.janitors = new ArrayList<Janitor>();
         
         List<Module> pushGuicletModule = new ArrayList<Module>(modules);
-        pushGuicletModule.add(new SprocketModule(sessionScope, requestScope, controllerScope, janitors));
+        pushGuicletModule.add(new PasteModule(sessionScope, requestScope, controllerScope, janitors));
         
         this.injector = Guice.createInjector(pushGuicletModule);
 

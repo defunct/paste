@@ -3,7 +3,7 @@ package com.goodworkalan.paste.audit;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 
 // TODO Document.
 public class AuditPath
@@ -27,7 +27,7 @@ public class AuditPath
         }
         catch (Exception e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
         T audit;
         try
@@ -36,7 +36,7 @@ public class AuditPath
         }
         catch (Exception e)
         {
-            throw new SprocketException(e);
+            throw new PasteException(e);
         }
         listOfAuditBuilders.add(audit);
         return audit;

@@ -13,7 +13,7 @@ public class HeadersTest
     @Test
     public void methodConstructor()
     {
-        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>(), "GET");
-        assertEquals(headers.getMethod(), "GET");
+        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>());
+        assertEquals(headers.getStatus(), 0);
     }
 }

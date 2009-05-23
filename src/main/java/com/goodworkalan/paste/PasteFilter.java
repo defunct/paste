@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Module;
 
 // TODO Document.
-public class SprocketFilter implements Filter
+public class PasteFilter implements Filter
 {
     // TODO Document.
     private static final long serialVersionUID = 20081122L;
     
     // TODO Document.
-    private SprocketGuicer guicer;
+    private PasteGuicer guicer;
     
     // TODO Document.
     public void init(FilterConfig config) throws ServletException
@@ -69,7 +69,7 @@ public class SprocketFilter implements Filter
             dispatcher.bind(binder);
         }
         
-        guicer = new SprocketGuicer(binder.getBindingTrees(),
+        guicer = new PasteGuicer(binder.getBindingTrees(),
                                     binder.getMapOfRules(),
                                     listOfModules);
     }

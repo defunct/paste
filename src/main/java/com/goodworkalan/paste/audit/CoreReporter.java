@@ -2,7 +2,7 @@ package com.goodworkalan.paste.audit;
 
 import java.util.Map;
 
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 
 // TODO Document.
 public class CoreReporter implements Reporter
@@ -30,7 +30,7 @@ public class CoreReporter implements Reporter
     {
         if (!name.matches("[\\w][\\w\\d]+"))
         {
-            throw new SprocketException();
+            throw new PasteException();
         }
         invalid = true;
         CoreReport report = new CoreReport();

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.PropertyPath;
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.PasteException;
 
 // TODO Document.
 public class FaultMessages
@@ -98,7 +98,7 @@ public class FaultMessages
                 }
                 catch (PathException e)
                 {
-                    throw new SprocketException(e);
+                    throw new PasteException(e);
                 }
             }
             return String.format(message.group(2), arguments.toArray());

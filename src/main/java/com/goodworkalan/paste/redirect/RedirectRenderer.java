@@ -9,10 +9,9 @@ import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.ResponseHeaders;
+import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.Response;
-import com.goodworkalan.paste.SprocketException;
+import com.goodworkalan.paste.ResponseHeaders;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.Inject;
 
@@ -40,7 +39,7 @@ public class RedirectRenderer implements Renderer
             PathFormatter pathFormatter,
             HttpServletResponse response,
             Redirector redirector,
-            @Response ResponseHeaders headers,
+            ResponseHeaders headers,
             Configuration configuration)
     {
         this.pathFormatter = pathFormatter;
@@ -63,11 +62,11 @@ public class RedirectRenderer implements Renderer
         
         if (!Redirects.isRedirectStatus(headers.getStatus()))
         {
-            throw new SprocketException();
+            throw new PasteException();
         }
         else if (headers.getFirst("Location") == null)
         {
-            throw new SprocketException();
+            throw new PasteException();
         }
         else
         {
@@ -77,7 +76,7 @@ public class RedirectRenderer implements Renderer
             }
             catch (URISyntaxException e)
             {
-                throw new SprocketException(e);
+                throw new PasteException(e);
             }
         }
         

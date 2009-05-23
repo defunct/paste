@@ -16,7 +16,7 @@ import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.Janitor;
 import com.goodworkalan.paste.Scopes;
 import com.goodworkalan.paste.SessionScope;
-import com.goodworkalan.paste.SprocketModule;
+import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.ViewBinder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -38,7 +38,7 @@ public class RedirectTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        SprocketModule guicelet = new SprocketModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
