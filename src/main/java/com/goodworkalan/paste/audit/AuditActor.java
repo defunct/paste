@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.goodworkalan.infuse.Infusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Actors;
 import com.goodworkalan.paste.Annotations;
@@ -50,10 +50,10 @@ public class AuditActor implements Actor
         {
             String value = parameters.getFirst(key);
             
-            PropertyPath path;
+            Infusion path;
             try
             {
-                path = new PropertyPath(key);
+                path = new Infusion(key, value);
             }
             catch (PathException e)
             {
@@ -61,7 +61,7 @@ public class AuditActor implements Actor
             }
             try
             {
-                path.set(map, value, true);
+                path.infuse(map);
             }
             catch (PathException e)
             {

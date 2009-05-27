@@ -11,8 +11,8 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.goodworkalan.infuse.Diffusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.PasteException;
 
 // TODO Document.
@@ -93,7 +93,7 @@ public class FaultMessages
             {
                 try
                 {
-                    PropertyPath path = new PropertyPath(glob.group(1));
+                    Diffusion path = new Diffusion(glob.group(1));
                     arguments.add(path.get(map));
                 }
                 catch (PathException e)

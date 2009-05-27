@@ -1,7 +1,7 @@
 package com.goodworkalan.paste.bean;
 
+import com.goodworkalan.infuse.Infusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Parameters;
@@ -32,10 +32,10 @@ public class BeanActor implements Actor
             String value = parameters.getFirst(key);
             if (value != null)
             {
-                PropertyPath path = null;
+                Infusion path = null;
                 try
                 {
-                    path = new PropertyPath(key);
+                    path = new Infusion(key, value);
                 }
                 catch (PathException e)
                 {
@@ -43,7 +43,7 @@ public class BeanActor implements Actor
                 }
                 try
                 {
-                    path.set(controller, value, true);
+                    path.infuse(controller);
                 }
                 catch (PathException e)
                 {

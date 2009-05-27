@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.goodworkalan.infuse.Diffusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Annotations;
 import com.goodworkalan.paste.PasteException;
@@ -36,10 +36,10 @@ public class InvokeActor implements Actor
                 List<Object> arguments = new ArrayList<Object>();
                 for (String argument : invoke.arguments())
                 {
-                    PropertyPath path;
+                    Diffusion path;
                     try
                     {
-                        path = new PropertyPath(argument);
+                        path = new Diffusion(argument);
                     }
                     catch (PathException e)
                     {

@@ -5,12 +5,8 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.infuse.Infusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
-import com.goodworkalan.paste.audit.Auditor;
-import com.goodworkalan.paste.audit.Confirm;
-import com.goodworkalan.paste.audit.Required;
-import com.goodworkalan.paste.audit.ValueInRange;
 
 
 public class AuditorTest
@@ -18,9 +14,9 @@ public class AuditorTest
     private Map<Object, Object> newTree() throws PathException
     {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        new PropertyPath("foo.quantity").set(map, "1", true);
-        new PropertyPath("foo.password").set(map, "password", true);
-        new PropertyPath("foo.confirm").set(map, "password", true);
+        new Infusion("foo.quantity", "1").infuse(map);
+        new Infusion("foo.password", "password").infuse(map);
+        new Infusion("foo.confirm", "password").infuse(map);
         return map;
     }
 

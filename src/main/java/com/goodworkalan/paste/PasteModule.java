@@ -3,6 +3,7 @@ package com.goodworkalan.paste;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,10 @@ public class PasteModule extends AbstractModule
         bindScope(SessionScoped.class, sessionScope);
         bindScope(RequestScoped.class, requestScope);
         bindScope(ControllerScoped.class, controllerScope);
+        
+        bind(ServletContext.class)
+            .toProvider(new NullProvider<ServletContext>())
+            .in(RequestScoped.class);
         
         bind(JanitorQueue.class)
             .annotatedWith(Servlet.class)

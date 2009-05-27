@@ -2,8 +2,9 @@ package com.goodworkalan.paste.audit;
 
 import java.util.Map;
 
-import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
+import com.goodworkalan.infuse.Diffusion;
+import com.goodworkalan.infuse.NavigateException;
+import com.goodworkalan.infuse.ParseException;
 import com.goodworkalan.paste.PasteException;
 
 // FIXME Combine with reporter.
@@ -42,20 +43,20 @@ public class Tree
     // TODO Document.
     public Object getValue(String path)
     {
-        PropertyPath property;
+        Diffusion diffusion;
         try
         {
-            property = new PropertyPath(path);
+            diffusion = new Diffusion(path);
         }
-        catch (PathException e)
+        catch (ParseException e)
         {
             throw new PasteException(e);
         }
         try
         {
-            return property.get(map);
+            return diffusion.get(map);
         }
-        catch (PathException e)
+        catch (NavigateException e)
         {
             throw new PasteException(e);
         }
@@ -64,20 +65,20 @@ public class Tree
     // TODO Document.
     public Object getContextValue(String path)
     {
-        PropertyPath property;
+        Diffusion diffusion;
         try
         {
-            property = new PropertyPath(path);
+            diffusion = new Diffusion(path);
         }
-        catch (PathException e)
+        catch (ParseException e)
         {
             throw new PasteException(e);
         }
         try
         {
-            return property.get(context);
+            return diffusion.get(context);
         }
-        catch (PathException e)
+        catch (NavigateException e)
         {
             throw new PasteException(e);
         }

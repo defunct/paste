@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,8 @@ public class Scopes
     {
         scope.enter();
        
+        scope.seed(ServletContext.class, request.getServletContext());
+        
         scope.seed(HttpServletRequest.class, request);
         scope.seed(ServletRequest.class, request);
         

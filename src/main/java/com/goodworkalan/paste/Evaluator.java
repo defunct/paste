@@ -1,7 +1,7 @@
 package com.goodworkalan.paste;
 
+import com.goodworkalan.infuse.Diffusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyPath;
 
 // TODO Document.
 public class Evaluator
@@ -20,8 +20,8 @@ public class Evaluator
     {
         try
         {
-            PropertyPath property = new PropertyPath(expression);
-            Object object = property.get(controller);
+            Diffusion diffusion = new Diffusion(expression);
+            Object object = diffusion.get(controller);
             return object == null ? null : object.toString();
         }
         catch (PathException e)

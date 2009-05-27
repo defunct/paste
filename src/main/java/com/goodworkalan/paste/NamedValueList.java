@@ -230,4 +230,15 @@ public class NamedValueList implements Iterable<NamedValue>
         }
         return false;
     }
+    
+    /**
+     * Return a string representation of the named value.
+     * 
+     * @return A string representation.
+     */
+    @Override
+    public String toString()
+    {
+        return namedValues.toString();
+    }
 }

@@ -5,9 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.goodworkalan.infuse.Diffusion;
+import com.goodworkalan.infuse.Infusion;
 import com.goodworkalan.infuse.PathException;
-import com.goodworkalan.infuse.PropertyGlob;
-import com.goodworkalan.infuse.PropertyPath;
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.faults.Fault;
 import com.goodworkalan.paste.faults.FaultMessages;
@@ -52,11 +52,11 @@ public class Auditor
             Map<String, CoreReport> reports = new LinkedHashMap<String, CoreReport>();
             for (AuditAction action : listOfAuditActions)
             {
-                PropertyGlob glob = new PropertyGlob(action.getContextPath());
-                for (PropertyPath contextPath : glob.all(request))
+                Diffusion glob = new Diffusion(action.getContextPath());
+                for (Diffusion contextPath : glob.all(request))
                 {
                     Object context = contextPath.get(request);
-                    PropertyPath path = new PropertyPath(action.getPath());
+                    Diffusion path = new Diffusion(action.getPath());
 
                     Object value = path.get(context);
                     
@@ -83,7 +83,7 @@ public class Auditor
                                 String message = messages.getMessage(keyStem, key);
                                 CoreReport report = reporter.getReports().get(key);
                                 report.put("value", value);
-                                new PropertyPath(contextPath + "." + path).set(faults, new Fault(message, report.map), true);
+                                new Infusion(contextPath + "." + path, new Fault(message, report.map)).infuse(faults);
                             }
                         }
                     }

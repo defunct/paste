@@ -113,6 +113,17 @@ public class NamedValue
         hash = hash * 37 + value.hashCode();
         return hash;
     }
+    
+    /**
+     * Return a string representation of the named value.
+     * 
+     * @return A string representation.
+     */
+    @Override
+    public String toString()
+    {
+        return "{" + name + "=" + "\"" + value + "\"}";
+    }
 
     /**
      * A flag to with identity equality used to identify named value contexts.
