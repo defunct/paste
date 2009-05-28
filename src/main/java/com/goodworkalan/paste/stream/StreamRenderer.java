@@ -2,8 +2,6 @@ package com.goodworkalan.paste.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -15,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
+import com.goodworkalan.paste.Responder;
 import com.goodworkalan.paste.Response;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
@@ -34,10 +33,8 @@ public class StreamRenderer implements Renderer
     /** The response for the request. */
     private final Response response;
     
-    /** The writer the request. */
-    private final Writer writer;
-    
-    private final OutputStream os;
+    /** The output conduit for the request. */
+    private final Responder responder;
     
     /** The Guice injector. */
     private final Injector injector;
@@ -61,12 +58,11 @@ public class StreamRenderer implements Renderer
      *            The Guice injector.
      */
     @Inject
-    public StreamRenderer(Configuration configuration, @Controller Object controller, Response response, Writer writer, OutputStream os, Injector injector)
+    public StreamRenderer(Configuration configuration, @Controller Object controller, Response response, Responder responder, Injector injector)
     {
         this.configuration = configuration;
         this.controller = controller;
-        this.writer = writer;
-        this.os = os;
+        this.responder = responder;
         this.response = response;
         this.injector = injector;
     }
@@ -124,7 +120,8 @@ public class StreamRenderer implements Renderer
         }
         
         response.addHeader("Content-Type", configuration.getContentType());
-        response.send();
+
+        responder.send(response);
         
         if (result instanceof URI)
         {
@@ -136,12 +133,12 @@ public class StreamRenderer implements Renderer
             int read;
             while ((read = in.read(buffer)) != -1)
             {
-                os.write(buffer, 0, read);
+                responder.getOutputStream().write(buffer, 0, read);
             }
         }
         else if (result instanceof String)
         {
-            writer.write((String) result);
+            responder.getWriter().write((String) result);
         }
     }
 }

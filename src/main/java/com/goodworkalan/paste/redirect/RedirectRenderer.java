@@ -3,7 +3,6 @@ package com.goodworkalan.paste.redirect;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -11,6 +10,7 @@ import javax.servlet.ServletException;
 
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
+import com.goodworkalan.paste.Responder;
 import com.goodworkalan.paste.Response;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.Inject;
@@ -31,15 +31,15 @@ public class RedirectRenderer implements Renderer
     private final Configuration configuration;
     
     // TODO Document.
-    private final Writer writer;
+    private final Responder responder;
     
     // TODO Document.
     @Inject
-    public RedirectRenderer(PathFormatter pathFormatter, Response response, Writer writer, Redirector redirector, Configuration configuration)
+    public RedirectRenderer(PathFormatter pathFormatter, Response response, Responder responder, Redirector redirector, Configuration configuration)
     {
         this.pathFormatter = pathFormatter;
         this.response = response;
-        this.writer = writer;
+        this.responder = responder;
         this.redirector = redirector;
         this.configuration = configuration;
     }
@@ -75,12 +75,12 @@ public class RedirectRenderer implements Renderer
             }
         }
         
-        response.send();
+        responder.send(response);
  
         String page = 
             String.format(getPageFormat(),
                           response.getStatus(), response.getHeaders().getFirst("Location"));
-        writer.append(page);
+        responder.getWriter().append(page);
     }
 
     /**

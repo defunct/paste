@@ -1,7 +1,5 @@
 package com.goodworkalan.paste;
 
-import java.io.OutputStream;
-import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
@@ -116,12 +114,5 @@ public class PasteModule extends AbstractModule
             .annotatedWith(Controller.class)
             .toProvider(new NullProvider<Parameters>())
             .in(ControllerScoped.class);
-        
-        bind(Writer.class)
-            .toProvider(new NullProvider<Writer>())
-            .in(RequestScoped.class);
-        bind(OutputStream.class)
-            .toProvider(new NullProvider<OutputStream>())
-            .in(RequestScoped.class);
     }
 }

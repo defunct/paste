@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.MockHttpServletRequest;
 import com.goodworkalan.paste.Request;
+import com.goodworkalan.paste.Responder;
 import com.goodworkalan.paste.Response;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.goodworkalan.paste.paths.PathFormatter;
@@ -34,7 +35,8 @@ public class RedirectRendererTest
         
         PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
-        Response r = new Response(response);
+        Response r = new Response();
+        Responder responder = new Responder(response);
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         
@@ -43,7 +45,7 @@ public class RedirectRendererTest
         RedirectRenderer renderer = new RedirectRenderer(
                 formatter,
                 r,
-                new StringWriter(),
+                responder,
                 redirector,
                 configuration);
 
@@ -61,7 +63,8 @@ public class RedirectRendererTest
         
         PathFormatter formatter = new PathFormatter(Guice.createInjector());
         
-        Response r = new Response(response);
+        Response r = new Response();
+        Responder responder = new Responder(response);
         Redirector redirector = new Redirector(new Request(request), r);
         
         Configuration configuration = new Configuration(303, "home", new FormatArgument[0]);
@@ -69,7 +72,7 @@ public class RedirectRendererTest
         RedirectRenderer renderer = new RedirectRenderer(
                 formatter,
                 r,
-                new StringWriter(),
+                responder,
                 redirector,
                 configuration);
 

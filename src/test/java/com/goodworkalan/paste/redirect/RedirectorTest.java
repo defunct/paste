@@ -1,11 +1,9 @@
 package com.goodworkalan.paste.redirect;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
@@ -20,17 +18,15 @@ public class RedirectorTest
     public void constructor()  
     {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        new Redirector(new Request(request.getRequest()), new Response(response));
+        new Redirector(new Request(request.getRequest()), new Response());
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void badStatus()
     {
         HttpServletRequest request = Mocks.request();
-        HttpServletResponse response = mock(HttpServletResponse.class);
         
-        Redirector redirector = new Redirector(new Request(request), new Response(response));
+        Redirector redirector = new Redirector(new Request(request), new Response());
         redirector.redirect("/foo", 200);
     }
 
@@ -41,8 +37,7 @@ public class RedirectorTest
         when(request.getRequest().getContextPath()).thenReturn("/foo");
         when(request.getRequest().getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
         
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        Response r = new Response(response);
+        Response r = new Response();
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         redirector.redirect("/bar");
@@ -56,8 +51,7 @@ public class RedirectorTest
         MockHttpServletRequest request = new MockHttpServletRequest();
         when(request.getRequest().getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        Response r = new Response(response);
+        Response r = new Response();
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         redirector.redirect("bar");
@@ -71,8 +65,7 @@ public class RedirectorTest
         MockHttpServletRequest request = new MockHttpServletRequest();
         when(request.getRequest().getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        Response r = new Response(response);
+        Response r = new Response();
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         redirector.redirect("");
@@ -85,8 +78,7 @@ public class RedirectorTest
     {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        Response r = new Response(response);
+        Response r = new Response();
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         redirector.redirect("http://netscape.com/");
@@ -99,8 +91,7 @@ public class RedirectorTest
     {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        Response r = new Response(response);
+        Response r = new Response();
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
 

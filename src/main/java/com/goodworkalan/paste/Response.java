@@ -4,24 +4,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.inject.Inject;
 
 
 @RequestScoped
 public class Response
 {
-    private final HttpServletResponse response;
-    
     private final List<NamedValue> headers;
     
     private int status;
     
     @Inject
-    public Response(HttpServletResponse response)
+    public Response()
     {
-        this.response = response;
+        this.status = 200;
         this.headers = new ArrayList<NamedValue>();
     }
     
@@ -65,13 +61,4 @@ public class Response
         }
     }
 
-    // TODO Document.
-    public void send()
-    {
-        response.setStatus(getStatus());
-        for (NamedValue namedValue : headers)
-        {
-            response.addHeader(namedValue.getName(), namedValue.getValue());
-        }
-    }
 }

@@ -1,10 +1,7 @@
 package com.goodworkalan.paste.redirect;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
@@ -20,8 +17,7 @@ public class RedirectionTest
         MockHttpServletRequest request = new MockHttpServletRequest();
         when(request.getRequest().getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        Response r = new Response(response);
+        Response r = new Response();
         
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         

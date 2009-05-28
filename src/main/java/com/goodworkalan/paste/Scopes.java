@@ -1,8 +1,6 @@
 package com.goodworkalan.paste;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +61,6 @@ public class Scopes
         scope.seed(JanitorQueue.class, new JanitorQueue(requestJanitors));
         
         scope.seed(Key.get(new TypeLiteral<Map<Object, Object>>() { }, Faults.class), new HashMap<Object, Object>());
-        
-        scope.seed(OutputStream.class, response.getOutputStream());
-        scope.seed(Writer.class, response.getWriter());
     }
 
 
