@@ -4,32 +4,30 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.NamedValue;
-import com.goodworkalan.paste.ResponseHeaders;
-import com.goodworkalan.paste.redirect.Redirection;
-import com.goodworkalan.paste.redirect.Redirector;
+import com.goodworkalan.paste.MockHttpServletRequest;
+import com.goodworkalan.paste.Request;
+import com.goodworkalan.paste.Response;
 
 public class RedirectionTest
 {
     @Test
     public void constructor()
     {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        when(request.getRequest().getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
 
-        ResponseHeaders headers = new ResponseHeaders(new ArrayList<NamedValue>());
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        Response r = new Response(response);
         
-        Redirector redirector = new Redirector(request, headers);
+        Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         
         Redirection redirection = new Redirection("bar");
         redirection.redirect(redirector);
         
-        assertEquals(headers.getFirst("Location"), "http://domain.com/foo/bar");   
+        assertEquals(r.getHeaders().getFirst("Location"), "http://domain.com/foo/bar");   
     }
 }

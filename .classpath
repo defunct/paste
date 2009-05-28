@@ -24,7 +24,6 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/org/mortbay/jetty/servlet-api/3.0.pre4/servlet-api-3.0.pre4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/servlet-api-3.0/7.0.0pre2/servlet-api-3.0-7.0.0pre2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/testng/testng/5.8/testng-5.8-jdk15.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/infuse"/>
 	<classpathentry kind="output" path="target/classes"/>

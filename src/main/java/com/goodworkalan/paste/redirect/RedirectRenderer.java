@@ -3,15 +3,15 @@ package com.goodworkalan.paste.redirect;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ResponseHeaders;
+import com.goodworkalan.paste.Response;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.Inject;
 
@@ -22,30 +22,25 @@ public class RedirectRenderer implements Renderer
     private final PathFormatter pathFormatter;
     
     // TODO Document.
-    private final HttpServletResponse response;
-    
-    // TODO Document.
     private final Redirector redirector;
 
     // TODO Document.
-    private final ResponseHeaders headers;
+    private final Response response;
 
     // TODO Document.
     private final Configuration configuration;
     
     // TODO Document.
+    private final Writer writer;
+    
+    // TODO Document.
     @Inject
-    public RedirectRenderer(
-            PathFormatter pathFormatter,
-            HttpServletResponse response,
-            Redirector redirector,
-            ResponseHeaders headers,
-            Configuration configuration)
+    public RedirectRenderer(PathFormatter pathFormatter, Response response, Writer writer, Redirector redirector, Configuration configuration)
     {
         this.pathFormatter = pathFormatter;
         this.response = response;
+        this.writer = writer;
         this.redirector = redirector;
-        this.headers = headers;
         this.configuration = configuration;
     }
 
@@ -60,11 +55,11 @@ public class RedirectRenderer implements Renderer
             redirector.redirect(path, configuration.getStatus());
         }
         
-        if (!Redirects.isRedirectStatus(headers.getStatus()))
+        if (!Redirects.isRedirectStatus(response.getStatus()))
         {
             throw new PasteException();
         }
-        else if (headers.getFirst("Location") == null)
+        else if (response.getHeaders().getFirst("Location") == null)
         {
             throw new PasteException();
         }
@@ -72,7 +67,7 @@ public class RedirectRenderer implements Renderer
         {
             try
             {
-                new URI(headers.getFirst("Location"));
+                new URI(response.getHeaders().getFirst("Location"));
             }
             catch (URISyntaxException e)
             {
@@ -80,12 +75,12 @@ public class RedirectRenderer implements Renderer
             }
         }
         
-        headers.send(response);
+        response.send();
  
         String page = 
             String.format(getPageFormat(),
-                          headers.getStatus(), headers.getFirst("Location"));
-        response.getWriter().append(page);
+                          response.getStatus(), response.getHeaders().getFirst("Location"));
+        writer.append(page);
     }
 
     /**

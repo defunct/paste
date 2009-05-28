@@ -8,6 +8,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -38,7 +39,7 @@ public class ForwardTest
     }
     
     @Test
-    public void configure()
+    public void configure() throws IOException
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -72,7 +73,7 @@ public class ForwardTest
     }
     
     @Test
-    public void property()
+    public void property() throws IOException
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");
@@ -107,7 +108,7 @@ public class ForwardTest
     }
     
     @Test
-    public void format()
+    public void format() throws IOException
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");

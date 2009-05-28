@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.inject.Inject;
 
 //TODO Document.
+@ControllerScoped
 public class Annotations
 {
     // TODO Document.
@@ -15,8 +16,7 @@ public class Annotations
     
     // TODO Document.
     @Inject
-    public Annotations(@Request Parameters parameters,
-                       HttpServletRequest request)
+    public Annotations(@Controller Parameters parameters, HttpServletRequest request)
     {
         this.parameters = parameters;
         this.request = request;

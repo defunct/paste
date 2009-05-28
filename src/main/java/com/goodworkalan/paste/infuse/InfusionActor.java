@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.bean;
+package com.goodworkalan.paste.infuse;
 
 import com.goodworkalan.infuse.Infusion;
 import com.goodworkalan.infuse.PathException;
@@ -12,14 +12,17 @@ import com.google.inject.Inject;
  * 
  * @author Alan Gutierrez
  */
-public class BeanActor implements Actor
+public class InfusionActor implements Actor
 {
-    // TODO Document.
+    /** The controller parameters. */
     private final Parameters parameters;
     
-    // TODO Document.
+    /** Construct an infusion actor with the given controller parameters.
+     * 
+     * @param parameters Parameters with the controller parameters.
+     */
     @Inject
-    public BeanActor(@Controller Parameters parameters)
+    public InfusionActor(@Controller Parameters parameters)
     {
         this.parameters = parameters;
     }

@@ -1,5 +1,7 @@
 package com.goodworkalan.paste;
 
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
@@ -88,29 +90,8 @@ public class PasteModule extends AbstractModule
             .toProvider(new NullProvider<String>())
             .in(RequestScoped.class);
 
-        bind(NamedValueList.class).annotatedWith(Request.class)
-            .toProvider(new NullProvider<NamedValueList>())
-            .in(RequestScoped.class);
-        bind(RequestHeaders.class)
-            .toProvider(new NullProvider<RequestHeaders>())
-            .in(RequestScoped.class);
-        
-        
-        bind(NamedValueList.class).annotatedWith(Response.class)
-            .toProvider(new NullProvider<NamedValueList>())
-            .in(RequestScoped.class);
-        bind(ResponseHeaders.class)
-            .toProvider(new NullProvider<ResponseHeaders>())
-            .in(RequestScoped.class);
-        
         bind(Parameters.class)
-            .annotatedWith(Request.class)
             .toProvider(new NullProvider<Parameters>())
-            .in(RequestScoped.class);
-        
-        bind(new TypeLiteral<List<NamedValue>>() { })
-            .annotatedWith(Request.class)
-            .toProvider(new NullProvider<List<NamedValue>>())
             .in(RequestScoped.class);
         
         bind(Parameters.class)
@@ -123,7 +104,7 @@ public class PasteModule extends AbstractModule
             .toProvider(new NullProvider<List<NamedValue>>())
             .in(ControllerScoped.class);
       
-        bind(JanitorQueue.class).annotatedWith(Request.class)
+        bind(JanitorQueue.class)
             .toProvider(new NullProvider<JanitorQueue>())
             .in(RequestScoped.class);
         
@@ -135,5 +116,12 @@ public class PasteModule extends AbstractModule
             .annotatedWith(Controller.class)
             .toProvider(new NullProvider<Parameters>())
             .in(ControllerScoped.class);
+        
+        bind(Writer.class)
+            .toProvider(new NullProvider<Writer>())
+            .in(RequestScoped.class);
+        bind(OutputStream.class)
+            .toProvider(new NullProvider<OutputStream>())
+            .in(RequestScoped.class);
     }
 }

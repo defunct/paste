@@ -13,7 +13,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,6 +43,7 @@ public class StreamTest
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getContextPath()).thenReturn("");
         when(request.getRequestURI()).thenReturn("/account/create");
+        when(request.getServletContext()).thenReturn(mock(ServletContext.class));
         
         when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
         
@@ -48,6 +51,7 @@ public class StreamTest
         StringWriter writer = new StringWriter();
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(response.getWriter()).thenReturn(new PrintWriter(writer));
+        when(response.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
         doAnswer(new Answer<Object>()
         { 
             public Object answer(InvocationOnMock invocation) throws Throwable

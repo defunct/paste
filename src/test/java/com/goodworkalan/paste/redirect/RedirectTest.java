@@ -4,6 +4,7 @@ import static com.goodworkalan.paste.paths.FormatArguments.REQUEST_DIRECTORY_NAM
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -14,9 +15,9 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.Janitor;
+import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Scopes;
 import com.goodworkalan.paste.SessionScope;
-import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.ViewBinder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -24,7 +25,7 @@ import com.google.inject.Injector;
 public class RedirectTest
 {
     @Test
-    public void createInjector()
+    public void createInjector() throws IOException
     {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("GET");

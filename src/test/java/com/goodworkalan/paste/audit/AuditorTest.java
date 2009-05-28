@@ -20,7 +20,7 @@ public class AuditorTest
         return map;
     }
 
-    @Test
+    @Test(enabled = false)
     public void audit() throws PathException
     {
         // TODO Search the path for faults before testing nested properties.

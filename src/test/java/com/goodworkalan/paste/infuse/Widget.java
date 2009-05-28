@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.bean;
+package com.goodworkalan.paste.infuse;
 
 import java.util.Map;
 

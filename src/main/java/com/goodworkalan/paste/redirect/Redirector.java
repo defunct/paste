@@ -3,9 +3,8 @@ import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
 import java.net.URI;
 
-import javax.servlet.http.HttpServletRequest;
-
-import com.goodworkalan.paste.ResponseHeaders;
+import com.goodworkalan.paste.Request;
+import com.goodworkalan.paste.Response;
 import com.google.inject.Inject;
 
 /**
@@ -17,17 +16,17 @@ import com.google.inject.Inject;
 public class Redirector
 {
     // TODO Document.
-    private final HttpServletRequest request;
+    private final Request request;
     
     // TODO Document.
-    private final ResponseHeaders headers;
+    private final Response response;
     
     // TODO Document.
     @Inject
-    public Redirector(HttpServletRequest request, ResponseHeaders headers)
+    public Redirector(Request request, Response response)
     {
         this.request = request;
-        this.headers = headers;
+        this.response = response;
     }
     
     // TODO Document.
@@ -44,7 +43,7 @@ public class Redirector
             throw new IllegalArgumentException();
         }
 
-        headers.setStatus(status);
+        response.setStatus(status);
         
         URI location = URI.create(where.trim());
         if (location.getScheme() == null)
@@ -54,16 +53,16 @@ public class Redirector
             if (path.length() != 0 && path.charAt(0) == '/')
             {
                 path = request.getContextPath() + path;
-                headers.add("Location", uri.resolve(path).toString());
+                response.addHeader("Location", uri.resolve(path).toString());
             }
             else
             {
-                headers.add("Location", uri.resolve(path).toString());
+                response.addHeader("Location", uri.resolve(path).toString());
             }
         }
         else
         {
-            headers.add("Location", location.toString());
+            response.addHeader("Location", location.toString());
         }
     }
 

@@ -1,5 +1,8 @@
 package com.goodworkalan.paste;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +29,7 @@ public class Scopes
                 BasicScope scope,
                 HttpServletRequest request,
                 HttpServletResponse response,
-                List<Janitor> requestJanitors)
+                List<Janitor> requestJanitors) throws IOException
     {
         scope.enter();
        
@@ -40,24 +43,14 @@ public class Scopes
         scope.seed(HttpServletResponse.class, response);
         scope.seed(ServletResponse.class, response);
         
-        scope.seed(Key.get(new TypeLiteral<Map<String, String[]>>() {}, RequestParameters.class), getParameterMap(request));
-
         String path = request.getRequestURI().substring(request.getContextPath().length());
         scope.seed(Key.get(String.class, Path.class), path);
 
         scope.seed(Key.get(String.class, WelcomeFile.class), "index");
 
-        RequestHeaders requestHeaders = RequestHeaders.fromHttpServerRequest(request);
-        scope.seed(Key.get(NamedValueList.class, Request.class), requestHeaders);
-        scope.seed(RequestHeaders.class, requestHeaders);
-
-        ResponseHeaders responseHeaders = new ResponseHeaders(new ArrayList<NamedValue>());
-        scope.seed(Key.get(NamedValueList.class, Response.class), responseHeaders);
-        scope.seed(ResponseHeaders.class, responseHeaders);
-    
         ArrayList<NamedValue> parameters = new ArrayList<NamedValue>();
         
-        for (Map.Entry<String, String[]> entry : getParameterMap(request).entrySet())
+        for (Map.Entry<String, String[]> entry : Request.getParameterMap(request).entrySet())
         {
             for (String value : entry.getValue())
             {
@@ -65,20 +58,16 @@ public class Scopes
             }
         }
         
-        scope.seed(Key.get(new TypeLiteral<List<NamedValue>>() {}, Request.class), parameters);
-        scope.seed(Key.get(Parameters.class, Request.class), new Parameters(parameters));
+        scope.seed(Parameters.class, new Parameters(parameters));
 
-        scope.seed(Key.get(JanitorQueue.class, Request.class), new JanitorQueue(requestJanitors));
+        scope.seed(JanitorQueue.class, new JanitorQueue(requestJanitors));
         
         scope.seed(Key.get(new TypeLiteral<Map<Object, Object>>() { }, Faults.class), new HashMap<Object, Object>());
+        
+        scope.seed(OutputStream.class, response.getOutputStream());
+        scope.seed(Writer.class, response.getWriter());
     }
-    
-    // TODO Document.
-    @SuppressWarnings("unchecked")
-    private static Map<String, String[]> getParameterMap(HttpServletRequest request)
-    {
-        return request.getParameterMap();
-    }
+
 
     /**
      * Enter the controller scope creating a controller. Returns the Throwable
@@ -108,7 +97,10 @@ public class Scopes
             parameters.add(new NamedValue(NamedValue.DOVETAIL, entry.getKey(), entry.getValue()));
         }
         
-        parameters.addAll(injector.getInstance(Key.get(new TypeLiteral<List<NamedValue>>() {}, Request.class)));
+        for (NamedValue namedValue : injector.getInstance(Parameters.class))
+        {
+            parameters.add(namedValue);
+        }
         
         scope.seed(Key.get(new TypeLiteral<List<NamedValue>>() {}, Controller.class), parameters);
         scope.seed(Key.get(Parameters.class, Controller.class), new Parameters(parameters));

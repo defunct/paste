@@ -2,6 +2,8 @@ package com.goodworkalan.paste.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -9,12 +11,11 @@ import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ResponseHeaders;
+import com.goodworkalan.paste.Response;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -30,11 +31,13 @@ public class StreamRenderer implements Renderer
     /** The final controller for the request. */
     private final Object controller;
     
-    /** The response headers for the request. */
-    private final ResponseHeaders headers;
+    /** The response for the request. */
+    private final Response response;
     
-    /** The HTTP response for the request. */
-    private final HttpServletResponse response;
+    /** The writer the request. */
+    private final Writer writer;
+    
+    private final OutputStream os;
     
     /** The Guice injector. */
     private final Injector injector;
@@ -58,11 +61,12 @@ public class StreamRenderer implements Renderer
      *            The Guice injector.
      */
     @Inject
-    public StreamRenderer(Configuration configuration, @Controller Object controller, ResponseHeaders headers, HttpServletResponse response, Injector injector)
+    public StreamRenderer(Configuration configuration, @Controller Object controller, Response response, Writer writer, OutputStream os, Injector injector)
     {
         this.configuration = configuration;
         this.controller = controller;
-        this.headers = headers;
+        this.writer = writer;
+        this.os = os;
         this.response = response;
         this.injector = injector;
     }
@@ -119,7 +123,8 @@ public class StreamRenderer implements Renderer
             throw new PasteException(e);
         }
         
-        headers.add("Content-Type", configuration.getContentType());
+        response.addHeader("Content-Type", configuration.getContentType());
+        response.send();
         
         if (result instanceof URI)
         {
@@ -131,12 +136,12 @@ public class StreamRenderer implements Renderer
             int read;
             while ((read = in.read(buffer)) != -1)
             {
-                response.getOutputStream().write(buffer, 0, read);
+                os.write(buffer, 0, read);
             }
         }
         else if (result instanceof String)
         {
-            response.getWriter().write((String) result);
+            writer.write((String) result);
         }
     }
 }

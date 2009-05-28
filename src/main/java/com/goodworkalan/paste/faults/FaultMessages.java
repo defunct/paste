@@ -70,7 +70,7 @@ public class FaultMessages
     
     // TODO Document.
     private final Pattern MESSAGE = Pattern.compile(
-            "\\s*\\(\\s*" + glob() + "(?:\\s*,\\s*" + glob() + ")\\s*)\\s*(.*)"
+            "\\s*\\(\\s*" + glob() + "(?:\\s*,\\s*" + glob() + "\\s*)\\s*(.*)"
             );
     
     // TODO Document.
