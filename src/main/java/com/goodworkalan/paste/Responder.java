@@ -8,7 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Inject;
 
-@RequestScoped
+/**
+ * Must be controller scoped so that the correct servlet response is used, one
+ * reset for a subsequent servlet response.
+ * 
+ * @author Alan Gutierrez
+ */
+@ControllerScoped
 public class Responder
 {
     private final HttpServletResponse servletResponse;

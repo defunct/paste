@@ -5,11 +5,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletResponseWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 // TODO Document.
-public class InterceptingResponse extends ServletResponseWrapper
+public class InterceptingResponse extends HttpServletResponseWrapper
 {
     // TODO Document.
     private final Interception interception;
@@ -21,7 +21,7 @@ public class InterceptingResponse extends ServletResponseWrapper
     private ServletOutputStream out;
     
     // TODO Document.
-    public InterceptingResponse(Interception interception, ServletResponse response)
+    public InterceptingResponse(Interception interception, HttpServletResponse response)
     {
         super(response);
         this.interception = interception;
@@ -31,6 +31,7 @@ public class InterceptingResponse extends ServletResponseWrapper
     @Override
     public ServletOutputStream getOutputStream() throws IOException
     {
+        interception.intercept();
         if (out == null)
         {
             out = new InterceptingOutputStream(interception, super.getOutputStream());
@@ -42,6 +43,7 @@ public class InterceptingResponse extends ServletResponseWrapper
     @Override
     public PrintWriter getWriter() throws IOException
     {
+        interception.intercept();
         if (writer == null)
         {
             writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), getCharacterEncoding()));

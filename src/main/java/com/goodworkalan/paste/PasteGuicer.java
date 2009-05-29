@@ -3,26 +3,34 @@ package com.goodworkalan.paste;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Mapping;
 import com.goodworkalan.dovetail.TreeMapper;
+import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.ProvisionException;
+import com.google.inject.TypeLiteral;
 
 // TODO Document.
 public class PasteGuicer
@@ -47,6 +55,8 @@ public class PasteGuicer
 
     // TODO Document.
     private final List<Janitor> janitors;
+    
+    private final ThreadLocal<Integer> callDepth;
 
     // TODO Document.
     public PasteGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
@@ -57,6 +67,7 @@ public class PasteGuicer
         this.controllerScope = new BasicScope();
         this.sessionScope = new SessionScope();
         this.janitors = new ArrayList<Janitor>();
+        this.callDepth = new ThreadLocal<Integer>();
         
         List<Module> pushGuicletModule = new ArrayList<Module>(modules);
         pushGuicletModule.add(new PasteModule(sessionScope, requestScope, controllerScope, janitors));
@@ -74,8 +85,8 @@ public class PasteGuicer
         throws IOException, ServletException
     {
         Interception interception = new Interception();
-        filter(new InterceptingRequest(interception, request),
-               new InterceptingHttpResponse(interception, response),
+        filter(new InterceptingRequest(interception, request, controllerScope),
+               new InterceptingResponse(interception, response),
                interception, chain);
     }
 
@@ -86,18 +97,44 @@ public class PasteGuicer
                         FilterChain chain)
         throws IOException, ServletException
     {
-        sessionScope.enter(request);
+        Integer depth = callDepth.get();
+        if (depth == null)
+        {
+            depth = 0;
+            callDepth.set(depth);
+        }
+        callDepth.set(depth + 1);
+        if (depth == 0)
+        {
+            sessionScope.enter(request);
+        }
+        else
+        {
+            requestScope.push(Key.get(JanitorQueue.class),
+                              Key.get(HttpServletRequest.class),
+                              Key.get(HttpServletResponse.class),
+                              Key.get(ServletRequest.class),
+                              Key.get(ServletResponse.class));
+        }
         List<Janitor> janitors = new ArrayList<Janitor>();
         try
         {
-            filter(request, response, janitors, interception, chain);
+            filter(request, response, janitors, interception, chain, depth);
         }
         finally
         {
             cleanUp(janitors);
-            requestScope.exit();
+            if (depth == 0)
+            {
+                requestScope.exit();
+                sessionScope.exit();
+            }
+            else
+            {
+                requestScope.pop();
+            }
             controllerScope.exit();
-            sessionScope.exit();
+            callDepth.set(depth);
         }
     }
     
@@ -106,15 +143,19 @@ public class PasteGuicer
                         HttpServletResponse response,
                         List<Janitor> janitors,
                         Interception interception,
-                        FilterChain chain)
+                        FilterChain chain, 
+                        int depth)
         throws IOException, ServletException
     {
-        String path = request.getRequestURI();
-        
-        String contextPath = request.getContextPath();
-        if (contextPath != null)
+        String path = (String) request.getAttribute("javax.servlet.include.servlet_path");
+        if (path == null)
         {
-            path = path.substring(contextPath.length());
+            path = request.getRequestURI();
+            String contextPath = request.getContextPath();
+            if (contextPath != null)
+            {
+                path = path.substring(contextPath.length());
+            }
         }
 
         Throwable throwable = null;
@@ -162,10 +203,10 @@ public class PasteGuicer
                 }
                 else
                 {
-                    Scopes.enterRequest(requestScope, request, response, janitors);
+                    enterRequest(requestScope, request, response, janitors);
                 }
 
-                throwable = Scopes.enterController(controllerScope, injector, controllerClass, mappings);
+                throwable = enterController(controllerScope, injector, controllerClass, mappings);
                 if (throwable != null)
                 {
                     break;
@@ -232,12 +273,6 @@ public class PasteGuicer
             }
         }
         
-        if (hasController)
-        {
-            controllerScope.exit();
-            requestScope.exit();
-        }
-        
         if (!interception.isIntercepted())
         {
             chain.doFilter(request, response);
@@ -267,5 +302,99 @@ public class PasteGuicer
     public void destroy()
     {
         cleanUp(janitors);
+    }
+
+    // TODO Document.
+    public static void enterRequest(
+                BasicScope scope,
+                HttpServletRequest request,
+                HttpServletResponse response,
+                List<Janitor> requestJanitors) throws IOException
+    {
+        scope.enter();
+        
+        scope.seed(ServletContext.class, request.getServletContext());
+        
+        scope.seed(HttpServletRequest.class, request);
+        scope.seed(ServletRequest.class, request);
+        
+        scope.seed(HttpSession.class, request.getSession(true));
+            
+        scope.seed(HttpServletResponse.class, response);
+        scope.seed(ServletResponse.class, response);
+        
+        String path = request.getRequestURI().substring(request.getContextPath().length());
+        scope.seed(Key.get(String.class, Path.class), path);
+
+        scope.seed(Key.get(String.class, WelcomeFile.class), "index");
+
+        ArrayList<NamedValue> parameters = new ArrayList<NamedValue>();
+        
+        for (Map.Entry<String, String[]> entry : Request.getParameterMap(request).entrySet())
+        {
+            for (String value : entry.getValue())
+            {
+                parameters.add(new NamedValue(NamedValue.REQUEST, entry.getKey(), value));
+            }
+        }
+        
+        scope.seed(Parameters.class, new Parameters(parameters));
+
+        scope.seed(JanitorQueue.class, new JanitorQueue(requestJanitors));
+        
+        scope.seed(Key.get(new TypeLiteral<Map<Object, Object>>() { }, Faults.class), new HashMap<Object, Object>());
+    }
+
+
+    /**
+     * Enter the controller scope creating a controller. Returns the Throwable
+     * thrown by the controller constructor if any. This unorthodox return value
+     * distinguishes an exception raised in the controller constructor from an
+     * exception raised during the creation of other objects in the method. That
+     * is, it is an explicit return of an exception raised during construction,
+     * that may be processed by the error handling of the web application.
+     * 
+     * @param scope
+     *            The controller scope.
+     * @param injector
+     *            The Guice injector.
+     * @param controllerClass
+     *            The class of the controller to create.
+     * @param mappings
+     *            The map of parameter bindings for the controller.
+     * @return The exception raised by controller, if any.
+     */
+    public static Throwable enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Map<String, String> mappings)
+    {
+        scope.enter();
+        
+        List<NamedValue> parameters = new ArrayList<NamedValue>();
+        for (Map.Entry<String, String> entry : mappings.entrySet())
+        {
+            parameters.add(new NamedValue(NamedValue.DOVETAIL, entry.getKey(), entry.getValue()));
+        }
+        
+        for (NamedValue namedValue : injector.getInstance(Parameters.class))
+        {
+            parameters.add(namedValue);
+        }
+        
+        scope.seed(Key.get(new TypeLiteral<List<NamedValue>>() {}, Controller.class), parameters);
+        scope.seed(Key.get(Parameters.class, Controller.class), new Parameters(parameters));
+        
+        try
+        {
+            scope.seed(Key.get(Object.class, Controller.class), injector.getInstance(controllerClass));
+        }
+        catch (ProvisionException e)
+        {
+            if (e.getCause() != null)
+            {
+                return e.getCause();
+            }
+            throw e;
+        }
+        
+        return null;
     }
 }

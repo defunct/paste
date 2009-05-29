@@ -19,10 +19,10 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.Janitor;
-import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.Scopes;
-import com.goodworkalan.paste.SessionScope;
+import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
+import com.goodworkalan.paste.Renderer;
+import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.ViewBinder;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Guice;
@@ -55,8 +55,8 @@ public class ForwardTest
         PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
+        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
@@ -89,8 +89,8 @@ public class ForwardTest
         PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
+        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         
@@ -124,8 +124,8 @@ public class ForwardTest
         PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        Scopes.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
-        Scopes.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
+        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
         

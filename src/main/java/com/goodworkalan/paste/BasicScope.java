@@ -1,6 +1,7 @@
 package com.goodworkalan.paste;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import com.google.inject.Key;
@@ -10,6 +11,10 @@ import com.google.inject.Scope;
 /**
  * A basic implementation of a thread local scope that is bounded by explicit
  * function calls to enter and exit the scope.
+ * <p>
+ * FIXME Sort out the push and pop jiggery-pokery so that it is consistant for
+ * the entire package. The safe-guards are fine, but you must define them.
+ * When you are at depth zero, everything is cleared.
  * 
  * @author Alan Gutierrez
  */
@@ -17,6 +22,9 @@ public class BasicScope implements Scope
 {
     /** A thread local map of type tokens to objects. */
     private final ThreadLocal<Map<Key<?>, Object>> values = new ThreadLocal<Map<Key<?>, Object>>();
+    
+    /** A stack of scopes, in case we need to push and pop. */
+    private final ThreadLocal<LinkedList<Map<Key<?>, Object>>> stack = new ThreadLocal<LinkedList<Map<Key<?>, Object>>>();
 
     /**
      * Create a basic scope.
@@ -26,12 +34,62 @@ public class BasicScope implements Scope
     }
     
     /**
+     * Push the current scope onto a stack and set the current values to null.
+     */
+    public void push(Key<?>...keys)
+    {
+        LinkedList<Map<Key<?>,Object>> list = stack.get();
+        if (list == null)
+        {
+            list = new LinkedList<Map<Key<?>,Object>>();
+            stack.set(list);
+        }
+        Map<Key<?>, Object> current = values.get();
+        Map<Key<?>, Object> frame = new HashMap<Key<?>, Object>();
+        for (Key<?> key : keys)
+        {
+            frame.put(key, current.get(key));
+            current.remove(key);
+        }
+        list.addLast(frame);
+    }
+    
+    public void push()
+    {
+        LinkedList<Map<Key<?>,Object>> list = stack.get();
+        if (list == null)
+        {
+            list = new LinkedList<Map<Key<?>,Object>>();
+            stack.set(list);
+        }
+        list.add(values.get());
+        values.set(new HashMap<Key<?>, Object>());
+    }
+    
+    /**
+     * Pop a scope off of the stack.
+     */
+    public void pop()
+    {
+        Map<Key<?>, Object> current = values.get();
+        if (current == null)
+        {
+            current = new HashMap<Key<?>, Object>();
+            values.set(current);
+        }
+        current.putAll(stack.get().removeLast());
+    }
+    
+    /**
      * Enter the scope creating a new thread local hash map to store the scope
      * type token to object mappings.
      */
     public void enter()
     {
-        values.set(new HashMap<Key<?>, Object>());
+        if (values.get() == null)
+        {
+            values.set(new HashMap<Key<?>, Object>());
+        }
     }
 
     /**
@@ -57,7 +115,10 @@ public class BasicScope implements Scope
     public <T> void seed(Key<T> key, T value)
     {
         Map<Key<?>, Object> objects = values.get();
-        objects.put(key, value);
+        if (!objects.containsKey(key))
+        {
+            objects.put(key, value);
+        }
     }
 
     /**

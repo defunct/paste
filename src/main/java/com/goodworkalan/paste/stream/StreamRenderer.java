@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.goodworkalan.paste.Controller;
+import com.goodworkalan.paste.ControllerScoped;
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.Responder;
@@ -20,6 +21,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
+@ControllerScoped
 public class StreamRenderer implements Renderer
 {
     /** 
@@ -135,10 +137,12 @@ public class StreamRenderer implements Renderer
             {
                 responder.getOutputStream().write(buffer, 0, read);
             }
+            responder.getOutputStream().flush();
         }
         else if (result instanceof String)
         {
             responder.getWriter().write((String) result);
+            responder.getWriter().flush();
         }
     }
 }
