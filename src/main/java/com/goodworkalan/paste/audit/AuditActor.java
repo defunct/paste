@@ -53,7 +53,7 @@ public class AuditActor implements Actor
             Infusion path;
             try
             {
-                path = new Infusion(key, value);
+                path = Infusion.getInstance(key, value);
             }
             catch (PathException e)
             {

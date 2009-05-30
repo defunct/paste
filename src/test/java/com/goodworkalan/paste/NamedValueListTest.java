@@ -21,7 +21,7 @@ public class NamedValueListTest
         list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
         NamedValueList namedValues = new NamedValueList(list);
         assertEquals(namedValues.size(), 1);
-        for (Map.Entry<String, List<String>> entry : namedValues.toMap().entrySet())
+        for (Map.Entry<String, List<String>> entry : namedValues.toStringListMap().entrySet())
         {
             assertEquals(entry.getKey(), "hello");
             for (String value : entry.getValue())

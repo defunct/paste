@@ -14,9 +14,9 @@ public class AuditorTest
     private Map<Object, Object> newTree() throws PathException
     {
         Map<Object, Object> map = new HashMap<Object, Object>();
-        new Infusion("foo.quantity", "1").infuse(map);
-        new Infusion("foo.password", "password").infuse(map);
-        new Infusion("foo.confirm", "password").infuse(map);
+        Infusion.getInstance("foo.quantity", "1").infuse(map);
+        Infusion.getInstance("foo.password", "password").infuse(map);
+        Infusion.getInstance("foo.confirm", "password").infuse(map);
         return map;
     }
 

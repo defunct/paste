@@ -43,6 +43,11 @@ public class Response
         return new NamedValueList(headers);
     }
     
+    public void addHeader(String name, int value)
+    {
+        headers.add(new NamedValue(NamedValue.RESPONSE, name, Integer.toString(value)));
+    }
+    
     public void addHeader(String name, String value)
     {
         headers.add(new NamedValue(NamedValue.RESPONSE, name, value));

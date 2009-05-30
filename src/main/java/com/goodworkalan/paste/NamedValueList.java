@@ -128,7 +128,7 @@ public class NamedValueList implements Iterable<NamedValue>
      * 
      * @return A map of names to of lists of values.
      */
-    public LinkedHashMap<String, List<String>> toMap()
+    public LinkedHashMap<String, List<String>> toStringListMap()
     {
         LinkedHashMap<String, List<String>> map = new LinkedHashMap<String, List<String>>();
         for (NamedValue namedValue : namedValues)
@@ -140,6 +140,21 @@ public class NamedValueList implements Iterable<NamedValue>
                 map.put(namedValue.getName(), values);
             }
             values.add(namedValue.getValue());
+        }
+        return map;
+    }
+    
+    public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull)
+    {
+        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        for (NamedValue namedValue : namedValues)
+        {
+            String value = namedValue.getValue();
+            if (spaceIsNull && (namedValue.getValue() == null || namedValue.getValue().trim().length() == 0))
+            {
+                value = null;
+            }
+            map.put(namedValue.getName(), value);
         }
         return map;
     }

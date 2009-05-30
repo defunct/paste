@@ -83,7 +83,7 @@ public class Auditor
                                 String message = messages.getMessage(keyStem, key);
                                 CoreReport report = reporter.getReports().get(key);
                                 report.put("value", value);
-                                new Infusion(contextPath + "." + path, new Fault(message, report.map)).infuse(faults);
+                                Infusion.getInstance(contextPath + "." + path, new Fault(message, report.map)).infuse(faults);
                             }
                         }
                     }

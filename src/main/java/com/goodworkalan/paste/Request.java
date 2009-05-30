@@ -101,6 +101,11 @@ public class Request
         return request.getContextPath();
     }
     
+    public String getRequestURI()
+    {
+        return request.getRequestURI();
+    }
+    
     public String getRequestURL()
     {
         return request.getRequestURL().toString();
