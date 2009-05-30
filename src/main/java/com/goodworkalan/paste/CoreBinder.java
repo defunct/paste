@@ -3,6 +3,9 @@ package com.goodworkalan.paste;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.deviate.RuleMapBuilder;
@@ -68,8 +71,8 @@ public class CoreBinder implements Binder
     }
     
     // TODO Document.
-    public PasteGuicer newGuiceletGuicer(List<Module> modules)
+    public PasteGuicer newGuiceletGuicer(List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
     {
-        return new PasteGuicer(getBindingTrees(), getMapOfRules(), modules);
+        return new PasteGuicer(getBindingTrees(), getMapOfRules(), modules, servletContext, initialization);
     }
 }

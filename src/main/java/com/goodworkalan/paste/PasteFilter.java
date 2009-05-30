@@ -2,7 +2,10 @@ package com.goodworkalan.paste;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -69,9 +72,19 @@ public class PasteFilter implements Filter
             dispatcher.bind(binder);
         }
         
+        Map<String, String> map = new HashMap<String, String>();
+        Enumeration<String> e = Casts.toStringEnumeration(config.getInitParameterNames());
+        while (e.hasMoreElements())
+        {
+            String name = e.nextElement();
+            map.put(name, config.getInitParameter(name));
+        }
+        
         guicer = new PasteGuicer(binder.getBindingTrees(),
                                     binder.getMapOfRules(),
-                                    listOfModules);
+                                    listOfModules,
+                                    config.getServletContext(),
+                                    map);
     }
 
     // TODO Document.

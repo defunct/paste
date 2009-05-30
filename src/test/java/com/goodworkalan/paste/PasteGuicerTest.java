@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +38,7 @@ public class PasteGuicerTest
         binder.controllers(Object.class)
               .bind("/queue/{user}")
               .to(BindingController.class);
-        PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList());
+        PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
     }
     
@@ -63,7 +64,7 @@ public class PasteGuicerTest
                       .when().method("POST").to(Object.class)
                   .bind("/index").to(Object.class);
         
-        PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList());
+        PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
     }
     

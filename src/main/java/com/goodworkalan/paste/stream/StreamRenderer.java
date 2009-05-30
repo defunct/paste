@@ -1,21 +1,19 @@
 package com.goodworkalan.paste.stream;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URL;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.ControllerScoped;
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.Responder;
-import com.goodworkalan.paste.Response;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -31,12 +29,6 @@ public class StreamRenderer implements Renderer
     
     /** The final controller for the request. */
     private final Object controller;
-    
-    /** The response for the request. */
-    private final Response response;
-    
-    /** The output conduit for the request. */
-    private final Responder responder;
     
     /** The Guice injector. */
     private final Injector injector;
@@ -60,12 +52,10 @@ public class StreamRenderer implements Renderer
      *            The Guice injector.
      */
     @Inject
-    public StreamRenderer(Configuration configuration, @Controller Object controller, Response response, Responder responder, Injector injector)
+    public StreamRenderer(Configuration configuration, @Controller Object controller, Injector injector)
     {
         this.configuration = configuration;
         this.controller = controller;
-        this.responder = responder;
-        this.response = response;
         this.injector = injector;
     }
     
@@ -121,28 +111,20 @@ public class StreamRenderer implements Renderer
             throw new PasteException(e);
         }
         
-        response.addHeader("Content-Type", configuration.getContentType());
-
-        responder.send(response);
+        HttpServletResponse response = injector.getInstance(HttpServletResponse.class);
+        response.setContentType(configuration.getContentType());
         
         if (result instanceof URI)
         {
             URI uri = (URI) result;
             HttpServletRequest request = injector.getInstance(HttpServletRequest.class);
-            URL resource = request.getServletContext().getResource(uri.getPath());
-            InputStream in = resource.openStream();
-            byte[] buffer = new byte[4096];
-            int read;
-            while ((read = in.read(buffer)) != -1)
-            {
-                responder.getOutputStream().write(buffer, 0, read);
-            }
-            responder.getOutputStream().flush();
+            RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
+            dispatcher.forward(request, response);
         }
         else if (result instanceof String)
         {
-            responder.getWriter().write((String) result);
-            responder.getWriter().flush();
+            response.getWriter().write((String) result);
+            response.getWriter().flush();
         }
     }
 }

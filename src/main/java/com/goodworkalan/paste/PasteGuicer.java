@@ -36,6 +36,12 @@ import com.google.inject.TypeLiteral;
 public class PasteGuicer
 {
     // TODO Document.
+    private final ServletContext servletContext;
+    
+    // TODO Document.
+    private final Map<String, String> initialization;
+    
+    // TODO Document.
     private final SessionScope sessionScope;
 
     // TODO Document.
@@ -61,13 +67,15 @@ public class PasteGuicer
     // TODO Document.
     public PasteGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
                           RuleMap<ViewBinding> mapOfViewBindings,
-                          List<Module> modules)
+                          List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
     {
         this.requestScope = new BasicScope();
         this.controllerScope = new BasicScope();
         this.sessionScope = new SessionScope();
         this.janitors = new ArrayList<Janitor>();
         this.callDepth = new ThreadLocal<Integer>();
+        this.servletContext = servletContext;
+        this.initialization = initialization;
         
         List<Module> pushGuicletModule = new ArrayList<Module>(modules);
         pushGuicletModule.add(new PasteModule(sessionScope, requestScope, controllerScope, janitors));
@@ -203,7 +211,7 @@ public class PasteGuicer
                 }
                 else
                 {
-                    enterRequest(requestScope, request, response, janitors);
+                    enterRequest(requestScope, request, response, janitors, servletContext, initialization);
                 }
 
                 throwable = enterController(controllerScope, injector, controllerClass, mappings);
@@ -309,11 +317,14 @@ public class PasteGuicer
                 BasicScope scope,
                 HttpServletRequest request,
                 HttpServletResponse response,
-                List<Janitor> requestJanitors) throws IOException
+                List<Janitor> requestJanitors,
+                ServletContext servletContext,
+                Map<String, String> initialization) throws IOException
     {
         scope.enter();
         
-        scope.seed(ServletContext.class, request.getServletContext());
+        scope.seed(ServletContext.class, servletContext);
+        scope.seed(Key.get(new TypeLiteral<Map<String, String>>() {}, InitializationParameters.class), initialization);
         
         scope.seed(HttpServletRequest.class, request);
         scope.seed(ServletRequest.class, request);

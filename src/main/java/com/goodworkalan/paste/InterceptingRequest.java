@@ -8,7 +8,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
 
 // TODO Document.
 public class InterceptingRequest extends HttpServletRequestWrapper
@@ -27,11 +26,11 @@ public class InterceptingRequest extends HttpServletRequestWrapper
     }
     
     // TODO Document.
-    @Override
-    public ServletResponse getServletResponse()
-    {
-        return new InterceptingResponse(interception, (HttpServletResponse) super.getServletResponse());
-    }
+//    @Override
+//    public ServletResponse getServletResponse()
+//    {
+//        return new InterceptingResponse(interception, (HttpServletResponse) super.getServletResponse());
+//    }
     
     // TODO Document.
     @Override

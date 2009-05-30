@@ -43,7 +43,6 @@ public class StreamTest
         when(request.getHeaderNames()).thenReturn(Collections.enumeration(Collections.emptyList()));
         when(request.getContextPath()).thenReturn("");
         when(request.getRequestURI()).thenReturn("/account/create");
-        when(request.getServletContext()).thenReturn(mock(ServletContext.class));
         
         when(request.getParameterMap()).thenReturn(Collections.EMPTY_MAP);
         
@@ -67,7 +66,7 @@ public class StreamTest
         PasteModule paste = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(paste);
 
-        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList());
+        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, StreamController.class, new HashMap<String, String>());
         
         ViewBinder binder = mock(ViewBinder.class);

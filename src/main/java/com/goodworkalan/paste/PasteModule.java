@@ -49,6 +49,10 @@ public class PasteModule extends AbstractModule
         bindScope(RequestScoped.class, requestScope);
         bindScope(ControllerScoped.class, controllerScope);
         
+        bind(new TypeLiteral<Map<String, String>>() {})
+            .annotatedWith(InitializationParameters.class)
+            .toProvider(new NullProvider<Map<String, String>>())
+            .in(RequestScoped.class);
         bind(ServletContext.class)
             .toProvider(new NullProvider<ServletContext>())
             .in(RequestScoped.class);
