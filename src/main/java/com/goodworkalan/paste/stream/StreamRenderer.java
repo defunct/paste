@@ -121,9 +121,9 @@ public class StreamRenderer implements Renderer
             RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
             dispatcher.forward(request, response);
         }
-        else if (result instanceof String)
+        else if (result instanceof CharSequence)
         {
-            response.getWriter().write((String) result);
+            response.getWriter().write(((CharSequence) result).toString());
             response.getWriter().flush();
         }
     }
