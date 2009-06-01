@@ -1,7 +1,6 @@
 package com.goodworkalan.paste;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
@@ -15,12 +14,6 @@ public class InterceptingResponse extends HttpServletResponseWrapper
     private final Interception interception;
 
     // TODO Document.
-    private PrintWriter writer;
-    
-    // TODO Document.
-    private ServletOutputStream out;
-    
-    // TODO Document.
     public InterceptingResponse(Interception interception, HttpServletResponse response)
     {
         super(response);
@@ -32,11 +25,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper
     public ServletOutputStream getOutputStream() throws IOException
     {
         interception.intercept();
-        if (out == null)
-        {
-            out = new InterceptingOutputStream(interception, super.getOutputStream());
-        }
-        return out;
+        return getResponse().getOutputStream();
     }
 
     // TODO Document.
@@ -44,11 +33,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper
     public PrintWriter getWriter() throws IOException
     {
         interception.intercept();
-        if (writer == null)
-        {
-            writer = new PrintWriter(new OutputStreamWriter(getOutputStream(), getCharacterEncoding()));
-        }
-        return writer;
+        return getResponse().getWriter();
     }
     
     // TODO Document.

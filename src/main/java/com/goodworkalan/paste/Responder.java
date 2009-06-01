@@ -30,7 +30,18 @@ public class Responder
         servletResponse.setStatus(response.getStatus());
         for (NamedValue namedValue : response.getHeaders())
         {
-            servletResponse.addHeader(namedValue.getName(), namedValue.getValue());
+            if (namedValue.getName().toLowerCase().equals("content-type"))
+            {
+                servletResponse.setContentType(namedValue.getValue());
+            }
+            else if (namedValue.getName().toLowerCase().equals("content-length"))
+            {
+                servletResponse.setContentLength(Integer.parseInt(namedValue.getValue()));
+            }
+            else
+            {
+                servletResponse.addHeader(namedValue.getName(), namedValue.getValue());
+            }
         }
     }
     
