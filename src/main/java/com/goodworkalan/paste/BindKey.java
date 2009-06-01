@@ -9,5 +9,6 @@ public enum BindKey
     ANNOTATION,
     METHOD,
     PATH,
+    STATUS,
     EXCEPTION
 }

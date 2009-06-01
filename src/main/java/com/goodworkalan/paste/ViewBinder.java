@@ -65,6 +65,12 @@ public class ViewBinder
         return new ViewControllerBinder(parent, mapOfBindings, listOfSetOfRules).or(controllerClass);
     }
     
+    public ViewBinder status(int status)
+    {
+        listOfSetOfRules.get(0).check(BindKey.STATUS, new Equals(status));
+        return this;
+    }
+    
     // TODO Document.
     public ViewBinder method(String...methods)
     {

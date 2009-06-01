@@ -243,6 +243,11 @@ public class PasteGuicer
         {
             ((Redirection) throwable).redirect(injector.getInstance(Redirector.class));
         }
+        else if (throwable instanceof Abnormality)
+        {
+            injector.getInstance(Response.class).setStatus(((Abnormality) throwable).getStatus());
+        }
+            
 
         if (hasController || throwable != null)
         {
@@ -254,8 +259,10 @@ public class PasteGuicer
                         .put(BindKey.PACKAGE, hasController ? controller.getClass().getPackage().getName() : null)
                         .put(BindKey.CONTROLLER_CLASS, hasController ? controller.getClass() : null)
                         .put(BindKey.PATH, path)
-                        .put(BindKey.EXCEPTION, throwable != null ? throwable.getClass() : throwable)
-                        .put(BindKey.METHOD, request.getMethod()).get();
+                        .put(BindKey.STATUS, injector.getInstance(Response.class).getStatus())
+                        .put(BindKey.EXCEPTION, throwable != null ? throwable.getClass() : null)
+                        .put(BindKey.METHOD, request.getMethod())
+                        .get();
             
             SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
             for (ViewBinding view : views)
@@ -267,7 +274,8 @@ public class PasteGuicer
             {
                 ViewBinding view = prioritized.get(prioritized.firstKey());
                 injector.createChildInjector(view.getModule())
-                        .getInstance(Renderer.class).render();
+                        .getInstance(Renderer.class)
+                        .render();
             }
             else if (throwable != null)
             {
