@@ -122,7 +122,8 @@ public class PasteGuicer
                               Key.get(HttpServletRequest.class),
                               Key.get(HttpServletResponse.class),
                               Key.get(ServletRequest.class),
-                              Key.get(ServletResponse.class));
+                              Key.get(ServletResponse.class),
+                              Key.get(String.class, Path.class));
         }
         List<Janitor> janitors = new ArrayList<Janitor>();
         try
@@ -211,7 +212,7 @@ public class PasteGuicer
                 }
                 else
                 {
-                    enterRequest(requestScope, request, response, janitors, servletContext, initialization);
+                    enterRequest(requestScope, request, response, path, janitors, servletContext, initialization);
                 }
 
                 throwable = enterController(controllerScope, injector, controllerClass, mappings);
@@ -317,6 +318,7 @@ public class PasteGuicer
                 BasicScope scope,
                 HttpServletRequest request,
                 HttpServletResponse response,
+                String path,
                 List<Janitor> requestJanitors,
                 ServletContext servletContext,
                 Map<String, String> initialization) throws IOException
@@ -334,7 +336,6 @@ public class PasteGuicer
         scope.seed(HttpServletResponse.class, response);
         scope.seed(ServletResponse.class, response);
         
-        String path = request.getRequestURI().substring(request.getContextPath().length());
         scope.seed(Key.get(String.class, Path.class), path);
 
         scope.seed(Key.get(String.class, WelcomeFile.class), "index");

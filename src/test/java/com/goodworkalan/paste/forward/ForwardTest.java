@@ -56,7 +56,7 @@ public class ForwardTest
         PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
@@ -90,7 +90,7 @@ public class ForwardTest
         PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);
@@ -125,7 +125,7 @@ public class ForwardTest
         PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewBinder viewBinder = mock(ViewBinder.class);

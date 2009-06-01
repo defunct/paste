@@ -16,8 +16,6 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.forward.Configuration;
-import com.goodworkalan.paste.forward.ForwardRenderer;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.AbstractModule;

@@ -66,7 +66,7 @@ public class StreamTest
         PasteModule paste = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(paste);
 
-        PasteGuicer.enterRequest(requestScope, request, response, Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, StreamController.class, new HashMap<String, String>());
         
         ViewBinder binder = mock(ViewBinder.class);
