@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 
+// FIXME Headers that appear here should also appear in our HttpServletResponse. 
 @RequestScoped
 public class Response
 {
