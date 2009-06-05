@@ -20,8 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
-import com.goodworkalan.dovetail.Mapping;
-import com.goodworkalan.dovetail.TreeMapper;
+import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
@@ -176,14 +175,14 @@ public class PasteGuicer
                 break;
             }
 
-            TreeMapper<RuleMap<ControllerBinding>> mapper = new TreeMapper<RuleMap<ControllerBinding>>();
-            if (tree.match(mapper, path))
+            List<Match<RuleMap<ControllerBinding>>> matches = tree.map(path);
+            if (!matches.isEmpty())
             {
                 long highest = Long.MIN_VALUE;
                 Class<?> controllerClass = null;
                 Map<String, String> mappings = null;
 
-                for (Mapping<RuleMap<ControllerBinding>> mapping : mapper.mappings())
+                for (Match<RuleMap<ControllerBinding>> mapping : matches)
                 {
                     List<ControllerBinding> bindings
                         = mapping.getObject()
