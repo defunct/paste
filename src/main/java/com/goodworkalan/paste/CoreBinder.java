@@ -31,11 +31,11 @@ public class CoreBinder implements Binder
     }
 
     // TODO Document.
-    public ControllerBinder controllers(Class<?> conditional)
+    public ControllerBinder controllers()
     {
         List<ControllerPathMapping> listOfControllerPathMappings = new ArrayList<ControllerPathMapping>();
         listOfControllerBinders.add(listOfControllerPathMappings);
-        return new ControllerBinder(new GlobCompiler(conditional), listOfControllerPathMappings);
+        return new ControllerBinder(new GlobCompiler(), listOfControllerPathMappings);
     }
     
     // TODO Document.

@@ -35,8 +35,8 @@ public class PasteGuicerTest
         FilterChain chain = mock(FilterChain.class);
         
         CoreBinder binder = new CoreBinder();
-        binder.controllers(Object.class)
-              .bind("/queue/{user}")
+        binder.controllers()
+              .bind("/queue/(user)")
               .to(BindingController.class);
         PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
@@ -57,8 +57,8 @@ public class PasteGuicerTest
         
         CoreBinder binder = new CoreBinder();
         binder
-            .controllers(Object.class)
-                  .bind("/queue/{user}").to(BindingController.class)
+            .controllers()
+                  .bind("/queue/(user)").to(BindingController.class)
                   .bind("/login")
                       .when().method("GET").priority(1).to(Object.class)
                       .when().method("POST").to(Object.class)
@@ -73,8 +73,8 @@ public class PasteGuicerTest
     {
         CoreBinder binder = new CoreBinder();
         binder
-            .controllers(Object.class)
-                  .bind("/queue/{user}").to(BindingController.class)
+            .controllers()
+                  .bind("/queue/(user)").to(BindingController.class)
                   .bind("/login")
                       .when().method("GET").priority(1).to(Object.class)
                       .when().method("POST").to(Object.class)

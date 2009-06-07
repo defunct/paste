@@ -4,7 +4,7 @@ package com.goodworkalan.paste;
 public interface Binder
 {
     // TODO Document.
-    public ControllerBinder controllers(Class<?> conditional);
+    public ControllerBinder controllers();
 
     // TODO Document.
     public ViewBinder view();
