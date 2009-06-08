@@ -214,6 +214,7 @@ public class PasteGuicer
                     enterRequest(requestScope, request, response, path, janitors, servletContext, initialization);
                 }
 
+                hasController = false;
                 throwable = enterController(controllerScope, injector, controllerClass, mappings);
                 if (throwable != null)
                 {
