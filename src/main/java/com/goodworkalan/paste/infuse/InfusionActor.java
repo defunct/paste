@@ -5,6 +5,7 @@ import java.util.Set;
 import com.goodworkalan.infuse.InfusionBuilder;
 import com.goodworkalan.infuse.ObjectFactory;
 import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.infuse.Tree;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Parameters;
@@ -36,6 +37,7 @@ public class InfusionActor implements Actor
     // TODO Document.
     public Throwable actUpon(Object controller)
     {
+        Tree tree = new Tree();
         InfusionBuilder builder = new InfusionBuilder();
         
         builder.addFactories(factories);
@@ -47,7 +49,7 @@ public class InfusionActor implements Actor
             {
                 try
                 {
-                    builder.set(key, value);
+                    tree.set(key, value);
                 }
                 catch (PathException e)
                 {
@@ -56,7 +58,7 @@ public class InfusionActor implements Actor
             }
             try
             {
-                builder.getInstance().infuse(controller);
+                builder.addFactories(factories).getInstance(controller).infuse(tree);
             }
             catch (PathException e)
             {

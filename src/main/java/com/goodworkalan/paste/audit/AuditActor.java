@@ -50,18 +50,10 @@ public class AuditActor implements Actor
         {
             String value = parameters.getFirst(key);
             
-            Infusion path;
+            Infusion infusion = Infusion.getInstance(map);
             try
             {
-                path = Infusion.getInstance(key, value);
-            }
-            catch (PathException e)
-            {
-                continue;
-            }
-            try
-            {
-                path.infuse(map);
+                infusion.infuse(new com.goodworkalan.infuse.Tree().add(key, value));
             }
             catch (PathException e)
             {
