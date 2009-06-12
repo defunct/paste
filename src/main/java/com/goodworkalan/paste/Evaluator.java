@@ -20,8 +20,8 @@ public class Evaluator
     {
         try
         {
-            Diffusion diffusion = new Diffusion(expression);
-            Object object = diffusion.get(controller);
+            Diffusion diffusion = new Diffusion(controller);
+            Object object = diffusion.get(expression);
             return object == null ? null : object.toString();
         }
         catch (PathException e)

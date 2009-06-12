@@ -93,8 +93,7 @@ public class FaultMessages
             {
                 try
                 {
-                    Diffusion path = new Diffusion(glob.group(1));
-                    arguments.add(path.get(map));
+                    arguments.add(new Diffusion(map).get(glob.group(1)));
                 }
                 catch (PathException e)
                 {

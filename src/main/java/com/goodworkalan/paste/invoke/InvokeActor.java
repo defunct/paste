@@ -37,18 +37,9 @@ public class InvokeActor implements Actor
                 List<Object> arguments = new ArrayList<Object>();
                 for (String argument : invoke.arguments())
                 {
-                    Diffusion path;
                     try
                     {
-                        path = new Diffusion(argument);
-                    }
-                    catch (PathException e)
-                    {
-                        throw new PasteException(e);
-                    }
-                    try
-                    {
-                        arguments.add(path.get(controller));
+                        arguments.add(new Diffusion(controller).get(argument));
                     }
                     catch (PathException e)
                     {

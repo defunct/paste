@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.goodworkalan.infuse.Diffusion;
 import com.goodworkalan.infuse.Infusion;
+import com.goodworkalan.infuse.Path;
 import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.faults.Fault;
@@ -52,22 +53,20 @@ public class Auditor
             Map<String, CoreReport> reports = new LinkedHashMap<String, CoreReport>();
             for (AuditAction action : listOfAuditActions)
             {
-                Diffusion glob = new Diffusion(action.getContextPath());
-                for (Diffusion contextPath : glob.all(request))
+                Diffusion glob = new Diffusion(request);
+                for (Path contextPath : glob.all(action.getContextPath()))
                 {
-                    Object context = contextPath.get(request);
-                    Diffusion path = new Diffusion(action.getPath());
-
-                    Object value = path.get(context);
+                    Object context = glob.get(contextPath);
+                    Object value = new Diffusion(context).get(action.getPath());
                     
                     String keyStem = contextPath.withoutIndexes();
                     if (keyStem.equals("this"))
                     {
-                        keyStem = path.withoutIndexes();
+                        keyStem = contextPath.appendAll(new Path(action.getPath(), false)).withoutIndexes();
                     }
                     else
                     {
-                        keyStem += "." + path.withoutIndexes();
+                        keyStem += "." + contextPath.appendAll(new Path(action.getPath(), false)).withoutIndexes();
                     }
 
                     Tree tree = new Tree(context, value, request);
@@ -83,7 +82,7 @@ public class Auditor
                                 String message = messages.getMessage(keyStem, key);
                                 CoreReport report = reporter.getReports().get(key);
                                 report.put("value", value);
-                                Infusion.getInstance(faults).infuse(new com.goodworkalan.infuse.Tree().add(contextPath + "." + path, new Fault(message, report.map)));
+                                Infusion.getInstance(faults).infuse(new com.goodworkalan.infuse.Tree().add(contextPath + "." + contextPath.appendAll(new Path(action.getPath(), false)), new Fault(message, report.map)));
                             }
                         }
                     }
