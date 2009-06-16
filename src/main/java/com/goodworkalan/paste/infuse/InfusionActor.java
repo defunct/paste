@@ -56,13 +56,14 @@ public class InfusionActor implements Actor
                     continue;
                 }
             }
-            try
-            {
-                builder.addFactories(factories).getInstance(controller).infuse(tree);
-            }
-            catch (PathException e)
-            {
-            }
+        }
+
+        try
+        {
+            builder.addFactories(factories).getInstance(controller).infuse(tree);
+        }
+        catch (PathException e)
+        {
         }
         
         return null;
