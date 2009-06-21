@@ -1,5 +1,7 @@
 package com.goodworkalan.paste.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -216,14 +218,32 @@ public class NamedValueList implements Iterable<NamedValue>
     }
     
     /**
-     * Return a hash code that combines the hash code each named value in the
-     * list.
+     * Create a URL encoded query string from the list of named values.
      * 
-     * @return The hash code.
+     * @return A URL encoded query string.
      */
-    public int hashCode()
+    public String toQueryString()
     {
-        return namedValues.hashCode();
+        StringBuilder queryString = new StringBuilder();
+        String separator = "";
+        for (NamedValue namedValue : this)
+        {
+            queryString.append(separator);
+            try
+            {
+                queryString.append(URLEncoder.encode(namedValue.getName(), "UTF-8"));
+                queryString.append("=");
+                if (namedValue.getValue() != null)
+                {
+                    queryString.append(URLEncoder.encode(namedValue.getValue(), "UTF-8"));
+                }
+            }
+            catch (UnsupportedEncodingException e)
+            {
+            }
+            separator = "&";
+        }
+        return queryString.toString();
     }
 
     /**
@@ -245,7 +265,18 @@ public class NamedValueList implements Iterable<NamedValue>
         }
         return false;
     }
-    
+
+    /**
+     * Return a hash code that combines the hash code each named value in the
+     * list.
+     * 
+     * @return The hash code.
+     */
+    public int hashCode()
+    {
+        return namedValues.hashCode();
+    }
+
     /**
      * Return a string representation of the named value.
      * 
