@@ -26,6 +26,7 @@ import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
+import com.goodworkalan.paste.stop.Abnormality;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;

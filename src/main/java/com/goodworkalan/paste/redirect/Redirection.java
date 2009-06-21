@@ -1,6 +1,6 @@
 package com.goodworkalan.paste.redirect;
 
-import com.goodworkalan.paste.Stop;
+import com.goodworkalan.paste.stop.Stop;
 
 /**
  * An exception thrown by controllers to trigger an HTTP redirection.

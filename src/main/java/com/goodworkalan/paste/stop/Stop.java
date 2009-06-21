@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.stop;
 
 public class Stop extends RuntimeException
 {
