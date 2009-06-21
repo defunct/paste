@@ -22,6 +22,8 @@ import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.paste.faults.Faults;
+import com.goodworkalan.paste.janitor.Janitor;
+import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
 import com.google.inject.Guice;

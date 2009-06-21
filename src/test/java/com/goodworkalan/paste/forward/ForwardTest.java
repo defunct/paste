@@ -19,12 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.BasicScope;
-import com.goodworkalan.paste.Janitor;
 import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.ViewConnector;
+import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

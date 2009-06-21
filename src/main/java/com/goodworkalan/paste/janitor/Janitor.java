@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.janitor;
 
 // TODO Document.
 public interface Janitor
