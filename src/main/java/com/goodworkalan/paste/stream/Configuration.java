@@ -5,7 +5,7 @@ package com.goodworkalan.paste.stream;
  * 
  * @author Alan Gutierrez
  */
-public class Configuration
+class Configuration
 {
     /** The method name to call or null if we match on mime type. */
     private final String methodName;

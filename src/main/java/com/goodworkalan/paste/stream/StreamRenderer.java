@@ -19,6 +19,22 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
+/**
+ * Render output by calling a method on the controller that either returns a
+ * character sequence or accepts an output stream or writer to stream the
+ * output. The renderer will look for methods in the controller annotated with
+ * {@link Output}. The renderer will match the content type specified in the
+ * domain-specific language to the content type specified in the annotation.
+ * <p>
+ * If an annotated method returns a <code>CharSequence</code>, the return value
+ * is used as the stream response. If an annotated method accepts an
+ * <code>OutputStream</code> the <code>OutputStream</code> of the
+ * <code>HttpServletResponse</code> is passed to the method. If an annotated
+ * method accepts a <code>Writer</code> the <code>PrintWriter</code> of the
+ * <code>HttpServletResponse</code> is passed to the method.
+ * 
+ * @author Alan Gutierrez
+ */
 @ControllerScoped
 public class StreamRenderer implements Renderer
 {
@@ -58,7 +74,12 @@ public class StreamRenderer implements Renderer
         this.controller = controller;
         this.injector = injector;
     }
-    
+
+    /**
+     * Render output by calling a method on the controller that either returns a
+     * character sequence or accepts an output stream or writer to stream the
+     * output.
+     */
     public void render() throws ServletException, IOException
     {
         Class<? extends Object> controllerClass = controller.getClass();
@@ -91,6 +112,7 @@ public class StreamRenderer implements Renderer
                     annotation = annotations[i][j];
                 }
             }
+            // FIXME No.
             if (annotation == null)
             {
                 parameters[i] = injector.getInstance(type);

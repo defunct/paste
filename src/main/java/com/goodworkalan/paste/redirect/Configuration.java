@@ -2,19 +2,32 @@ package com.goodworkalan.paste.redirect;
 
 import com.goodworkalan.paste.paths.FormatArgument;
 
-// TODO Document.
+/**
+ * Configuration a redirection response.
+ *
+ * @author Alan Gutierrez
+ */
 class Configuration
 {
-    // TODO Document.
+    /** The response status. */
     private final int status;
     
-    // TODO Document.
+    /** The format to use to create the redirection URL. */
     private final String format;
     
-    // TODO Document.
+    /** The format arguments to use to create the redirection URL. */
     private final FormatArgument[] formatArguments;
-    
-    // TODO Document.
+
+    /**
+     * Create a configuration for a redirection response.
+     * 
+     * @param status
+     *            The response status.
+     * @param format
+     *            The format to use to create the redirection URL.
+     * @param formatArguments
+     *            The format arguments to use to create the redirection URL.
+     */
     public Configuration(int status, String format, FormatArgument[] formatArguments)
     {
         this.status = status;
@@ -22,19 +35,31 @@ class Configuration
         this.formatArguments = formatArguments;
     }
     
-    // TODO Document.
+    /**
+     * Get the response status.
+     * 
+     * @return The response status.
+     */
     public int getStatus()
     {
         return status;
     }
-    
-    // TODO Document.
+
+    /**
+     * Get the format to use to create the redirection URL.
+     * 
+     * @return The format to use to create the redirection URL.
+     */
     public String getFormat()
     {
         return format;
     }
-    
-    // TODO Document.
+
+    /**
+     * Get the format arguments to use to create the redirection URL.
+     * 
+     * @return The format arguments to use to create the redirection URL.
+     */
     public FormatArgument[] getFormatArguments()
     {
         return formatArguments;

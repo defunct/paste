@@ -4,29 +4,44 @@ import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ViewBinder;
+import com.goodworkalan.paste.ViewConnector;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
-// TODO Document.
+/**
+ * An extension element in a domain-specific language use to specify the 
+ * details of an HTTP redirection. 
+ *
+ * @author Alan Gutierrez
+ */
 public class Redirect extends RenderModule
 {
-    // TODO Document.
+    /** The status code to set during the redirection. */
     private int status = 303;
 
-    // TODO Document.
+    /** The format to use to create the redirection URL. */
     private String format;
     
-    // TODO Document.
+    /** The format arguments to use to create the redirection URL. */
     private FormatArgument[] formatArguments = new FormatArgument[0];
-    
-    // TODO Document.
-    public Redirect(ViewBinder binder)
+
+    /**
+     * Create an extension to the domain-specific language used to specify the
+     * details of an HTTP redirection.
+     * 
+     * @param end
+     *            The controller to return when the view connection statement is
+     *            complete.
+     */
+    public Redirect(ViewConnector end)
     {
-        super(binder);
+        super(end);
     }
 
-    // TODO Document.
+    /**
+     * Configure the a Guice child injector to include the properties necessary
+     * to create a {@link Renderer} that will generate an HTTP redirection.
+     */
     @Override
     protected void configure()
     {
@@ -39,8 +54,15 @@ public class Redirect extends RenderModule
             }
         });
     }
-    
-    // TODO Document.
+
+    /**
+     * Set the status code to set during the redirection.
+     * 
+     * @param status
+     *            The status code to set during the redirection.
+     * @return This domain-specific language extension to continue specifying
+     *         redirect properties.
+     */
     public Redirect status(int status)
     {
         if (!isRedirectStatus(status))
@@ -50,8 +72,20 @@ public class Redirect extends RenderModule
         this.status = status;
         return this;
     }
-    
-    // TODO Document.
+
+    /**
+     * Set the format string and the format arguments used to create the
+     * redirection URL. Format arguments are objects that generate argument
+     * values using the Guice injector, to replace format parameters with values
+     * from the servlet environment.
+     * 
+     * @param format
+     *            The format string.
+     * @param formatArguments
+     *            The format arguments.
+     * @return This domain-specific language extension to continue specifying
+     *         redirect properties.
+     */
     public Redirect format(String format, FormatArgument...formatArguments)
     {
         this.format = format;

@@ -24,7 +24,7 @@ import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.SessionScope;
-import com.goodworkalan.paste.ViewBinder;
+import com.goodworkalan.paste.ViewConnector;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -34,7 +34,7 @@ public class ForwardTest
     @Test
     public void constructor()
     {
-        ViewBinder viewBinder = mock(ViewBinder.class);
+        ViewConnector viewBinder = mock(ViewConnector.class);
          
         new Forward(viewBinder);
     }
@@ -59,7 +59,7 @@ public class ForwardTest
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
-        ViewBinder viewBinder = mock(ViewBinder.class);
+        ViewConnector viewBinder = mock(ViewConnector.class);
         
         Forward forward = new Forward(viewBinder);
         
@@ -93,7 +93,7 @@ public class ForwardTest
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
-        ViewBinder viewBinder = mock(ViewBinder.class);
+        ViewConnector viewBinder = mock(ViewConnector.class);
         
         Forward forward = new Forward(viewBinder);
         forward.property("property");
@@ -128,7 +128,7 @@ public class ForwardTest
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
-        ViewBinder viewBinder = mock(ViewBinder.class);
+        ViewConnector viewBinder = mock(ViewConnector.class);
         
         Forward forward = new Forward(viewBinder);
         forward.format("/templates/%s.ftl", new FormatArgument[] { REQUEST_PATH });

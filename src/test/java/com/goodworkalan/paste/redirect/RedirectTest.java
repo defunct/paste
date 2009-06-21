@@ -19,7 +19,7 @@ import com.goodworkalan.paste.Janitor;
 import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.SessionScope;
-import com.goodworkalan.paste.ViewBinder;
+import com.goodworkalan.paste.ViewConnector;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -46,7 +46,7 @@ public class RedirectTest
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
-        ViewBinder binder = mock(ViewBinder.class);
+        ViewConnector binder = mock(ViewConnector.class);
         
         Redirect redirect = new Redirect(binder);
         redirect.status(301);
@@ -58,7 +58,7 @@ public class RedirectTest
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void isRedirectStatus()
     {
-        ViewBinder binder = mock(ViewBinder.class);
+        ViewConnector binder = mock(ViewConnector.class);
         
         Redirect redirect = new Redirect(binder);
         redirect.status(200);

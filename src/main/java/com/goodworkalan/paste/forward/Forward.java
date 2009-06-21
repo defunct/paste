@@ -5,32 +5,48 @@ import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_CLASS_AS_P
 import com.goodworkalan.paste.ControllerScoped;
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ViewBinder;
+import com.goodworkalan.paste.ViewConnector;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
-// TODO Document.
+/**
+ * An extension element in a domain-specific language use to specify the 
+ * details of forwarding a controller to another filter or servlet. 
+ *
+ * @author Alan Gutierrez
+ */
 public class Forward extends RenderModule
 {
-    // TODO Document.
+    /** The format to use to create the forward path. */
     private String format = "/%s.ftl";
     
-    // TODO Document.
+    /** The request property name to use to store the controller. */
     private String property = "controller";
     
-    // TODO Document.
+    /** The format arguments to use to create the forward path. */
     private FormatArgument[] formatArguments = new FormatArgument[]
     {
             CONTROLLER_CLASS_AS_PATH
     };
 
-    // TODO Document.
-    public Forward(ViewBinder viewBinder)
+    /**
+     * Create an extension to the domain-specific language used to specify the
+     * details of forwarding a controller to another filter or servlet.
+     * 
+     * @param end
+     *            The controller to return when the view connection statement is
+     *            complete.
+     */
+    public Forward(ViewConnector end)
     {
-        super(viewBinder);
+        super(end);
     }
-    
-    // TODO Document.
+
+    /**
+     * Configure the a Guice child injector to include the properties necessary
+     * to create a {@link Renderer} that will forward the request to another
+     * filter or servlet.
+     */
     @Override
     protected void configure()
     {
@@ -43,15 +59,35 @@ public class Forward extends RenderModule
             }
         }).in(ControllerScoped.class);
     }
-    
-    // TODO Document.
+
+    /**
+     * Set the name of the request property to use to store the controller.
+     * 
+     * @param property
+     *            The name of the request property to use to store the
+     *            controller.
+     * @return This domain-specific language extension to continue specifying
+     *         forward properties.
+     */
     public Forward property(String property)
     {
         this.property = property;
         return this;
     }
-    
-    // TODO Document.
+
+    /**
+     * Set the format string and the format arguments used to create the forward
+     * path. Format arguments are objects that generate argument values using
+     * the Guice injector, to replace format parameters with values from the
+     * servlet environment.
+     * 
+     * @param format
+     *            The format string.
+     * @param formatArguments
+     *            The format arguments.
+     * @return This domain-specific language extension to continue specifying
+     *         forward properties.
+     */
     public Forward format(String format, FormatArgument...formatArguments)
     {
         this.format = format;

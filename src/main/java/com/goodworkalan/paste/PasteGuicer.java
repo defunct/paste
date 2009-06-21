@@ -30,6 +30,8 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
+import com.mallardsoft.tuple.Pair;
+import com.mallardsoft.tuple.Tuple;
 
 // TODO Document.
 public class PasteGuicer
@@ -53,10 +55,10 @@ public class PasteGuicer
     private final Injector injector;
 
     // TODO Document.
-    private final List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings;
+    private final List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings;
 
     // TODO Document.
-    private final RuleMap<ViewBinding> mapOfViewBindings;
+    private final RuleMap<Pair<Integer, RenderModule>> mapOfViewBindings;
 
     // TODO Document.
     private final List<Janitor> janitors;
@@ -64,8 +66,8 @@ public class PasteGuicer
     private final ThreadLocal<Integer> callDepth;
 
     // TODO Document.
-    public PasteGuicer(List<GlobTree<RuleMap<ControllerBinding>>> controllerBindings,
-                          RuleMap<ViewBinding> mapOfViewBindings,
+    public PasteGuicer(List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings,
+                          RuleMap<Pair<Integer, RenderModule>> mapOfViewBindings,
                           List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
     {
         this.requestScope = new BasicScope();
@@ -168,33 +170,33 @@ public class PasteGuicer
 
         Throwable throwable = null;
         boolean hasController = false;
-        for (GlobTree<RuleMap<ControllerBinding>> tree : controllerBindings)
+        for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings)
         {
             if (interception.isIntercepted())
             {
                 break;
             }
 
-            List<Match<RuleMap<ControllerBinding>>> matches = tree.map(path);
+            List<Match<RuleMap<Pair<Integer, Class<?>>>>> matches = tree.map(path);
             if (!matches.isEmpty())
             {
                 long highest = Long.MIN_VALUE;
                 Class<?> controllerClass = null;
                 Map<String, String> mappings = null;
 
-                for (Match<RuleMap<ControllerBinding>> mapping : matches)
+                for (Match<RuleMap<Pair<Integer, Class<?>>>> mapping : matches)
                 {
-                    List<ControllerBinding> bindings
+                    List<Pair<Integer, Class<?>>> bindings
                         = mapping.getObject()
                             .test().put(BindKey.METHOD, request.getMethod())
                                    .put(BindKey.PATH, path)
                                    .get();
-                    for (ControllerBinding binding : bindings)
+                    for (Pair<Integer, Class<?>> binding : bindings)
                     {
-                        if (binding.getPriority() > highest)
+                        if (Tuple.get1(binding) > highest)
                         {
-                            highest = binding.getPriority();
-                            controllerClass = binding.getController();
+                            highest = Tuple.get1(binding);
+                            controllerClass = Tuple.get2(binding);
                             mappings = mapping.getParameters();
                         }
                     }
@@ -241,7 +243,7 @@ public class PasteGuicer
 
         if (throwable instanceof Redirection)
         {
-            ((Redirection) throwable).redirect(injector.getInstance(Redirector.class));
+            injector.getInstance(Redirector.class).redirect(((Redirection) throwable).getWhere());
         }
         else if (throwable instanceof Abnormality)
         {
@@ -253,7 +255,7 @@ public class PasteGuicer
         {
             Object controller = hasController ? injector.getProvider(Key.get(Object.class, Controller.class)).get() : null;
             
-            List<ViewBinding> views
+            List<Pair<Integer, RenderModule>> views
                 = mapOfViewBindings
                     .test()
                         .put(BindKey.PACKAGE, hasController ? controller.getClass().getPackage().getName() : null)
@@ -264,16 +266,16 @@ public class PasteGuicer
                         .put(BindKey.METHOD, request.getMethod())
                         .get();
             
-            SortedMap<Integer, ViewBinding> prioritized = new TreeMap<Integer, ViewBinding>(Collections.reverseOrder());
-            for (ViewBinding view : views)
+            SortedMap<Integer, Pair<Integer, RenderModule>> prioritized = new TreeMap<Integer, Pair<Integer, RenderModule>>(Collections.reverseOrder());
+            for (Pair<Integer, RenderModule> view : views)
             {
-                prioritized.put(view.getPriority(), view);
+                prioritized.put(Tuple.get1(view), view);
             }
 
             if (prioritized.size() != 0)
             {
-                ViewBinding view = prioritized.get(prioritized.firstKey());
-                injector.createChildInjector(view.getModule())
+                Pair<Integer, RenderModule> view = prioritized.get(prioritized.firstKey());
+                injector.createChildInjector(Tuple.get2(view))
                         .getInstance(Renderer.class)
                         .render();
             }

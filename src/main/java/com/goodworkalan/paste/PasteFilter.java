@@ -48,7 +48,8 @@ public class PasteFilter implements Filter
             }
         }
 
-        List<Dispatcher> listOfDispatchers = new ArrayList<Dispatcher>();
+        List<Router> listOfDispatchers = new ArrayList<Router>();
+        // FIXME Rename Connectors.
         String dispatchers = config.getInitParameter("Dispatchers");
         if (dispatchers != null)
         {
@@ -57,7 +58,7 @@ public class PasteFilter implements Filter
                 for (String dispatcher : dispatchers.split(","))
                 {
                     Class<?> dispatcherClass = Class.forName(dispatcher.trim());
-                    listOfDispatchers.add((Dispatcher) dispatcherClass.newInstance());
+                    listOfDispatchers.add((Router) dispatcherClass.newInstance());
                 }
             }
             catch (Exception e)
@@ -66,14 +67,14 @@ public class PasteFilter implements Filter
             }
         }
         
-        CoreBinder binder = new CoreBinder();
-        for (Dispatcher dispatcher : listOfDispatchers)
+        CoreConnector binder = new CoreConnector();
+        for (Router dispatcher : listOfDispatchers)
         {
-            dispatcher.bind(binder);
+            dispatcher.connect(binder);
         }
         
         Map<String, String> map = new HashMap<String, String>();
-        Enumeration<String> e = Casts.toStringEnumeration(config.getInitParameterNames());
+        Enumeration<String> e = Objects.toStringEnumeration(config.getInitParameterNames());
         while (e.hasMoreElements())
         {
             String name = e.nextElement();
@@ -81,7 +82,7 @@ public class PasteFilter implements Filter
         }
         
         guicer = new PasteGuicer(binder.getBindingTrees(),
-                                    binder.getMapOfRules(),
+                                    binder.getViewRules(),
                                     listOfModules,
                                     config.getServletContext(),
                                     map);

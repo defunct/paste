@@ -22,7 +22,7 @@ public class RedirectionTest
         Redirector redirector = new Redirector(new Request(request.getRequest()), r);
         
         Redirection redirection = new Redirection("bar");
-        redirection.redirect(redirector);
+        redirector.redirect(redirection.getWhere());
         
         assertEquals(r.getHeaders().getFirst("Location"), "http://domain.com/foo/bar");   
     }

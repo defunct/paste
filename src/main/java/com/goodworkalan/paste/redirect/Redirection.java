@@ -2,24 +2,37 @@ package com.goodworkalan.paste.redirect;
 
 import com.goodworkalan.paste.Stop;
 
-// TODO Document.
+/**
+ * An exception thrown by controllers to trigger an HTTP redirection.
+ * 
+ * @author Alan Gutierrez
+ */
 public class Redirection extends Stop
 {
-    // TODO Document.
+    /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
-    // TODO Document.
+    /** The redirection URL. */
     private final String where;
-    
-    // TODO Document.
+
+    /**
+     * Create an exception to throw to trigger an HTTP redirection.
+     * 
+     * @param where
+     *            The redirection URL.
+     */
     public Redirection(String where)
     {
         this.where = where;
     }
     
-    // TODO Document.
-    public void redirect(Redirector redirector)
+    /**
+     * Get the redirection URL.
+     * 
+     * @return The redirection URL.
+     */
+    public String getWhere()
     {
-        redirector.redirect(where);
+        return where;
     }
 }

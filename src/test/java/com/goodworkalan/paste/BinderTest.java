@@ -8,29 +8,28 @@ import java.util.List;
 import org.testng.annotations.Test;
 
 import com.goodworkalan.deviate.RuleMap;
-import com.goodworkalan.paste.BindKey;
-import com.goodworkalan.paste.CoreBinder;
-import com.goodworkalan.paste.ViewBinding;
 import com.goodworkalan.paste.forward.Forward;
+import com.mallardsoft.tuple.Pair;
+import com.mallardsoft.tuple.Tuple;
 
 public class BinderTest
 {
     @Test
     public void constructor()
     {
-        new CoreBinder();
+        new CoreConnector();
     }
 
     @Test
     public void anyController()
     {
-        CoreBinder binder = new CoreBinder();
+        CoreConnector binder = new CoreConnector();
         binder.view().with(Forward.class);
-        RuleMap<ViewBinding> bindings = binder.getMapOfRules();
-        List<ViewBinding> found = bindings.test().get();
+        RuleMap<Pair<Integer, RenderModule>> bindings = binder.getViewRules();
+        List<Pair<Integer, RenderModule>> found = bindings.test().get();
         assertEquals(found.size(), 1);
-        assertEquals(found.get(0).getPriority(), 0);
-        assertTrue(found.get(0).getModule() instanceof Forward);
+        assertEquals((int) Tuple.get1(found.get(0)), 0);
+        assertTrue(Tuple.get2(found.get(0)) instanceof Forward);
     }
     
     public Object[] path(Object...objects)
@@ -41,15 +40,15 @@ public class BinderTest
     @Test
     public void controllers()
     {
-        CoreBinder binder = new CoreBinder();
+        CoreConnector binder = new CoreConnector();
         binder.view()
-              .controller(Object.class).or(String.class)
+              .controller(Object.class).controller(String.class)
               .with(Forward.class);
-        RuleMap<ViewBinding> bindings = binder.getMapOfRules();
-        List<ViewBinding> found = bindings.test().put(BindKey.CONTROLLER_CLASS, Object.class).get();
+        RuleMap<Pair<Integer, RenderModule>> bindings = binder.getViewRules();
+        List<Pair<Integer, RenderModule>> found = bindings.test().put(BindKey.CONTROLLER_CLASS, Object.class).get();
         assertEquals(found.size(), 1);
-        assertEquals(found.get(0).getPriority(), 0);
-        assertTrue(found.get(0).getModule() instanceof Forward);
+        assertEquals((int) Tuple.get1(found.get(0)), 0);
+        assertTrue(Tuple.get2(found.get(0)) instanceof Forward);
         found =  bindings.test().put(BindKey.CONTROLLER_CLASS, Integer.class).get();
         assertEquals(found.size(), 0);
     }

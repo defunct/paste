@@ -2,8 +2,7 @@ package com.goodworkalan.paste.stream;
 
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ViewBinder;
-import com.google.inject.Binder;
+import com.goodworkalan.paste.ViewConnector;
 import com.google.inject.Provider;
 
 /**
@@ -20,22 +19,23 @@ public class Stream extends RenderModule
     
     /** The mime-type to send. */
     private String contentType;
-    
+
     /**
-     * Create a new stream rendering element which will return the given view
-     * binder when end is called to continue construction.
+     * Create an extension to the domain-specific language used to specify the
+     * details of invoking a stream.
      * 
-     * @param viewBinder
-     *            The view binder element to return when end is called to
-     *            continue construction.
+     * @param end
+     *            The controller to return when the view connection statement is
+     *            complete.
      */
-    public Stream(ViewBinder viewBinder)
+    public Stream(ViewConnector end)
     {
-        super(viewBinder);
+        super(end);
     }
 
     /**
-     * Configures a {@link Binder} via the exposed methods.
+     * Configure the a Guice child injector to include the properties necessary
+     * to create a {@link Renderer} that will generate an HTTP redirection.
      */
     @Override
     protected void configure()
@@ -56,7 +56,8 @@ public class Stream extends RenderModule
      * 
      * @param methodName
      *            The method name to call or null if we match on mime type.
-     * @return This stream builder element to continue construction.
+     * @return This domain-specific language extension to continue specifying
+     *         redirect properties.
      */
     public Stream methodName(String methodName)
     {
@@ -69,7 +70,8 @@ public class Stream extends RenderModule
      * 
      * @param contentType
      *            The mime-type to send.
-     * @return This stream builder element to continue construction.
+     * @return This domain-specific language extension to continue specifying
+     *         redirect properties.
      */
     public Stream contentType(String contentType)
     {

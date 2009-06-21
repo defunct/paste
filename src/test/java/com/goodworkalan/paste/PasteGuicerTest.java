@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.CoreBinder;
+import com.goodworkalan.paste.CoreConnector;
 import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.forward.Forward;
 import com.google.inject.Module;
@@ -34,10 +34,8 @@ public class PasteGuicerTest
         
         FilterChain chain = mock(FilterChain.class);
         
-        CoreBinder binder = new CoreBinder();
-        binder.controllers()
-              .bind("/queue/(user)")
-              .to(BindingController.class);
+        CoreConnector binder = new CoreConnector();
+        binder.connect().path("/queue/(user)").to(BindingController.class).end();
         PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
     }
@@ -55,36 +53,44 @@ public class PasteGuicerTest
         
         FilterChain chain = mock(FilterChain.class);
         
-        CoreBinder binder = new CoreBinder();
-        binder
-            .controllers()
-                  .bind("/queue/(user)").to(BindingController.class)
-                  .bind("/login")
-                      .when().method("GET").priority(1).to(Object.class)
-                      .when().method("POST").to(Object.class)
-                  .bind("/index").to(Object.class);
+        CoreConnector connector = new CoreConnector();
+        connector
+            .connect()
+                .path("/queue/(user)").to(BindingController.class).end()
+                .path("/login")
+                      .when().method("GET").priority(1).to(Object.class).end()
+                      .when().method("POST").to(Object.class).end()
+                      .end()
+                .end()
+            .connect()
+                .path("/index").to(Object.class).end()
+                .end();
         
-        PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        PasteGuicer guicer = connector.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
     }
     
     @Test
     public void view() throws IOException, ServletException
     {
-        CoreBinder binder = new CoreBinder();
+        CoreConnector binder = new CoreConnector();
         binder
-            .controllers()
-                  .bind("/queue/(user)").to(BindingController.class)
-                  .bind("/login")
-                      .when().method("GET").priority(1).to(Object.class)
-                      .when().method("POST").to(Object.class)
-                  .bind("/index").to(Object.class);
+            .connect()
+                  .path("/queue/(user)").to(BindingController.class).end()
+                  .path("/login")
+                      .when().method("GET").priority(1).to(Object.class).end()
+                      .when().method("POST").to(Object.class).end()
+                      .end()
+                  .end()
+            .connect()
+                  .path("/index").to(Object.class).end()
+                  .end();
         
         binder
             .view()
-                .controller(Object.class).or(Index.class)
+                .controller(Object.class).controller(Index.class)
                 .view()
-                    .method("GET").or().exception(Error.class).with(Forward.class).format("/foo")
+                    .method("GET").exception(Error.class).with(Forward.class).format("/foo")
                     .end()
                 .view()
                     .method("POST").with(Forward.class).format("/foo")

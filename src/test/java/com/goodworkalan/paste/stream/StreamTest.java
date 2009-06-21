@@ -29,7 +29,7 @@ import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.SessionScope;
-import com.goodworkalan.paste.ViewBinder;
+import com.goodworkalan.paste.ViewConnector;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -69,7 +69,7 @@ public class StreamTest
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         PasteGuicer.enterController(controllerScope, injector, StreamController.class, new HashMap<String, String>());
         
-        ViewBinder binder = mock(ViewBinder.class);
+        ViewConnector binder = mock(ViewConnector.class);
         
         Stream stream = new Stream(binder);
         stream.contentType("text/csv");

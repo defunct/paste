@@ -6,16 +6,16 @@ import com.google.inject.AbstractModule;
 public abstract class RenderModule extends AbstractModule
 {
     // TODO Document.
-    private final ViewBinder end;
+    private final ViewConnector end;
     
     // TODO Document.
-    public RenderModule(ViewBinder viewBinder)
+    public RenderModule(ViewConnector end)
     {
-        this.end = viewBinder;
+        this.end = end;
     }
     
     // TODO Document.
-    public ViewBinder end()
+    public ViewConnector end()
     {
         return end;
     }
