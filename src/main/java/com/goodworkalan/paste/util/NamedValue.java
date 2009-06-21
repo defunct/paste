@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.util;
 
 /**
  * A name value pair with an attached context.

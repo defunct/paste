@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.intercept;
 
 import java.io.IOException;
 
@@ -8,6 +8,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+
+import com.goodworkalan.paste.BasicScope;
 
 // TODO Document.
 public class InterceptingRequest extends HttpServletRequestWrapper

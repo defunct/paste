@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.intercept;
 
 import java.io.IOException;
 import java.io.PrintWriter;

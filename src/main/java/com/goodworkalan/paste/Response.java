@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.goodworkalan.paste.util.NamedValue;
+import com.goodworkalan.paste.util.NamedValueList;
 import com.google.inject.Inject;
 
 // FIXME Headers that appear here should also appear in our HttpServletResponse. 

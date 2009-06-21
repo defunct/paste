@@ -8,7 +8,7 @@ import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.Tree;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Controller;
-import com.goodworkalan.paste.Parameters;
+import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.Inject;
 
 /**

@@ -13,6 +13,8 @@ import javax.servlet.http.HttpSession;
 import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
+import com.goodworkalan.paste.util.NamedValue;
+import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 

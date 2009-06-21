@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.intercept;
 
 // TODO Document.
 public class Interception

@@ -1,4 +1,4 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;

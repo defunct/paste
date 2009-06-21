@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.goodworkalan.paste.util.NamedValue;
+import com.goodworkalan.paste.util.NamedValueList;
 import com.google.inject.Inject;
 
 @RequestScoped

@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.paste.util.NamedValue;
+import com.goodworkalan.paste.util.Parameters;
+
 public class AnnotationsTest
 {
     @Test

@@ -1,8 +1,9 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+
 
 public class Parameters extends NamedValueList
 {

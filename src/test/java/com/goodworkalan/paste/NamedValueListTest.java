@@ -12,6 +12,9 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.paste.util.NamedValue;
+import com.goodworkalan.paste.util.NamedValueList;
+
 public class NamedValueListTest
 {
     @Test

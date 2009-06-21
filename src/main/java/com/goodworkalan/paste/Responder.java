@@ -6,6 +6,7 @@ import java.io.Writer;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.paste.util.NamedValue;
 import com.google.inject.Inject;
 
 /**

@@ -2,6 +2,8 @@ package com.goodworkalan.paste;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.goodworkalan.paste.util.NamedValueList;
+import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.Inject;
 
 //TODO Document.
