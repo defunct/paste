@@ -3,6 +3,7 @@ package com.goodworkalan.paste;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import org.testng.annotations.Test;
@@ -42,14 +43,14 @@ public class BinderTest
     {
         CoreConnector binder = new CoreConnector();
         binder.view()
-              .controller(Object.class).controller(String.class)
+              .controller(Date.class).controller(String.class)
               .with(Forward.class);
         RuleMap<Pair<Integer, RenderModule>> bindings = binder.getViewRules();
-        List<Pair<Integer, RenderModule>> found = bindings.test().put(BindKey.CONTROLLER_CLASS, Object.class).get();
+        List<Pair<Integer, RenderModule>> found = bindings.test().put(BindKey.CONTROLLER_CLASS, new Date()).get();
         assertEquals(found.size(), 1);
         assertEquals((int) Tuple.get1(found.get(0)), 0);
         assertTrue(Tuple.get2(found.get(0)) instanceof Forward);
-        found =  bindings.test().put(BindKey.CONTROLLER_CLASS, Integer.class).get();
+        found =  bindings.test().put(BindKey.CONTROLLER_CLASS, (Integer) 1).get();
         assertEquals(found.size(), 0);
     }
 }
