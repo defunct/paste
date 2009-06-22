@@ -66,10 +66,11 @@ public class PasteFilter implements Filter
             }
         }
         
-        CoreConnector binder = new CoreConnector();
-        for (Router dispatcher : listOfDispatchers)
+        Connections connections = new Connections();
+        Connector connector = connections.newConnector();
+        for (Router router : listOfDispatchers)
         {
-            dispatcher.connect(binder);
+            router.connect(connector);
         }
         
         Map<String, String> map = new HashMap<String, String>();
@@ -80,17 +81,11 @@ public class PasteFilter implements Filter
             map.put(name, config.getInitParameter(name));
         }
         
-        guicer = new PasteGuicer(binder.getBindingTrees(),
-                                    binder.getViewRules(),
-                                    listOfModules,
-                                    config.getServletContext(),
-                                    map);
+        guicer = new PasteGuicer(connections.getBindingTrees(), connections.getViewRules(), listOfModules, config.getServletContext(), map);
     }
 
     // TODO Document.
-    public void doFilter(ServletRequest request,
-                         ServletResponse response,
-                         FilterChain chain)
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException
     {   
         guicer.filter((HttpServletRequest) request,

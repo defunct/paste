@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.deviate.RuleMap;
+import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.paste.faults.Faults;
@@ -87,7 +88,7 @@ public class PasteGuicer
         this.initialization = initialization;
         
         List<Module> pushGuicletModule = new ArrayList<Module>(modules);
-        pushGuicletModule.add(new PasteModule(sessionScope, requestScope, controllerScope, janitors));
+        pushGuicletModule.add(new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), sessionScope, requestScope, controllerScope, janitors));
         
         this.injector = Guice.createInjector(pushGuicletModule);
 

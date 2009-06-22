@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.CoreConnector;
-import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.forward.Forward;
 import com.google.inject.Module;
 
@@ -33,9 +31,9 @@ public class PasteGuicerTest
         
         FilterChain chain = mock(FilterChain.class);
         
-        CoreConnector binder = new CoreConnector();
-        binder.connect().path("/queue/(user)").to(BindingController.class).end();
-        PasteGuicer guicer = binder.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        Connections connections = new Connections();
+        connections.newConnector().connect().path("/queue/(user)").to(BindingController.class).end();
+        PasteGuicer guicer = connections.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
     }
     
@@ -52,7 +50,8 @@ public class PasteGuicerTest
         
         FilterChain chain = mock(FilterChain.class);
         
-        CoreConnector connector = new CoreConnector();
+        Connections connections = new Connections();
+        Connector connector = connections.newConnector();
         connector
             .connect()
                 .path("/queue/(user)").to(BindingController.class).end()
@@ -66,15 +65,16 @@ public class PasteGuicerTest
                 .path("/index").to(Object.class).end()
                 .end();
         
-        PasteGuicer guicer = connector.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        PasteGuicer guicer = connections.newGuiceletGuicer(Collections.<Module>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
         guicer.filter(request, response, chain);
     }
     
     @Test
     public void view() throws IOException, ServletException
     {
-        CoreConnector binder = new CoreConnector();
-        binder
+        Connections connections = new Connections();
+        Connector connector = connections.newConnector();
+        connector
             .connect()
                   .path("/queue/(user)").to(BindingController.class).end()
                   .path("/login")
@@ -82,12 +82,12 @@ public class PasteGuicerTest
                       .when().method("POST").to(Object.class).end()
                       .end()
                   .end();
-        binder
+        connector
             .connect()
                   .path("/index").to(Object.class).end()
                   .end();
         
-        binder
+        connector
             .view()
                 .controller(Object.class).controller(Index.class)
                 .view()

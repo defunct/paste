@@ -18,10 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.testng.annotations.Test;
 
+import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Renderer;
+import com.goodworkalan.paste.Routes;
 import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.ViewConnector;
 import com.goodworkalan.paste.janitor.Janitor;
@@ -53,7 +55,7 @@ public class ForwardTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
@@ -87,7 +89,7 @@ public class ForwardTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
@@ -122,7 +124,7 @@ public class ForwardTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        PasteModule guicelet = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule guicelet = new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());

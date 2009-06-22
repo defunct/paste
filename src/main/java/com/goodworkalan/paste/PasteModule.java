@@ -19,8 +19,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
 // TODO Document.
+// FIXME Package scope.
 public class PasteModule extends AbstractModule
 {
+    // TODO Document.
+    private final Routes routes;
+
     // TODO Document.
     private final SessionScope sessionScope;
     
@@ -34,11 +38,10 @@ public class PasteModule extends AbstractModule
     private final List<Janitor> servletJanitors;
     
     // TODO Document.
-    public PasteModule(SessionScope sessionScope,
-                          BasicScope requestScope,
-                          BasicScope controllerScope,
-                          List<Janitor> servletJanitors)
+    public PasteModule(Routes routes, SessionScope sessionScope,
+            BasicScope requestScope, BasicScope controllerScope, List<Janitor> servletJanitors)
     {
+        this.routes = routes;
         this.sessionScope = sessionScope;
         this.requestScope = requestScope;
         this.controllerScope = controllerScope;
@@ -64,6 +67,9 @@ public class PasteModule extends AbstractModule
         bind(JanitorQueue.class)
             .annotatedWith(Servlet.class)
             .toInstance(new JanitorQueue(servletJanitors));
+        
+        bind(Routes.class)
+            .toInstance(routes);
         
         // Need to bind to null provider so that they are bound when you 
         // set the request scope.

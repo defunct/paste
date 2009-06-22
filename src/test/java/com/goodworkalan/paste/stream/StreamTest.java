@@ -23,10 +23,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.annotations.Test;
 
+import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.paste.BasicScope;
 import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Renderer;
+import com.goodworkalan.paste.Routes;
 import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.ViewConnector;
 import com.goodworkalan.paste.janitor.Janitor;
@@ -63,7 +65,7 @@ public class StreamTest
         
         BasicScope requestScope = new BasicScope();
         BasicScope controllerScope = new BasicScope();
-        PasteModule paste = new PasteModule(new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
+        PasteModule paste = new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(paste);
 
         PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
