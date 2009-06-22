@@ -9,15 +9,15 @@ import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.mallardsoft.tuple.Pair;
 
+// TODO Document.
 public class ConnectionGroup
 {
-    private final Connector connector;
-
+    /** A list of globs to rule mappings. */
     private final List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections;
     
-    public ConnectionGroup(Connector connector, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)
+    // TODO Document.
+    public ConnectionGroup(List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)
     {
-        this.connector = connector;
         this.connections = connections;
     }
 
@@ -28,9 +28,11 @@ public class ConnectionGroup
         RuleMapBuilder<Pair<Integer, Class<?>>> rules = new RuleMapBuilder<Pair<Integer,Class<?>>>();
         return new PathConnector<ConnectionGroup>(this, connections, Collections.singletonList(new GlobCompiler()), new ArrayList<Glob>(), globs, rules, path);
     }
-    
-    public Connector end()
+
+    /**
+     * Terminate the domain-specific language connection statement.
+     */
+    public void end()
     {
-        return connector;
     }
 }

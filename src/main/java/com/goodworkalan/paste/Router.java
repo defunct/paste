@@ -1,8 +1,8 @@
 package com.goodworkalan.paste;
 
 // TODO Document.
-// FIXME Rename Connector.
 public interface Router
 {
+    // TODO Document.
     public void connect(Connector binder);
 }

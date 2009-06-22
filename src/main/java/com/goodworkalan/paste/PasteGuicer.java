@@ -267,7 +267,7 @@ public class PasteGuicer
                 = mapOfViewBindings
                     .test()
                         .put(BindKey.PACKAGE, hasController ? controller.getClass().getPackage().getName() : null)
-                        .put(BindKey.CONTROLLER_CLASS, hasController ? controller.getClass() : null)
+                        .put(BindKey.CONTROLLER_CLASS, controller)
                         .put(BindKey.PATH, path)
                         .put(BindKey.STATUS, injector.getInstance(Response.class).getStatus())
                         .put(BindKey.EXCEPTION, throwable != null ? throwable.getClass() : null)

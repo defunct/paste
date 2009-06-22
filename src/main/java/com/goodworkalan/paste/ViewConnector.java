@@ -57,9 +57,8 @@ public class ViewConnector
     }
     
     // TODO Document.
-    public ViewConnector end()
+    public void end()
     {
-        return parent;
     }
     
     // TODO Document.

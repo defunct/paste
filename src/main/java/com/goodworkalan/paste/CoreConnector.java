@@ -31,11 +31,12 @@ public class CoreConnector implements Connector
         this.viewRules = new RuleMapBuilder<Pair<Integer,RenderModule>>();
     }
 
+    // TODO Document.
     public ConnectionGroup connect()
     {
         List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> group = new ArrayList<Pair<List<Glob>,RuleMapBuilder<Pair<Integer,Class<?>>>>>();
         connections.add(group);
-        return new ConnectionGroup(this, group);
+        return new ConnectionGroup(group);
     }
     
     // TODO Document.

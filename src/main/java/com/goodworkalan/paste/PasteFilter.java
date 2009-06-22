@@ -49,8 +49,7 @@ public class PasteFilter implements Filter
         }
 
         List<Router> listOfDispatchers = new ArrayList<Router>();
-        // FIXME Rename Connectors.
-        String dispatchers = config.getInitParameter("Dispatchers");
+        String dispatchers = config.getInitParameter("Routers");
         if (dispatchers != null)
         {
             try

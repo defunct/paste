@@ -19,7 +19,6 @@ import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.forward.Forward;
 import com.google.inject.Module;
 
-// FIXME Rename.
 public class PasteGuicerTest
 {
     @Test
@@ -61,7 +60,8 @@ public class PasteGuicerTest
                       .when().method("GET").priority(1).to(Object.class).end()
                       .when().method("POST").to(Object.class).end()
                       .end()
-                .end()
+                .end();
+        connector
             .connect()
                 .path("/index").to(Object.class).end()
                 .end();
@@ -81,7 +81,8 @@ public class PasteGuicerTest
                       .when().method("GET").priority(1).to(Object.class).end()
                       .when().method("POST").to(Object.class).end()
                       .end()
-                  .end()
+                  .end();
+        binder
             .connect()
                   .path("/index").to(Object.class).end()
                   .end();
