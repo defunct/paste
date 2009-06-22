@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 import com.google.inject.BindingAnnotation;
 
 // TODO Document.
+// FIXME Outgoing.
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 @BindingAnnotation

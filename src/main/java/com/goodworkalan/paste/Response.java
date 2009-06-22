@@ -12,10 +12,13 @@ import com.google.inject.Inject;
 @RequestScoped
 public class Response
 {
+    // TODO Document.
     private final List<NamedValue> headers;
     
+    // TODO Document.
     private int status;
     
+    // TODO Document.
     @Inject
     public Response()
     {
@@ -23,6 +26,7 @@ public class Response
         this.headers = new ArrayList<NamedValue>();
     }
     
+    // TODO Document.
     public void setStatus(int status)
     {
         if (this.status < 0)
@@ -36,26 +40,31 @@ public class Response
         this.status = status;
     }
     
+    // TODO Document.
     public int getStatus()
     {
         return status;
     }
     
+    // TODO Document.
     public NamedValueList getHeaders()
     {
         return new NamedValueList(headers);
     }
     
+    // TODO Document.
     public void addHeader(String name, int value)
     {
         headers.add(new NamedValue(NamedValue.RESPONSE, name, Integer.toString(value)));
     }
     
+    // TODO Document.
     public void addHeader(String name, String value)
     {
         headers.add(new NamedValue(NamedValue.RESPONSE, name, value));
     }
     
+    // TODO Document.
     public void clearHeaders(String name)
     {
         Iterator<NamedValue> eachHeader = headers.iterator();
@@ -67,5 +76,4 @@ public class Response
             }
         }
     }
-
 }

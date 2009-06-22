@@ -11,13 +11,17 @@ import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.NamedValueList;
 import com.google.inject.Inject;
 
+// TODO Document.
 @RequestScoped
 public class Request
 {
+    // TODO Document.
     private final HttpServletRequest request;
     
+    // TODO Document.
     private final NamedValueList headers;
     
+    // TODO Document.
     @Inject
     public Request(HttpServletRequest request)
     {
@@ -81,6 +85,7 @@ public class Request
         return new NamedValueList(headers);
     }
     
+    // TODO Document.
     public Map<String, String[]> getParamters()
     {
         return getParameterMap(request);
@@ -93,26 +98,31 @@ public class Request
         return request.getParameterMap();
     }
 
+    // TODO Document.
     public String getMethod()
     {
         return request.getMethod();
     }
     
+    // TODO Document.
     public String getContextPath()
     {
         return request.getContextPath();
     }
     
+    // TODO Document.
     public String getRequestURI()
     {
         return request.getRequestURI();
     }
     
+    // TODO Document.
     public String getRequestURL()
     {
         return request.getRequestURL().toString();
     }
 
+    // TODO Document.
     public NamedValueList getHeaders()
     {
         return headers;
