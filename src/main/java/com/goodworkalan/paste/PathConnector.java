@@ -36,6 +36,8 @@ public class PathConnector<T> implements NextRuleConnector<T>, ToConnector<T>
     // TODO Document.
     private int priority;
     
+    private boolean built;
+    
     // TODO Document.
     public PathConnector(T connector, Map<Class<?>, Glob> controllerToGlob, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections, List<GlobCompiler> compilers, List<Glob> globs, RuleMapBuilder<Pair<Integer, Class<?>>> rules, String pattern)
     {
@@ -46,11 +48,6 @@ public class PathConnector<T> implements NextRuleConnector<T>, ToConnector<T>
         this.globs = globs;
         this.rules = rules;
         this.pattern = pattern;
-        
-        for (GlobCompiler compiler : compilers)
-        {
-            globs.add(compiler.compile(pattern));
-        }
     }
     
     // TODO Document.
@@ -60,6 +57,7 @@ public class PathConnector<T> implements NextRuleConnector<T>, ToConnector<T>
         {
             globs.add(compiler.compile(pattern));
         }
+        built = true;
         return new OrConnector<T>(connector, controllerToGlob, connections, compilers, globs, rules);
     }
     
@@ -86,6 +84,14 @@ public class PathConnector<T> implements NextRuleConnector<T>, ToConnector<T>
     // TODO Document.
     public PathConnector<PathConnector<T>> path(String path)
     {
+        if (!built)
+        {
+            for (GlobCompiler compiler : compilers)
+            {
+                globs.add(compiler.compile(pattern));
+            }
+            built = true;
+        }
         List<GlobCompiler> subCompilers = new ArrayList<GlobCompiler>();
         for (Glob glob : globs)
         {
@@ -119,6 +125,14 @@ public class PathConnector<T> implements NextRuleConnector<T>, ToConnector<T>
      */
     public RuleConnector<T> when()
     {
+        if (!built)
+        {
+            for (GlobCompiler compiler : compilers)
+            {
+                globs.add(compiler.compile(pattern));
+            }
+            built = true;
+        }
         connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer,Class<?>>>>(globs, rules));
         return new RuleConnector<T>(this, globs.get(0), controllerToGlob, rules);
     }
@@ -126,6 +140,14 @@ public class PathConnector<T> implements NextRuleConnector<T>, ToConnector<T>
     // TODO Document.
     public Ending<T> to(Class<?> controller)
     {
+        if (!built)
+        {
+            for (GlobCompiler compiler : compilers)
+            {
+                globs.add(compiler.compile(pattern));
+            }
+            built = true;
+        }
         rules.rule().put(new Pair<Integer, Class<?>>(priority, controller));
         controllerToGlob.put(controller, globs.get(0));
         connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer,Class<?>>>>(globs, rules));

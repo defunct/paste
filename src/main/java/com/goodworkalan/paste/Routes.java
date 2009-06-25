@@ -1,5 +1,6 @@
 package com.goodworkalan.paste;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,12 @@ public class Routes
     public Routes(Map<Class<?>, Glob> controllerToGlob)
     {
         this.controllerToGlob = controllerToGlob;
+    }
+    
+    // TODO Document.
+    public String path(Class<?> controllerClass)
+    {
+        return controllerToGlob.get(controllerClass).path(Collections.<String, String>emptyMap());
     }
     
     // TODO Document.

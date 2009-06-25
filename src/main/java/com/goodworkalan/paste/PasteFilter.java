@@ -81,7 +81,7 @@ public class PasteFilter implements Filter
             map.put(name, config.getInitParameter(name));
         }
         
-        guicer = new PasteGuicer(connections.getBindingTrees(), connections.getViewRules(), listOfModules, config.getServletContext(), map);
+        guicer = new PasteGuicer(connections.getRoutes(), connections.getBindingTrees(), connections.getViewRules(), listOfModules, config.getServletContext(), map);
     }
 
     // TODO Document.

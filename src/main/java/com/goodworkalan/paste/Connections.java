@@ -75,6 +75,6 @@ class Connections
     // TODO Document.
     public PasteGuicer newGuiceletGuicer(List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
     {
-        return new PasteGuicer(getBindingTrees(), getViewRules(), modules, servletContext, initialization);
+        return new PasteGuicer(getRoutes(), getBindingTrees(), getViewRules(), modules, servletContext, initialization);
     }
 }

@@ -3,7 +3,6 @@ package com.goodworkalan.paste;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -16,13 +15,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.deviate.RuleMap;
-import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Match;
-import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.intercept.InterceptingRequest;
 import com.goodworkalan.paste.intercept.InterceptingResponse;
 import com.goodworkalan.paste.intercept.Interception;
@@ -31,14 +27,10 @@ import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
 import com.goodworkalan.paste.stop.Abnormality;
-import com.goodworkalan.paste.util.NamedValue;
-import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-import com.google.inject.ProvisionException;
-import com.google.inject.TypeLiteral;
 import com.mallardsoft.tuple.Pair;
 import com.mallardsoft.tuple.Tuple;
 
@@ -75,7 +67,7 @@ public class PasteGuicer
     private final ThreadLocal<Integer> callDepth;
 
     // TODO Document.
-    public PasteGuicer(List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings,
+    public PasteGuicer(Routes routes, List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings,
                           RuleMap<Pair<Integer, RenderModule>> mapOfViewBindings,
                           List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
     {
@@ -88,7 +80,7 @@ public class PasteGuicer
         this.initialization = initialization;
         
         List<Module> pushGuicletModule = new ArrayList<Module>(modules);
-        pushGuicletModule.add(new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), sessionScope, requestScope, controllerScope, janitors));
+        pushGuicletModule.add(new PasteModule(routes, sessionScope, requestScope, controllerScope, janitors));
         
         this.injector = Guice.createInjector(pushGuicletModule);
 
@@ -177,6 +169,8 @@ public class PasteGuicer
             }
         }
 
+        ScopeManager scopeManager = new ScopeManager(requestScope, request, response, path, janitors, servletContext, initialization);
+
         Throwable throwable = null;
         boolean hasController = false;
         for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings)
@@ -186,7 +180,7 @@ public class PasteGuicer
                 break;
             }
 
-            List<Match<RuleMap<Pair<Integer, Class<?>>>>> matches = tree.map(path);
+            List<Match<RuleMap<Pair<Integer, Class<?>>>>> matches = tree.newGlobber(new GuiceMatchTestFactory(scopeManager, injector)).map(path);
             if (!matches.isEmpty())
             {
                 long highest = Long.MIN_VALUE;
@@ -222,11 +216,11 @@ public class PasteGuicer
                 }
                 else
                 {
-                    enterRequest(requestScope, request, response, path, janitors, servletContext, initialization);
+                    scopeManager.enterRequest();
                 }
 
                 hasController = false;
-                throwable = enterController(controllerScope, injector, controllerClass, mappings);
+                throwable = scopeManager.enterController(controllerScope, injector, controllerClass, mappings);
                 if (throwable != null)
                 {
                     break;
@@ -332,100 +326,4 @@ public class PasteGuicer
         cleanUp(janitors);
     }
 
-    // TODO Document.
-    public static void enterRequest(
-                BasicScope scope,
-                HttpServletRequest request,
-                HttpServletResponse response,
-                String path,
-                List<Janitor> requestJanitors,
-                ServletContext servletContext,
-                Map<String, String> initialization) throws IOException
-    {
-        scope.enter();
-        
-        scope.seed(ServletContext.class, servletContext);
-        scope.seed(Key.get(new TypeLiteral<Map<String, String>>() {}, InitializationParameters.class), initialization);
-        
-        scope.seed(HttpServletRequest.class, request);
-        scope.seed(ServletRequest.class, request);
-        
-        scope.seed(HttpSession.class, request.getSession(true));
-            
-        scope.seed(HttpServletResponse.class, response);
-        scope.seed(ServletResponse.class, response);
-        
-        scope.seed(Key.get(String.class, Path.class), path);
-
-        scope.seed(Key.get(String.class, WelcomeFile.class), "index");
-
-        ArrayList<NamedValue> parameters = new ArrayList<NamedValue>();
-        
-        for (Map.Entry<String, String[]> entry : Request.getParameterMap(request).entrySet())
-        {
-            for (String value : entry.getValue())
-            {
-                parameters.add(new NamedValue(NamedValue.REQUEST, entry.getKey(), value));
-            }
-        }
-        
-        scope.seed(Parameters.class, new Parameters(parameters));
-
-        scope.seed(JanitorQueue.class, new JanitorQueue(requestJanitors));
-        
-        scope.seed(Key.get(new TypeLiteral<Map<Object, Object>>() { }, Faults.class), new HashMap<Object, Object>());
-    }
-
-
-    /**
-     * Enter the controller scope creating a controller. Returns the Throwable
-     * thrown by the controller constructor if any. This unorthodox return value
-     * distinguishes an exception raised in the controller constructor from an
-     * exception raised during the creation of other objects in the method. That
-     * is, it is an explicit return of an exception raised during construction,
-     * that may be processed by the error handling of the web application.
-     * 
-     * @param scope
-     *            The controller scope.
-     * @param injector
-     *            The Guice injector.
-     * @param controllerClass
-     *            The class of the controller to create.
-     * @param mappings
-     *            The map of parameter bindings for the controller.
-     * @return The exception raised by controller, if any.
-     */
-    public static Throwable enterController(BasicScope scope, Injector injector, Class<?> controllerClass, Map<String, String> mappings)
-    {
-        scope.enter();
-        
-        List<NamedValue> parameters = new ArrayList<NamedValue>();
-        for (Map.Entry<String, String> entry : mappings.entrySet())
-        {
-            parameters.add(new NamedValue(NamedValue.DOVETAIL, entry.getKey(), entry.getValue()));
-        }
-        
-        for (NamedValue namedValue : injector.getInstance(Parameters.class))
-        {
-            parameters.add(namedValue);
-        }
-        
-        scope.seed(Key.get(new TypeLiteral<List<NamedValue>>() {}, Controller.class), parameters);
-        scope.seed(Key.get(Parameters.class, Controller.class), new Parameters(parameters));
-        
-        try
-        {
-            scope.seed(Key.get(Object.class, Controller.class), injector.getInstance(controllerClass));
-        }
-        catch (ProvisionException e)
-        {
-            if (e.getCause() != null)
-            {
-                return e.getCause();
-            }
-            throw e;
-        }
-        
-        return null;
-    }
 }

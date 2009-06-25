@@ -12,6 +12,7 @@ import com.goodworkalan.paste.util.NamedValueList;
 import com.google.inject.Inject;
 
 // TODO Document.
+// FIXME Why? Why? Why? Just let the user suffer the HTTP servlet protocol.
 @RequestScoped
 public class Request
 {
@@ -103,7 +104,13 @@ public class Request
     {
         return request.getMethod();
     }
-    
+  
+    // TODO Document.
+    public String getServletPath()
+    {
+        return request.getContextPath();
+    }
+
     // TODO Document.
     public String getContextPath()
     {

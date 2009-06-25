@@ -16,9 +16,9 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.paste.BasicScope;
-import com.goodworkalan.paste.PasteGuicer;
 import com.goodworkalan.paste.PasteModule;
 import com.goodworkalan.paste.Routes;
+import com.goodworkalan.paste.ScopeManager;
 import com.goodworkalan.paste.SessionScope;
 import com.goodworkalan.paste.ViewConnector;
 import com.goodworkalan.paste.janitor.Janitor;
@@ -45,8 +45,9 @@ public class RedirectTest
         PasteModule guicelet = new PasteModule(new Routes(Collections.<Class<?>, Glob>emptyMap()), new SessionScope(), requestScope, controllerScope, Collections.<Janitor>emptyList());
         Injector injector = Guice.createInjector(guicelet);
 
-        PasteGuicer.enterRequest(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
-        PasteGuicer.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
+        ScopeManager scopeManager = new ScopeManager(requestScope, request, response, "/account/create", Collections.<Janitor>emptyList(), mock(ServletContext.class), Collections.<String, String>emptyMap());
+        scopeManager.enterRequest();
+        scopeManager.enterController(controllerScope, injector, Object.class, new HashMap<String, String>());
         
         ViewConnector binder = mock(ViewConnector.class);
         
