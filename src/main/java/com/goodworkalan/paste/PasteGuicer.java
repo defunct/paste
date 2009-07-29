@@ -292,6 +292,7 @@ public class PasteGuicer
                 {
                     throw (Error) throwable;
                 }
+                throw new RuntimeException(throwable);
             }
         }
         
