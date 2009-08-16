@@ -14,7 +14,7 @@ public class NamedValue
      * Context for named values created by Dovetail matches against the URL
      * path.
      */
-    public final static NamedValue.Context DOVETAIL = new NamedValue.Context();
+    public final static NamedValue.Context CONTROLLER = new NamedValue.Context();
     
     /** Context for named values created for HTTP response. */
     public final static NamedValue.Context RESPONSE = new NamedValue.Context();

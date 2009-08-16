@@ -3,8 +3,10 @@ import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.goodworkalan.paste.Request;
-import com.goodworkalan.paste.Response;
 import com.google.inject.Inject;
 
 /**
@@ -16,14 +18,14 @@ import com.google.inject.Inject;
 public class Redirector
 {
     // TODO Document.
-    private final Request request;
+    private final HttpServletRequest request;
     
     // TODO Document.
-    private final Response response;
+    private final HttpServletResponse response;
     
     // TODO Document.
     @Inject
-    public Redirector(Request request, Response response)
+    public Redirector(@Request HttpServletRequest request, HttpServletResponse response)
     {
         this.request = request;
         this.response = response;

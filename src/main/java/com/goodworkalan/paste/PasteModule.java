@@ -10,63 +10,86 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.goodworkalan.paste.faults.Faults;
 import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
-import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
-// TODO Document.
-// FIXME Package scope.
-public class PasteModule extends AbstractModule
-{
-    // TODO Document.
+/**
+ * The Guice module that defines the filter bindings.
+ * 
+ * @author Alan Gutierrez
+ */
+class PasteModule extends AbstractModule {
+    /** The servlet context of the paste filter. */
+    private final ServletContext servletContext;
+
+    /** The routes defined for the filter. */
     private final Routes routes;
 
-    // TODO Document.
-    private final SessionScope sessionScope;
-    
-    // TODO Document.
-    private final BasicScope requestScope;
-    
-    // TODO Document.
-    private final BasicScope controllerScope;
-    
-    // TODO Document.
+    /** The map of filter initialization parameters. */
+    private final Map<String, String> initialization;
+
+    /** The janitors to run when the filter shuts down. */
     private final List<Janitor> servletJanitors;
-    
-    // TODO Document.
-    public PasteModule(Routes routes, SessionScope sessionScope,
-            BasicScope requestScope, BasicScope controllerScope, List<Janitor> servletJanitors)
-    {
+
+    /**
+     * Create a module with the given routes, given filter initialization
+     * parameters, and the given list of janitors to run when the filter shuts
+     * down.
+     * 
+     * @param routes
+     *            The routes defined for the filter.
+     * @param initialization
+     * @param servletJanitors
+     *            The janitors to run when the filter shuts down.
+     */
+    public PasteModule(ServletContext servletContext, Routes routes,
+            Map<String, String> initialization, List<Janitor> servletJanitors) {
+        this.servletContext = servletContext;
         this.routes = routes;
-        this.sessionScope = sessionScope;
-        this.requestScope = requestScope;
-        this.controllerScope = controllerScope;
+        this.initialization = initialization;
         this.servletJanitors = servletJanitors;
     }
 
-    // TODO Document.
+    /**
+     * Bind the paste filter implementations.
+     */
     @Override
     protected void configure()
     {
-        bindScope(SessionScoped.class, sessionScope);
-        bindScope(RequestScoped.class, requestScope);
-        bindScope(ControllerScoped.class, controllerScope);
+        bindScope(SessionScoped.class, Scopes.SESSION);
+        bindScope(RequestScoped.class, Scopes.REQUEST);
+        bindScope(FilterScoped.class, Scopes.FILTER);
+        bindScope(ControllerScoped.class, Scopes.CONTROLLER);
         
         bind(new TypeLiteral<Map<String, String>>() {})
             .annotatedWith(InitializationParameters.class)
-            .toProvider(new NullProvider<Map<String, String>>())
-            .in(RequestScoped.class);
+            .toInstance(initialization);
+
         bind(ServletContext.class)
-            .toProvider(new NullProvider<ServletContext>())
-            .in(RequestScoped.class);
+            .toProvider(new ServletContextProvider(servletContext));
         
         bind(JanitorQueue.class)
             .annotatedWith(Servlet.class)
             .toInstance(new JanitorQueue(servletJanitors));
+        bind(JanitorQueue.class)
+            .annotatedWith(Request.class)
+            .toProvider(RequestJanitorQueueProvider.class)
+            .in(RequestScoped.class);
+        bind(JanitorQueue.class)
+            .annotatedWith(Filter.class)
+            .toProvider(FilterJanitorQueueProvider.class)
+            .in(FilterScoped.class);
+        
+        bind(Filtration.class)
+            .annotatedWith(Request.class)
+            .toProvider(RequestFiltrationProvider.class);
+        bind(Filtration.class)
+            .annotatedWith(Filter.class)
+            .toProvider(FilterFiltrationProvider.class);
+        
         
         bind(Routes.class)
             .toInstance(routes);
@@ -74,59 +97,65 @@ public class PasteModule extends AbstractModule
         // Need to bind to null provider so that they are bound when you 
         // set the request scope.
         bind(HttpSession.class)
-            .toProvider(new NullProvider<HttpSession>())
+            .toProvider(HttpSessionProvider.class)
             .in(RequestScoped.class);
         
         bind(HttpServletRequest.class)
-            .toProvider(new NullProvider<HttpServletRequest>())
+            .annotatedWith(Request.class)
+            .toProvider(RequestHttpServletRequestProvider.class)
             .in(RequestScoped.class);
         bind(ServletRequest.class)
-            .toProvider(new NullProvider<ServletRequest>())
+            .annotatedWith(Request.class)
+            .toProvider(RequestHttpServletRequestProvider.class)
+            .in(RequestScoped.class);
+        
+        bind(HttpServletRequest.class)
+            .annotatedWith(Filter.class)
+            .toProvider(FilterHttpServletRequestProvider.class)
+            .in(RequestScoped.class);
+        bind(ServletRequest.class)
+            .annotatedWith(Filter.class)
+            .toProvider(FilterHttpServletRequestProvider.class)
             .in(RequestScoped.class);
         
         bind(HttpServletResponse.class)
-            .toProvider(new NullProvider<HttpServletResponse>())
+            .toProvider(HttpServletResponseProvider.class)
             .in(RequestScoped.class);
         bind(ServletResponse.class)
-            .toProvider(new NullProvider<ServletResponse>())
-            .in(RequestScoped.class);
-        
-        bind(new TypeLiteral<Map<String, String[]>>() {})
-            .toProvider(new NullProvider<Map<String, String[]>>())
+            .toProvider(HttpServletResponseProvider.class)
             .in(RequestScoped.class);
 
-        bind(String.class).annotatedWith(Path.class)
-            .toProvider(new NullProvider<String>())
+        bind(Criteria.class)
+            .annotatedWith(Request.class)
+            .toProvider(RequestCriteriaProvider.class)
             .in(RequestScoped.class);
-        bind(String.class).annotatedWith(WelcomeFile.class)
-            .toProvider(new NullProvider<String>())
-            .in(RequestScoped.class);
-
-        bind(Parameters.class)
-            .toProvider(new NullProvider<Parameters>())
-            .in(RequestScoped.class);
+        bind(Criteria.class)
+            .annotatedWith(Filter.class)
+            .toProvider(FilterCriteriaProvider.class)
+            .in(FilterScoped.class);
         
         bind(Parameters.class)
+            .annotatedWith(Request.class)
+            .toProvider(RequestParametersProvider.class)
+            .in(RequestScoped.class);
+        bind(Parameters.class)
+            .annotatedWith(Filter.class)
+            .toProvider(FilterParametersProvider.class)
+            .in(FilterScoped.class);
+        bind(Parameters.class)
             .annotatedWith(Controller.class)
-            .toProvider(new NullProvider<Parameters>())
+            .toProvider(ControllerParametersProvider.class)
             .in(ControllerScoped.class);
         
-        bind(new TypeLiteral<List<NamedValue>>() { })
-            .annotatedWith(Controller.class)
-            .toProvider(new NullProvider<List<NamedValue>>())
-            .in(ControllerScoped.class);
-      
-        bind(JanitorQueue.class)
-            .toProvider(new NullProvider<JanitorQueue>())
-            .in(RequestScoped.class);
-        
-        bind(new TypeLiteral<Map<Object, Object>>() { }).annotatedWith(Faults.class)
-            .toProvider(new NullProvider<Map<Object,Object>>())
-            .in(RequestScoped.class);
-
+        // We cheat here, we don't build these with guice, but seed them into
+        // the controller scope's backing map.
         bind(Object.class)
             .annotatedWith(Controller.class)
             .toProvider(new NullProvider<Parameters>())
+            .in(ControllerScoped.class);
+        bind(new TypeLiteral<Map<String, String>>(){})
+            .annotatedWith(Controller.class)
+            .toProvider(new NullProvider<Map<String, String>>())
             .in(ControllerScoped.class);
     }
 }

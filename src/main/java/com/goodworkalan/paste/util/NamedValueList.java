@@ -21,6 +21,7 @@ public class NamedValueList implements Iterable<NamedValue>
     /** The list of named values. */
     private final List<NamedValue> namedValues;
 
+
     /**
      * Create a named value list from the given list of named values.
      * 

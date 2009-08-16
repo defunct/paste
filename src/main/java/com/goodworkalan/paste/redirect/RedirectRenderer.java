@@ -57,11 +57,11 @@ public class RedirectRenderer implements Renderer
         
         if (!Redirects.isRedirectStatus(response.getStatus()))
         {
-            throw new PasteException();
+            throw new PasteException(0);
         }
         else if (response.getHeaders().getFirst("Location") == null)
         {
-            throw new PasteException();
+            throw new PasteException(0);
         }
         else
         {
@@ -71,7 +71,7 @@ public class RedirectRenderer implements Renderer
             }
             catch (URISyntaxException e)
             {
-                throw new PasteException(e);
+                throw new PasteException(0, e);
             }
         }
         

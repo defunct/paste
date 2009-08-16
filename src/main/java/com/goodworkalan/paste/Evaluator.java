@@ -43,7 +43,7 @@ public class Evaluator
         }
         catch (PathException e)
         {
-            throw new PasteException(e);
+            throw new PasteException(0, e);
         }
     }
 }

@@ -4,5 +4,5 @@ package com.goodworkalan.paste;
 public interface Router
 {
     // TODO Document.
-    public void connect(Connector binder);
+    public void connect(Connector connector);
 }

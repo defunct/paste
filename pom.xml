@@ -6,7 +6,7 @@
     <groupId>com.goodworkalan</groupId>
     <artifactId>paste</artifactId>
     <packaging>jar</packaging>
-    <version>0.1${version.suffix}</version>
+    <version>0.2${version.suffix}</version>
 
     <name>paste</name>
     <description>A MVC web framework that uses Google Guice for

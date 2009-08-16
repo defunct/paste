@@ -2,28 +2,24 @@ package com.goodworkalan.paste;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
+import com.goodworkalan.dovetail.Globber;
 import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.paste.intercept.InterceptingRequest;
 import com.goodworkalan.paste.intercept.InterceptingResponse;
 import com.goodworkalan.paste.intercept.Interception;
 import com.goodworkalan.paste.janitor.Janitor;
-import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
 import com.goodworkalan.paste.stop.Abnormality;
@@ -31,300 +27,409 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.ProvisionException;
+import com.google.inject.TypeLiteral;
 import com.mallardsoft.tuple.Pair;
 import com.mallardsoft.tuple.Tuple;
 
-// TODO Document.
-public class PasteGuicer
-{
-    // TODO Document.
-    private final ServletContext servletContext;
-    
-    // TODO Document.
-    private final Map<String, String> initialization;
-    
-    // TODO Document.
-    private final SessionScope sessionScope;
-
-    // TODO Document.
-    private final BasicScope requestScope;
-    
-    // TODO Document.
-    private final BasicScope controllerScope;
-    
-    // TODO Document.
+/**
+ * An object internal to the Paste filter that implements the filtration. The
+ * Paste filter constructs a Paste guicer during its filter initialization. The
+ * Paset filter then delegates all of its calls to the Paste guicer.
+ * <p>
+ * This separation is simply so that I can make final those properties of the
+ * filter that do not change for the lifetime of the filter. This is not
+ * possible in the Paste filter because of the two stage initialization of of
+ * Java Servlet filters. Having all these properties made variable so they could
+ * be set during initialization would only make me nervous, while it is pretty
+ * easy to look at the entirety of the Paste filter to see that the Paste filter
+ * is only set once, scanning the entirety of the filter to determine what
+ * really is and is not variable would be difficult.
+ * 
+ * @author Alan Gutierrez
+ */
+public class PasteGuicer {
+    /** The Guice injector. */
     private final Injector injector;
 
-    // TODO Document.
+    /**
+     * A list of Dovetail URL bindings that map a path to a Deviate rule set
+     * that further winnows the matches based on request parameters.
+     */
     private final List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings;
 
-    // TODO Document.
-    private final RuleMap<Pair<Integer, RenderModule>> mapOfViewBindings;
+    /**
+     * The rule map used to select a renderer for a given controller or thrown
+     * exception.
+     */
+    private final RuleMap<Pair<Integer, RenderModule>> viewRuleMap;
 
-    // TODO Document.
+    /** The list of janitors to run when the filter is shutdown. */
     private final List<Janitor> janitors;
-    
-    private final ThreadLocal<Integer> callDepth;
 
-    // TODO Document.
-    public PasteGuicer(Routes routes, List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings,
-                          RuleMap<Pair<Integer, RenderModule>> mapOfViewBindings,
-                          List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
-    {
-        this.requestScope = new BasicScope();
-        this.controllerScope = new BasicScope();
-        this.sessionScope = new SessionScope();
-        this.janitors = new ArrayList<Janitor>();
-        this.callDepth = new ThreadLocal<Integer>();
-        this.servletContext = servletContext;
-        this.initialization = initialization;
-        
-        List<Module> pushGuicletModule = new ArrayList<Module>(modules);
-        pushGuicletModule.add(new PasteModule(routes, sessionScope, requestScope, controllerScope, janitors));
-        
-        this.injector = Guice.createInjector(pushGuicletModule);
+    /** A stack of filter invocations. */
+    private static final ThreadLocal<LinkedList<Filtration>> filtrations = new ThreadLocal<LinkedList<Filtration>>();
 
-        this.controllerBindings = controllerBindings;
-        this.mapOfViewBindings = mapOfViewBindings;
+    /**
+     * Create a Paste guicer from using the given filter servlet context and the
+     * given Paste filter initialization parameters.
+     * 
+     * @param servletContext
+     *            The Paste filter servlet context.
+     * @param initialization
+     *            The Paste filter initialization parameters.
+     */
+    public PasteGuicer(ServletContext servletContext, Map<String, String> initialization) {
+        List<Module> modules = new ArrayList<Module>();
+        if (initialization.containsKey("Modules"))
+        {
+            try
+            {
+                for (String module : initialization.get("Modules").split(","))
+                {
+                    Class<?> moduleClass = Class.forName(module.trim());
+                    modules.add((Module) moduleClass.newInstance());
+                }
+            }
+            catch (Exception e)
+            {
+                throw new PasteException(e);
+            }
+        }
+
+        List<Router> routers = new ArrayList<Router>();
+        if (initialization.containsKey("Routers"))
+        {
+            try
+            {
+                for (String router : initialization.get("Routers").split(","))
+                {
+                    Class<?> routerClass = Class.forName(router.trim());
+                    routers.add((Router) routerClass.newInstance());
+                }
+            }
+            catch (Exception e)
+            {
+                throw new PasteException(e);
+            }
+        }
+        
+        Connections connections = new Connections();
+        Connector connector = connections.newConnector();
+        for (Router router : routers)
+        {
+            router.connect(connector);
+        }
+        
+        List<Janitor> janitors = new ArrayList<Janitor>();
+        
+        modules.add(new PasteModule(servletContext, connections.getRoutes(), initialization, janitors));
+
+        this.injector = Guice.createInjector(modules);
+        this.janitors = janitors;
+        this.controllerBindings = connections.getBindingTrees();
+        this.viewRuleMap = connections.getViewRules();
     }
 
-    // TODO Document.
-    public void filter(HttpServletRequest request,
-                       HttpServletResponse response,
-                       FilterChain chain)
-        throws IOException, ServletException
-    {
+    /**
+     * Get the properties of the root invocation of the filter.
+     * 
+     * @return The filtration structure for the root invocation.
+     */
+    static Filtration getRequestFiltration() {
+        return getFiltrations().getLast();
+    }
+
+    /**
+     * Get the properties of the current invocation of the filter.
+     * 
+     * @return The filtration structure for the current invocation.
+     */
+    static Filtration getFilterFiltration() {
+        return getFiltrations().getLast();
+    }
+
+    /**
+     * Filter the given request and the given response, possibly forwarding them
+     * to the given filter chain.
+     * 
+     * @param request
+     *            The HTTP request.
+     * @param response
+     *            The HTTP response.
+     * @param chain
+     *            The filter chain.
+     * @throws IOException
+     *             For any I/O error.
+     * @throws ServletException
+     *             For any other error.
+     */
+    public void filter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    throws IOException, ServletException {
         Interception interception = new Interception();
-        filter(new InterceptingRequest(interception, request, controllerScope),
-               new InterceptingResponse(interception, response),
-               interception, chain);
+        filter(new InterceptingRequest(interception, request),
+               new InterceptingResponse(interception, response), interception,
+               chain);
     }
 
-    // TODO Document.
+    /**
+     * Get the linked list of filtrations for this thread.
+     * 
+     * @return The linked list of filtrations.
+     */
+    private static LinkedList<Filtration> getFiltrations() {
+        LinkedList<Filtration> filtration = filtrations.get();
+        if (filtration == null) {
+            filtrations.set(new LinkedList<Filtration>());
+            return getFiltrations();
+        }
+        return filtration;
+    }
+
+    /**
+     * Wrapper around the heart of the filter that wraps filter processing in a
+     * try/finally block that pops the filtration context stack and runs and
+     * janitors. If the interception flag is flipped by one of the controllers,
+     * then the request is not forwarded to the filter chain.
+     * 
+     * @param request
+     *            The interception detecting request wrapper.
+     * @param response
+     *            The interception detecting response wrapper.
+     * @param interception
+     *            The interception flag.
+     * @param chain
+     *            The filter chain.
+     * @throws IOException
+     *             For any I/O exception.
+     * @throws ServletException
+     *             For any other exception.
+     */
     private void filter(HttpServletRequest request,
                         HttpServletResponse response,
                         Interception interception,
                         FilterChain chain)
-        throws IOException, ServletException
-    {
-        Integer depth = callDepth.get();
-        if (depth == null)
-        {
-            depth = 0;
-            callDepth.set(depth);
+    throws IOException, ServletException {
+        LinkedList<Filtration> filtrations = getFiltrations();
+        List<Janitor> requestJanitors;
+        if (filtrations.isEmpty()) {
+            requestJanitors = new ArrayList<Janitor>();
+        } else {
+            requestJanitors = filtrations.getFirst().getRequestJanitors();
         }
-        callDepth.set(depth + 1);
-        if (depth == 0)
-        {
-            sessionScope.enter(request);
-        }
-        else
-        {
-            requestScope.push(Key.get(JanitorQueue.class),
-                              Key.get(HttpServletRequest.class),
-                              Key.get(HttpServletResponse.class),
-                              Key.get(ServletRequest.class),
-                              Key.get(ServletResponse.class),
-                              Key.get(String.class, Path.class));
-        }
-        List<Janitor> janitors = new ArrayList<Janitor>();
-        try
-        {
-            filter(request, response, janitors, interception, chain, depth);
-        }
-        finally
-        {
-            cleanUp(janitors);
-            if (depth == 0)
-            {
-                requestScope.exit();
-                sessionScope.exit();
+        Filtration filtration = new Filtration(filtrations.isEmpty(), request, response, requestJanitors, new ArrayList<Janitor>());
+        filtrations.addLast(filtration);
+        try {
+            filter(filtration, interception, chain);
+        } finally {
+            filtrations.removeLast();
+            cleanUp(filtration.getFilterJanitors());
+            if (filtrations.isEmpty()) {
+                cleanUp(filtration.getRequestJanitors());
             }
-            else
-            {
-                requestScope.pop();
-            }
-            controllerScope.exit();
-            callDepth.set(depth);
         }
     }
-    
-    // TODO Document.
-    private void filter(HttpServletRequest request,
-                        HttpServletResponse response,
-                        List<Janitor> janitors,
-                        Interception interception,
-                        FilterChain chain, 
-                        int depth)
-        throws IOException, ServletException
-    {
-        String path = (String) request.getAttribute("javax.servlet.include.servlet_path");
-        if (path == null)
-        {
-            path = request.getRequestURI();
-            String contextPath = request.getContextPath();
-            if (contextPath != null)
-            {
-                path = path.substring(contextPath.length());
-            }
-        }
 
-        ScopeManager scopeManager = new ScopeManager(requestScope, request, response, path, janitors, servletContext, initialization);
+    /**
+     * The heart of the filter.
+     * 
+     * @param filtration
+     *            The filtration structure for the current invocation of the
+     *            filter.
+     * @param interception
+     *            A flag to indicate if any of controllers have short-circuited
+     *            the filter chain by sending a response.
+     * @param chain
+     *            The subsequent filter chain.
+     * @throws IOException
+     *             For any I/O exception.
+     * @throws ServletException
+     *             For any other exception.
+     */
+    private void filter(Filtration filtration, Interception interception, FilterChain chain)
+    throws IOException, ServletException {
+        // Use Guice to generate the criteria for this invocation, which will
+        // in turn provide us with a path we can match.
+        Criteria criteria = injector.getInstance(Key.get(Criteria.class, Filter.class));
 
         Throwable throwable = null;
-        boolean hasController = false;
-        for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings)
-        {
-            if (interception.isIntercepted())
-            {
+        Object controller = null;
+
+        // We try each series of binding definitions in order. There can be
+        // multiple bindings that match, applying multiple controllers.
+        for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings) {
+            // If a controller has written a response, we're done.
+            if (interception.isIntercepted()) {
                 break;
             }
+            
+            // Create a globber that will apply tests created by the Guice
+            // injector or this Paste filter.
+            Globber<RuleMap<Pair<Integer,Class<?>>>>globber = tree.newGlobber(new GuiceMatchTestFactory(injector));
 
-            List<Match<RuleMap<Pair<Integer, Class<?>>>>> matches = tree.newGlobber(new GuiceMatchTestFactory(scopeManager, injector)).map(path);
-            if (!matches.isEmpty())
-            {
-                long highest = Long.MIN_VALUE;
+            // Attempt to match the path.
+            List<Match<RuleMap<Pair<Integer, Class<?>>>>> matches = globber.map(criteria.getPath());
+
+            // We can have multiple matches, so we winnow them down by futher
+            // matching request parameters, then futher winnowing them by
+            // choosing a controller based on priority.
+            if (!matches.isEmpty()) {
+                int found = 0;
+                int highestPriority = Integer.MIN_VALUE;
                 Class<?> controllerClass = null;
                 Map<String, String> mappings = null;
 
-                for (Match<RuleMap<Pair<Integer, Class<?>>>> mapping : matches)
-                {
-                    List<Pair<Integer, Class<?>>> bindings
-                        = mapping.getObject()
-                            .test().put(BindKey.METHOD, request.getMethod())
-                                   .put(BindKey.PATH, path)
-                                   .get();
-                    for (Pair<Integer, Class<?>> binding : bindings)
-                    {
-                        if (Tuple.get1(binding) > highest)
-                        {
-                            highest = Tuple.get1(binding);
+                // Apply the rule set associated with each matched glob.
+                for (Match<RuleMap<Pair<Integer, Class<?>>>> mapping : matches) {
+                    List<Pair<Integer, Class<?>>> bindings = mapping.getObject()
+                        .test()
+                            .put(BindKey.METHOD, filtration.getRequest().getMethod())
+                            .put(BindKey.PATH, criteria.getPath())
+                            .get();
+                    for (Pair<Integer, Class<?>> binding : bindings) {
+                        int priority = Tuple.get1(binding);
+                        if (priority > highestPriority) {
+                            found = 1;
+                            highestPriority = priority;
                             controllerClass = Tuple.get2(binding);
                             mappings = mapping.getParameters();
+                        } else if (priority == highestPriority) {
+                            found++;
                         }
                     }
                 }
 
-                if (highest == Long.MIN_VALUE)
-                {
-                    break;
-                }
+                if (found > 1) {
+                    // If we've found multiple controllers that have the same
+                    // priority, then we raise an exception.
+                    throw new PasteException(0);
+                } if (found == 1) {
+                    // Clear the controller scope, null the controller.
+                    filtration.getControllerScope().clear();
+                    controller = null;
 
-                if (hasController)
-                {
-                    controllerScope.exit();
-                }
-                else
-                {
-                    scopeManager.enterRequest();
-                }
+                    // We cheat a little; instead of creating a provider, we're
+                    // going to just tuck the mappings into the controller scope.
+                    filtration.getControllerScope().put(Key.get(new TypeLiteral<Map<String, String>>(){ }, Controller.class), mappings);
 
-                hasController = false;
-                throwable = scopeManager.enterController(controllerScope, injector, controllerClass, mappings);
-                if (throwable != null)
-                {
-                    break;
-                }
+                    try {
+                        // Try to build the controller.
+                        controller = injector.getInstance(controllerClass);
+                        // We cheat a little more; tucking the constructed
+                        // controller right into the scope of the controller.
+                        filtration.getControllerScope().put(Key.get(Object.class, Controller.class), controller);
+                    } catch (ProvisionException e) {
+                        if (e.getCause() != null) {
+                            // If the controller threw an exception, we'll try to
+                            // render it.
+                            throwable = e.getCause();
+                        }
+                        // Otherwise, this is a big, bad server error.
+                        throw e;
+                    }
+    
+                    if (throwable != null) {
+                        // Go to rendering.
+                        break;
+                    }
 
-                Object controller = injector.getInstance(Key.get(Object.class, Controller.class));
-                hasController = true;
-
-                Actors actors = controller.getClass().getAnnotation(Actors.class);
-                if (actors != null)
-                {
-                    for (Class<?  extends Actor> actor : actors.value())
-                    {
-                        throwable = injector.getInstance(actor).actUpon(controller);
-                        if (throwable != null)
-                        {
-                            break;
+                    // Invoke any actors upon the controller.
+                    Actors actors = controller.getClass().getAnnotation(Actors.class);
+                    if (actors != null) {
+                        for (Class<? extends Actor> actor : actors.value()) {
+                            throwable = injector.getInstance(actor).actUpon(controller);
+                            if (throwable != null) {
+                                // Go to rendering.
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
 
-        if (throwable instanceof Redirection)
-        {
+        // Exceptions are also used for those things in HTTP that feel like
+        // an abrubt change of course.
+        if (throwable instanceof Redirection) {
+            // FIXME Who says that this actually gets rendered as a redirect?
             injector.getInstance(Redirector.class).redirect(((Redirection) throwable).getWhere());
-        }
-        else if (throwable instanceof Abnormality)
-        {
+        } else if (throwable instanceof Abnormality) {
+            // Set the response status.
             injector.getInstance(Response.class).setStatus(((Abnormality) throwable).getStatus());
         }
-            
 
-        if (hasController || throwable != null)
-        {
-            Object controller = hasController ? injector.getProvider(Key.get(Object.class, Controller.class)).get() : null;
-            
-            List<Pair<Integer, RenderModule>> views
-                = mapOfViewBindings
-                    .test()
-                        .put(BindKey.PACKAGE, hasController ? controller.getClass().getPackage().getName() : null)
-                        .put(BindKey.CONTROLLER_CLASS, controller)
-                        .put(BindKey.PATH, path)
-                        .put(BindKey.STATUS, injector.getInstance(Response.class).getStatus())
-                        .put(BindKey.EXCEPTION, throwable != null ? throwable.getClass() : null)
-                        .put(BindKey.METHOD, request.getMethod())
-                        .get();
-            
-            SortedMap<Integer, Pair<Integer, RenderModule>> prioritized = new TreeMap<Integer, Pair<Integer, RenderModule>>(Collections.reverseOrder());
-            for (Pair<Integer, RenderModule> view : views)
-            {
-                prioritized.put(Tuple.get1(view), view);
-            }
+        if (controller != null || throwable != null) {
+            // Get a list of render modules whose rules match the current
+            // request values and the current controller or exception.
+            List<Pair<Integer, RenderModule>> views = viewRuleMap
+                .test()
+                    .put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName())
+                    .put(BindKey.CONTROLLER_CLASS, controller)
+                    .put(BindKey.PATH, criteria.getPath())
+                    .put(BindKey.STATUS, injector.getInstance(Response.class).getStatus())
+                    .put(BindKey.EXCEPTION_CLASS, throwable != null ? throwable.getClass() : null)
+                    .put(BindKey.METHOD, filtration.getRequest().getMethod())
+                    .get();
 
-            if (prioritized.size() != 0)
-            {
-                Pair<Integer, RenderModule> view = prioritized.get(prioritized.firstKey());
-                injector.createChildInjector(Tuple.get2(view))
-                        .getInstance(Renderer.class)
-                        .render();
-            }
-            else if (throwable != null)
-            {
-                if (throwable instanceof RuntimeException)
-                {
-                    throw (RuntimeException) throwable;
+            // Find the render module with the highest priority.
+            RenderModule renderModule = null;
+            int hightestPriority = Integer.MIN_VALUE;
+            int found = 0;
+            for (Pair<Integer, RenderModule> view : views) {
+                int priority = Tuple.get1(view);
+                if (priority > hightestPriority) {
+                    found = 1;
+                    hightestPriority = priority;
+                    renderModule = Tuple.get2(view);
+                } else if (priority == hightestPriority) {
+                    found++;
                 }
-                else if (throwable instanceof Error)
-                {
+            }
+
+            if (found > 1) {
+                // Renderer is ambiguous.
+                throw new PasteException();
+            } else if (found == 1) {
+                // Render output.
+                injector.createChildInjector(renderModule).getInstance(Renderer.class).render();
+            } else if (throwable != null) {
+                // No renderer for our excepion, to turn it into a big, bad 500.
+                if (throwable instanceof RuntimeException) {
+                    throw (RuntimeException) throwable;
+                } else if (throwable instanceof Error) {
                     throw (Error) throwable;
                 }
-                throw new RuntimeException(throwable);
+                throw new ServletException(throwable);
             }
         }
-        
-        if (!interception.isIntercepted())
-        {
-            chain.doFilter(request, response);
+
+        // Down the filter chain, unless we've just sent a response.
+        if (!interception.isIntercepted()) {
+            chain.doFilter(filtration.getRequest(), filtration.getResponse());
         }
-    }
-    
-    // TODO Document.
-    private void cleanUp(List<Janitor> listOfJanitors)
-    {
-        for (Janitor janitor : listOfJanitors)
-        {
-            try
-            {
-                janitor.cleanUp();
-            }
-            catch (ThreadDeath t)
-            {
-                throw t;
-            }
-            catch (Throwable t)
-            {
-            }
-        }
-    }
-    
-    // TODO Document.
-    public void destroy()
-    {
-        cleanUp(janitors);
     }
 
+    /**
+     * Invoke the clean up method on each janitor in the given list of janitors.
+     * 
+     * @param janitors
+     *            The list of janitors that will clean up.
+     */
+    private void cleanUp(List<Janitor> janitors) {
+        for (Janitor janitor : janitors) {
+            try {
+                janitor.cleanUp();
+            } catch (ThreadDeath t) {
+                throw t;
+            } catch (Throwable t) {
+            }
+        }
+    }
+
+    /**
+     * Cleanup the filter by invoking the application wide jantiors.
+     */
+    public void destroy() {
+        cleanUp(janitors);
+    }
 }

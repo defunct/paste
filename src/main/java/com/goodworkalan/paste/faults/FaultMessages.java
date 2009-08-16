@@ -97,7 +97,7 @@ public class FaultMessages
                 }
                 catch (PathException e)
                 {
-                    throw new PasteException(e);
+                    throw new PasteException(0, e);
                 }
             }
             return String.format(message.group(2), arguments.toArray());

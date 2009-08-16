@@ -130,7 +130,7 @@ public class StreamRenderer implements Renderer
         }
         catch (Exception e)
         {
-            throw new PasteException(e);
+            throw new PasteException(0, e);
         }
         
         HttpServletResponse response = injector.getInstance(HttpServletResponse.class);

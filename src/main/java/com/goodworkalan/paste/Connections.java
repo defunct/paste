@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
-import com.google.inject.Module;
 import com.mallardsoft.tuple.Pair;
 import com.mallardsoft.tuple.Tuple;
 
@@ -70,11 +67,5 @@ class Connections
     public RuleMap<Pair<Integer, RenderModule>> getViewRules()
     {
         return viewRules.newRuleMap();
-    }
-    
-    // TODO Document.
-    public PasteGuicer newGuiceletGuicer(List<Module> modules, ServletContext servletContext, Map<String, String> initialization)
-    {
-        return new PasteGuicer(getRoutes(), getBindingTrees(), getViewRules(), modules, servletContext, initialization);
     }
 }

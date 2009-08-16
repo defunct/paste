@@ -87,7 +87,7 @@ public class ViewConnector
     // TODO Document.
     public ViewConnector exception(Class<? extends Throwable> exceptionClass)
     {
-        listOfSetOfRules.get(0).check(BindKey.EXCEPTION, new Equals(exceptionClass));
+        listOfSetOfRules.get(0).check(BindKey.EXCEPTION_CLASS, new Equals(exceptionClass));
         return this;
     }
     
@@ -108,7 +108,7 @@ public class ViewConnector
         }
         catch (Exception e)
         {
-            throw new PasteException(e);
+            throw new PasteException(0, e);
         }
         ViewConnector end = new ViewConnector(parent, rules, Collections.singletonList(from.duplicate()));
         T module;
@@ -118,7 +118,7 @@ public class ViewConnector
         }
         catch (Exception e)
         {
-            throw new PasteException(e);
+            throw new PasteException(0, e);
         }
         for (RuleSetBuilder<Pair<Integer, RenderModule>> setOfRules : listOfSetOfRules)
         {

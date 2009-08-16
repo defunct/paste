@@ -9,22 +9,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import com.goodworkalan.paste.BasicScope;
-
 // TODO Document.
 public class InterceptingRequest extends HttpServletRequestWrapper
 {
     // TODO Document.
     private final Interception interception;
     
-    private final BasicScope controllerScope;
-    
     // TODO Document.
-    public InterceptingRequest(Interception interception, HttpServletRequest request, BasicScope controllerScope)
+    public InterceptingRequest(Interception interception, HttpServletRequest request)
     {
         super(request);
         this.interception = interception;
-        this.controllerScope = controllerScope;
     }
     
     // TODO Document.
@@ -54,15 +49,7 @@ public class InterceptingRequest extends HttpServletRequestWrapper
                 {
                     response = ((InterceptingResponse) response).getResponse();
                 }
-                controllerScope.push();
-                try
-                {
-                    delegate.forward(request, response);
-                }
-                finally
-                {
-                    controllerScope.pop();
-                }
+                delegate.forward(request, response);
             }
             
             public void include(ServletRequest request, ServletResponse response)
@@ -77,15 +64,7 @@ public class InterceptingRequest extends HttpServletRequestWrapper
                 {
                     response = ((InterceptingResponse) response).getResponse();
                 }
-                controllerScope.push();
-                try
-                {
-                    delegate.include(request, response);
-                }
-                finally
-                {
-                    controllerScope.pop();
-                }
+                delegate.include(request, response);
             }
         };
     }

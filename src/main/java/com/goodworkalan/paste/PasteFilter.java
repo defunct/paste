@@ -1,10 +1,8 @@
 package com.goodworkalan.paste;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -16,85 +14,57 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Module;
-
-// TODO Document.
-public class PasteFilter implements Filter
-{
-    // TODO Document.
+/**
+ * A filter that dispatches requests to controllers by matching the request path
+ * against URL bindings.
+ * 
+ * @author Alan Gutierrez
+ */
+public class PasteFilter implements Filter {
+    /** The serial version id. */
     private static final long serialVersionUID = 20081122L;
-    
-    // TODO Document.
+
+    /** The implementation delegate. */
     private PasteGuicer guicer;
-    
-    // TODO Document.
-    public void init(FilterConfig config) throws ServletException
-    {
-        List<Module> listOfModules = new ArrayList<Module>();
-        String modules = config.getInitParameter("Modules");
-        if (modules != null)
-        {
-            try
-            {
-                for (String module : modules.split(","))
-                {
-                    Class<?> moduleClass = Class.forName(module.trim());
-                    listOfModules.add((Module) moduleClass.newInstance());
-                }
-            }
-            catch (Exception e)
-            {
-                throw new ServletException(e);
-            }
-        }
 
-        List<Router> listOfDispatchers = new ArrayList<Router>();
-        String dispatchers = config.getInitParameter("Routers");
-        if (dispatchers != null)
-        {
-            try
-            {
-                for (String dispatcher : dispatchers.split(","))
-                {
-                    Class<?> dispatcherClass = Class.forName(dispatcher.trim());
-                    listOfDispatchers.add((Router) dispatcherClass.newInstance());
-                }
-            }
-            catch (Exception e)
-            {
-                throw new ServletException(e);
-            }
-        }
-        
-        Connections connections = new Connections();
-        Connector connector = connections.newConnector();
-        for (Router router : listOfDispatchers)
-        {
-            router.connect(connector);
-        }
-        
-        Map<String, String> map = new HashMap<String, String>();
+    /**
+     * Initialize the Paste filter.
+     * 
+     * @param config
+     *            The filter configuration.
+     */
+    public void init(FilterConfig config) throws ServletException {
+        Map<String, String> initialization = new HashMap<String, String>();
         Enumeration<String> e = Objects.toStringEnumeration(config.getInitParameterNames());
-        while (e.hasMoreElements())
-        {
+        while (e.hasMoreElements()) {
             String name = e.nextElement();
-            map.put(name, config.getInitParameter(name));
+            initialization.put(name, config.getInitParameter(name));
         }
-        
-        guicer = new PasteGuicer(connections.getRoutes(), connections.getBindingTrees(), connections.getViewRules(), listOfModules, config.getServletContext(), map);
+        guicer = new PasteGuicer(config.getServletContext(), initialization);
     }
 
-    // TODO Document.
+    /**
+     * Filter the given request and given response forwarding the request to the
+     * given filter chain if none of our controllers intercepts the request and
+     * sends a response of its own.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     * @param chain
+     *            The remaining filter chain.
+     */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException
-    {   
-        guicer.filter((HttpServletRequest) request,
-                      (HttpServletResponse) response, chain);
+    throws IOException, ServletException {
+        guicer.filter((HttpServletRequest) request, (HttpServletResponse) response, chain);
     }
-    
-    // TODO Document.
-    public void destroy()
-    {
+
+    /**
+     * Destroy the filter by invoking an web application wide {@link Janitor}
+     * instances.
+     */
+    public void destroy() {
         guicer.destroy();
     }
 }

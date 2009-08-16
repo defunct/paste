@@ -1,8 +1,8 @@
 package com.goodworkalan.paste.paths;
 
 import com.goodworkalan.paste.Controller;
-import com.goodworkalan.paste.Path;
-import com.goodworkalan.paste.WelcomeFile;
+import com.goodworkalan.paste.Criteria;
+import com.goodworkalan.paste.Filter;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
@@ -15,7 +15,7 @@ public class FormatArguments
     {
         public Object getArgument(Injector injector)
         {
-            return injector.getInstance(Key.get(String.class, Path.class));
+            return injector.getInstance(Key.get(Criteria.class, Filter.class)).getPath();
         }
     };
     
@@ -24,7 +24,7 @@ public class FormatArguments
     {
         public Object getArgument(Injector injector)
         {
-            String path = injector.getInstance(Key.get(String.class, Path.class));
+            String path = injector.getInstance(Key.get(Criteria.class, Filter.class)).getPath();
             if (path.length() == 0)
             {
                 return "";
@@ -38,10 +38,10 @@ public class FormatArguments
     {
         public Object getArgument(Injector injector)
         {
-            String path = injector.getInstance(Key.get(String.class, Path.class));
+            String path = injector.getInstance(Key.get(Criteria.class, Filter.class)).getPath();
             if (path.length() < 2)
             {
-                return injector.getInstance(Key.get(String.class, WelcomeFile.class));
+//                return injector.getInstance(Key.get(String.class, WelcomeFile.class));
             }
             int toothpick = path.lastIndexOf('/');
             if (toothpick != -1 && toothpick + 1 < path.length())
