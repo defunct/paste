@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	 version="2.4">
+
+	<display-name>test</display-name>
+
+    <filter>
+        <filter-name>PasteFilter</filter-name>
+        <filter-class>com.goodworkalan.paste.PasteFilter</filter-class>
+        <init-param>
+            <param-name>Modules</param-name>
+            <param-value>com.goodworkalan.paste.api.TestModule</param-value>
+        </init-param>
+        <init-param>
+            <param-name>Routers</param-name>
+            <param-value>com.goodworkalan.paste.api.TestRouter</param-value>
+        </init-param>
+    </filter>
+
+	<filter-mapping>
+		<filter-name>PasteFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+    
+    <servlet>
+      <servlet-name>test</servlet-name>
+      <servlet-class>com.goodworkalan.paste.api.TestServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>test</servlet-name>
+      <url-pattern>/*</url-pattern>
+    </servlet-mapping> 
+</web-app>
+<!-- vim :set et nowrap: -->
