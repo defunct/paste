@@ -8,8 +8,7 @@ import com.goodworkalan.infuse.PathException;
  * 
  * @author Alan Gutierrez
  */
-public class Evaluator
-{
+public class Evaluator {
     /** The object to diffuse. */
     private final Object object;
 
@@ -19,8 +18,7 @@ public class Evaluator
      * @param object
      *            The object to diffuse.
      */
-    public Evaluator(Object object)
-    {
+    public Evaluator(Object object) {
         this.object = object;
     }
 
@@ -33,16 +31,12 @@ public class Evaluator
      * @return The object value as a string or null if any part of the path does
      *         not exist.
      */
-    public String get(String expression)
-    {
-        try
-        {
+    public String get(String expression) {
+        try {
             Diffusion diffusion = new Diffusion(object);
             Object object = diffusion.get(expression);
             return object == null ? null : object.toString();
-        }
-        catch (PathException e)
-        {
+        } catch (PathException e) {
             throw new PasteException(0, e);
         }
     }
