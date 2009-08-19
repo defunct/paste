@@ -104,20 +104,19 @@ public class PasteGuicer {
             }
         }
         
-        Connections connections = new Connections();
-        Connector connector = connections.newConnector();
+        CoreConnector connector = new CoreConnector();
         for (Router router : routers) {
             router.connect(connector);
         }
         
         List<Janitor> janitors = new ArrayList<Janitor>();
         
-        modules.add(new PasteModule(servletContext, connections.getRoutes(), initialization, janitors));
+        modules.add(new PasteModule(servletContext, connector.getRoutes(), initialization, janitors));
 
         this.injector = Guice.createInjector(modules);
         this.janitors = janitors;
-        this.controllerBindings = connections.getBindingTrees();
-        this.viewRuleMap = connections.getViewRules();
+        this.controllerBindings = connector.getBindingTrees();
+        this.viewRuleMap = connector.getViewRules();
     }
 
     /**

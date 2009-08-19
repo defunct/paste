@@ -18,15 +18,15 @@ public class BinderTest
     @Test
     public void constructor()
     {
-        new Connections();
+        new CoreConnector();
     }
 
     @Test
     public void anyController()
     {
-        Connections connections = new Connections();
-        connections.newConnector().view().with(Forward.class);
-        RuleMap<Pair<Integer, RenderModule>> bindings = connections.getViewRules();
+        CoreConnector connector = new CoreConnector();
+        connector.view().with(Forward.class);
+        RuleMap<Pair<Integer, RenderModule>> bindings = connector.getViewRules();
         List<Pair<Integer, RenderModule>> found = bindings.test().get();
         assertEquals(found.size(), 1);
         assertEquals((int) Tuple.get1(found.get(0)), 0);
@@ -41,13 +41,12 @@ public class BinderTest
     @Test
     public void controllers()
     {
-        Connections connections = new Connections();
-        connections
-            .newConnector()
-                .view()
-                .controller(Date.class).controller(String.class)
-                .with(Forward.class);
-        RuleMap<Pair<Integer, RenderModule>> bindings = connections.getViewRules();
+        CoreConnector connector = new CoreConnector();
+        connector
+            .view()
+            .controller(Date.class).controller(String.class)
+            .with(Forward.class);
+        RuleMap<Pair<Integer, RenderModule>> bindings = connector.getViewRules();
         List<Pair<Integer, RenderModule>> found = bindings.test().put(BindKey.CONTROLLER_CLASS, new Date()).get();
         assertEquals(found.size(), 1);
         assertEquals((int) Tuple.get1(found.get(0)), 0);

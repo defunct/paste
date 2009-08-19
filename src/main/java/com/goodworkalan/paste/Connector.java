@@ -22,5 +22,13 @@ public interface Connector
      */
     public ConnectionGroup connect();
     
+    /**
+     * Return an element in the domain-specific language that will map
+     * controllers and exceptions to renderers, based on their type and on
+     * additional request properties.
+     * 
+     * @return A domain-specific language used to define the renderer.
+     */
+    // FIXME Rename render.
     public ViewConnector view();
 }
