@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author Alan Gutierrez
  */
 public class Criteria {
-    /** If true, this is the first call to criteria. */
     /** The request URI. */
     private final String requestUri;
     

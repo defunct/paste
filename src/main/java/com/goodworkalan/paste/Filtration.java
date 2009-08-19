@@ -66,6 +66,12 @@ public class Filtration {
         this.filterJanitors = filterJanitors;
     }
 
+    /**
+     * Get the paths and query string for this invocation of the Paste filter.
+     * 
+     * @return The paths and query string for this invocation of the Paste
+     *         filter.
+     */
     public Criteria getCriteria() {
         return criteria;
     }
