@@ -12,7 +12,7 @@ import com.google.inject.Provider;
  * @author Alan Gutierrez
  */
 public class HttpSessionProvider implements Provider<HttpSession> {
-    /** The root HTTP servlet request. */
+    /** The request from the first invocation of the filter. */
     private final HttpServletRequest request;
 
     /**
@@ -20,7 +20,7 @@ public class HttpSessionProvider implements Provider<HttpSession> {
      * given request.
      * 
      * @param request
-     *            The request.
+     *            The request from the first invocation of the filter.
      */
     @Inject
     public HttpSessionProvider(@Request HttpServletRequest request) {
