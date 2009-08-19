@@ -13,7 +13,7 @@ import com.google.inject.BindingAnnotation;
  * to annotate the controller object itself and the map of parameters matched
  * by the controller's URL binding pattern.
  *
- * @author ALan Gutierrez
+ * @author Alan Gutierrez
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
