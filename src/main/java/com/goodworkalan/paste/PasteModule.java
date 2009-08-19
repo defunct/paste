@@ -112,18 +112,26 @@ class PasteModule extends AbstractModule {
         bind(HttpServletRequest.class)
             .annotatedWith(Filter.class)
             .toProvider(FilterHttpServletRequestProvider.class)
-            .in(RequestScoped.class);
+            .in(FilterScoped.class);
         bind(ServletRequest.class)
             .annotatedWith(Filter.class)
             .toProvider(FilterHttpServletRequestProvider.class)
-            .in(RequestScoped.class);
+            .in(FilterScoped.class);
+        
+        // The default request is the filter request.
+        bind(HttpServletRequest.class)
+            .toProvider(FilterHttpServletRequestProvider.class)
+            .in(FilterScoped.class);
+        bind(ServletRequest.class)
+            .toProvider(FilterHttpServletRequestProvider.class)
+            .in(FilterScoped.class);
         
         bind(HttpServletResponse.class)
             .toProvider(HttpServletResponseProvider.class)
-            .in(RequestScoped.class);
+            .in(FilterScoped.class);
         bind(ServletResponse.class)
             .toProvider(HttpServletResponseProvider.class)
-            .in(RequestScoped.class);
+            .in(FilterScoped.class);
 
         bind(Criteria.class)
             .annotatedWith(Request.class)
@@ -131,6 +139,9 @@ class PasteModule extends AbstractModule {
             .in(RequestScoped.class);
         bind(Criteria.class)
             .annotatedWith(Filter.class)
+            .toProvider(FilterCriteriaProvider.class)
+            .in(FilterScoped.class);
+        bind(Criteria.class)
             .toProvider(FilterCriteriaProvider.class)
             .in(FilterScoped.class);
         
@@ -145,6 +156,9 @@ class PasteModule extends AbstractModule {
         bind(Parameters.class)
             .annotatedWith(Controller.class)
             .toProvider(ControllerParametersProvider.class)
+            .in(ControllerScoped.class);
+        bind(Parameters.class)
+            .annotatedWith(Controller.class)
             .in(ControllerScoped.class);
         
         // We cheat here, we don't build these with guice, but seed them into
