@@ -31,32 +31,47 @@ public class Criteria {
      * @param request The request.
      */
     public Criteria(HttpServletRequest request) {
-        String requestUri = (String) request.getAttribute("javax.servlet.include.request_uri");
-        if (requestUri == null) {
-            requestUri = request.getRequestURI();
-        }
-        this.requestUri = requestUri;
-        String contextPath = (String) request.getAttribute("javax.servlet.include.context_path");
-        if (contextPath == null) {
-            contextPath = request.getContextPath();
-        }
-        this.contextPath = contextPath;
-        String servletPath = (String) request.getAttribute("javax.servlet.include.servlet_path");
-        if (servletPath == null) {
-            servletPath = request.getPathInfo();
-        }
-        this.servletPath = servletPath;
-        String pathInfo = (String) request.getAttribute("javax.servlet.include.path_info");
-        if (pathInfo == null) {
-            pathInfo = request.getServletPath();
-        }
-        this.pathInfo = pathInfo;
-        String queryString =  (String) request.getAttribute("javax.servlet.include.query_string");
-        if (queryString == null) {
-            queryString = request.getQueryString();
-        }
-        this.queryString = queryString;
+        boolean isInclude = isInclude(request, "request_uri", "context_path", "servlet_path", "path_info", "query_string");
+        this.requestUri =
+                isInclude
+                    ? (String)request.getAttribute("javax.servlet.include.request_uri")
+                    : request.getRequestURI();
+        this.contextPath =
+            isInclude
+                ? (String) request.getAttribute("javax.servlet.include.context_path")
+                : request.getContextPath();
+        this.servletPath =
+            isInclude
+                ? (String) request.getAttribute("javax.servlet.include.servlet_path")
+                : request.getPathInfo();
+        this.pathInfo =
+            isInclude
+                ? (String) request.getAttribute("javax.servlet.include.path_info")
+                : request.getServletPath();
+        this.queryString =
+            isInclude
+                ? (String) request.getAttribute("javax.servlet.include.query_string")
+                : request.getQueryString();
+    }
 
+    /**
+     * An exhaustive test to see if this is filter invocation is for an include.
+     * 
+     * @param request
+     *            The request.
+     * @param properties
+     *            The properties that might be present if this invocation is for
+     *            an include.
+     * @return True if any of the properties is not null.
+     */
+    // FIXME What if an include forwards? Are they both there?
+    private static boolean isInclude(HttpServletRequest request, String...properties) {
+        for (String property : properties) {
+            if (request.getAttribute("javax.servlet.include." + property) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
