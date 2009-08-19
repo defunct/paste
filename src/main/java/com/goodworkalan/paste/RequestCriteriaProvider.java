@@ -13,7 +13,7 @@ import com.google.inject.Provider;
  */
 public class RequestCriteriaProvider implements Provider<Criteria> {
     /**
-     * The rquest the first invocation of the Paste filter for
+     * The filtration created for the first invocation of the Paste filter for
      * this request.
      */
     private final Filtration filtration;
