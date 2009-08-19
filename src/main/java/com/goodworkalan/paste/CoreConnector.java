@@ -37,8 +37,7 @@ public class CoreConnector implements Connector
     /**
      * Create a default connector.
      */
-    public CoreConnector()
-    {
+    public CoreConnector() {
         this.controllerToGlob = new HashMap<Class<?>, Glob>();
         this.connections = new ArrayList<List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>>>();
         this.viewRules = new RuleMapBuilder<Pair<Integer, RenderModule>>();
@@ -56,8 +55,7 @@ public class CoreConnector implements Connector
      * 
      * @return A domain-specific language element used to define a group
      */
-    public ConnectionGroup connect()
-    {
+    public ConnectionGroup connect() {
         List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> group = new ArrayList<Pair<List<Glob>,RuleMapBuilder<Pair<Integer,Class<?>>>>>();
         connections.add(group);
         return new ConnectionGroup(controllerToGlob, group);
@@ -70,8 +68,7 @@ public class CoreConnector implements Connector
      * 
      * @return A domain-specific language used to define the renderer.
      */
-    public ViewConnector view()
-    {
+    public ViewConnector view() {
         return new ViewConnector(null, viewRules, Collections.singletonList(viewRules.rule()));
     }
 
