@@ -5,9 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 /**
- * Provides a queue of janitors whose <code>cleanUp</code> method will be
- * invoked with the filter and all of the filters and servlets further down the
- * filter chain complete.
+ * Provides a queue of janitors that will cleanup when the filter and all of the
+ * filters and servlets further down the filter chain complete.
  * 
  * @author Alan Gutierrez
  */
@@ -16,9 +15,9 @@ public class FilterJanitorQueueProvider implements Provider<JanitorQueue> {
     private final Filtration filtration;
 
     /**
-     * Create a provider that provides a queue of janitors whose
-     * <code>cleanUp</code> method will be invoked with the filter and all of
-     * the filters and servlets further down the filter chain complete.
+     * Create a provider that provides a queue of janitors that will cleanup
+     * when the filter and all of the filters and servlets further down the
+     * filter chain complete.
      * 
      * @param filtration
      *            The filtration created for the current invocation of the paste
@@ -30,15 +29,13 @@ public class FilterJanitorQueueProvider implements Provider<JanitorQueue> {
     }
 
     /**
-     * Get a queue of janitors whose <code>cleanUp</code> method will be invoked
-     * with the filter and all of the filters and servlets further down the
-     * filter chain complete.
+     * Get a queue of janitors that will cleanup when the filter and all of the
+     * filters and servlets further down the filter chain complete.
      * 
-     * @return A queue of janitors whose <code>cleanUp</code> method will be
-     *         invoked with the filter and all of the filters and servlets
-     *         further down the filter chain complete.
+     * @return A queue of janitors that will cleanup when the filter and all of
+     *         the filters and servlets further down the filter chain complete.
      */
     public JanitorQueue get() {
-        return new JanitorQueue(filtration.getFilterJanitors());
+        return new JanitorQueue(filtration.getJanitors());
     }
 }

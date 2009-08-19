@@ -35,11 +35,8 @@ public class Filtration {
     /** The map that backs the controller scope. */
     private final Map<Key<?>, Object> controllerScope;
     
-    /** The list of per request janitors. */
-    private final List<Janitor> requestJanitors;
-    
-    /** The list of per filter janitors. */
-    private final List<Janitor> filterJanitors;
+    /** The list of janitors. */
+    private final List<Janitor> janitors;
     
     /** The lazily initialized parameters. */
     private Parameters parameters;
@@ -56,14 +53,13 @@ public class Filtration {
      * @param response
      *            The servlet response.
      */
-    public Filtration(HttpServletRequest request, HttpServletResponse response, List<Janitor> requestJanitors, List<Janitor> filterJanitors) {
+    public Filtration(HttpServletRequest request, HttpServletResponse response) {
         this.criteria = new Criteria(request);
         this.request = request;
         this.response = response;
         this.filterScope = new HashMap<Key<?>, Object>();
         this.controllerScope = new HashMap<Key<?>, Object>();
-        this.requestJanitors = requestJanitors;
-        this.filterJanitors = filterJanitors;
+        this.janitors = new ArrayList<Janitor>();
     }
 
     /**
@@ -163,20 +159,11 @@ public class Filtration {
     }
 
     /**
-     * Get the list of per request janitors.
+     * Get the list of per filter invocation janitors.
      * 
-     * @return The list of per request janitors.
+     * @return The list of per filter invocation janitors.
      */
-    List<Janitor> getRequestJanitors() {
-        return requestJanitors;
-    }
-
-    /**
-     * Get the list of per filter janitors.
-     * 
-     * @return The list of per filter janitors.
-     */
-    List<Janitor> getFilterJanitors() {
-        return filterJanitors;
+    List<Janitor> getJanitors() {
+        return janitors;
     }
 }

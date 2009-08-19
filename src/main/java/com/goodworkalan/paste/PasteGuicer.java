@@ -203,22 +203,13 @@ public class PasteGuicer {
         for (Filtration filtration : filtrations) { 
             filtration.setSubsequent();
         }
-        List<Janitor> requestJanitors;
-        if (filtrations.isEmpty()) {
-            requestJanitors = new ArrayList<Janitor>();
-        } else {
-            requestJanitors = filtrations.getFirst().getRequestJanitors();
-        }
-        Filtration filtration = new Filtration(request, response, requestJanitors, new ArrayList<Janitor>());
+        Filtration filtration = new Filtration(request, response);
         filtrations.addLast(filtration);
         try {
             filter(filtration, interception, chain);
         } finally {
             filtrations.removeLast();
-            cleanUp(filtration.getFilterJanitors());
-            if (filtrations.isEmpty()) {
-                cleanUp(filtration.getRequestJanitors());
-            }
+            cleanUp(filtration.getJanitors());
         }
     }
 
