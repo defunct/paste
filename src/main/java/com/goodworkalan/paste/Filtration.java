@@ -1,5 +1,7 @@
 package com.goodworkalan.paste;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.janitor.Janitor;
+import com.goodworkalan.paste.util.NamedValue;
+import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.Key;
 
 /**
@@ -16,9 +20,9 @@ import com.google.inject.Key;
  * @author Alan Gutierrez
  */
 public class Filtration {
-    /** If true, this is the first invocation of the filter. */
-    private final boolean first;
-
+    /** The paths and query string for this invocation of the Paste filter. */
+    private final Criteria criteria;
+    
     /** The servlet request. */
     private final HttpServletRequest request;
     
@@ -36,6 +40,12 @@ public class Filtration {
     
     /** The list of per filter janitors. */
     private final List<Janitor> filterJanitors;
+    
+    /** The lazily initialized parameters. */
+    private Parameters parameters;
+    
+    /** If true, subsequent calls to the filter have been made. */
+    private boolean subsequent;
 
     /**
      * Create a new filtration structure with the given servlet request and the
@@ -46,8 +56,8 @@ public class Filtration {
      * @param response
      *            The servlet response.
      */
-    public Filtration(boolean first, HttpServletRequest request, HttpServletResponse response, List<Janitor> requestJanitors, List<Janitor> filterJanitors) {
-        this.first = first;
+    public Filtration(HttpServletRequest request, HttpServletResponse response, List<Janitor> requestJanitors, List<Janitor> filterJanitors) {
+        this.criteria = new Criteria(request);
         this.request = request;
         this.response = response;
         this.filterScope = new HashMap<Key<?>, Object>();
@@ -56,13 +66,8 @@ public class Filtration {
         this.filterJanitors = filterJanitors;
     }
 
-    /**
-     * Get whether or not the filtration is the first invocation of the filter.
-     * 
-     * @return True if this filtration is the first invocation of the filter.
-     */
-    public boolean isFirst() {
-        return first;
+    public Criteria getCriteria() {
+        return criteria;
     }
 
     /**
@@ -81,6 +86,56 @@ public class Filtration {
      */
     public HttpServletResponse getResponse() {
         return response;
+    }
+    
+    /**
+     * Tells this filtration that a subsequent call to the paste filter has been
+     * made during a request. Subsequent calls will change the state of the request so that
+     * the parameters may change. If a controller handling forward or include
+     * wants the request parameters, they will need to be cached by injecting
+     * the parameters into a controller during the first request.
+     */
+    public void setSubsequent() {
+        subsequent = true;
+    }
+
+    /**
+     * Get the parameters for this filtration. Parameters are lazily initialized
+     * to prevent reading non form encoded POSTs (and PUTs). If you do not want
+     * the body of a request interpreted as form parameters, do not inject
+     * parameters into the controller for that request.
+     * <p>
+     * Subsequent calls will change the state of the request so that the
+     * parameters may change. If a controller handling forward or include wants
+     * the request parameters, the request parameters will need to be cached by
+     * injecting the parameters into a controller during the first request.
+     * 
+     * @return The parameters.
+     */
+    public Parameters getParameters() {
+        if (subsequent) {
+            throw new PasteException();
+        }
+        if (parameters == null) {
+            if (request.getAttribute("javax.servlet.include.request_uri") != null) {
+                String query = (String) request.getAttribute("javax.servlet.include.query_string");
+                if (query == null) {
+                    query = "";
+                }
+                parameters = Parameters.fromQueryString(query, NamedValue.REQUEST);
+            } else {
+                List<NamedValue> namedValues = new ArrayList<NamedValue>();
+                Enumeration<String> names = Objects.toStringEnumeration(request.getParameterNames());
+                while (names.hasMoreElements()) {
+                    String name = names.nextElement();
+                    for (String value : request.getParameterValues(name)) {
+                        namedValues.add(new NamedValue(NamedValue.REQUEST, name, value));
+                    }
+                }
+                parameters = new Parameters(namedValues);
+            }
+        }
+        return parameters;
     }
 
     /**

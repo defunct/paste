@@ -12,21 +12,22 @@ import com.google.inject.Provider;
  */
 public class RequestParametersProvider implements Provider<Parameters> {
     /**
-     * The criteria for the first invocation of the Paste filter for this
+     * The filtration for the first invocation of the Paste filter for this
      * request.
      */
-    private final Criteria criteria;
+    private final Filtration filtration;
 
     /**
      * Create a provider that provides the parameters for the first invocation
      * of the Paste filter for this request.
      * 
-     * @param criteria The criteria for the first invocation of the Paste filter for this
-     * request.
+     * @param criteria
+     *            The criteria for the first invocation of the Paste filter for
+     *            this request.
      */
     @Inject
-    public RequestParametersProvider(@Request Criteria criteria) {
-        this.criteria = criteria;
+    public RequestParametersProvider(@Request Filtration filtration) {
+        this.filtration = filtration;
     }
 
     /**
@@ -37,6 +38,6 @@ public class RequestParametersProvider implements Provider<Parameters> {
      *         this request.
      */
     public Parameters get() {
-        return criteria.getParameters();
+        return filtration.getParameters();
     }
 }

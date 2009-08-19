@@ -70,6 +70,16 @@ public class PasteFilterTest {
         assertEquals(lines.get(0), "Hello, World!");
     }
     
+    
+    @Test
+    public void testForward() throws Exception {
+        URL url = new URL("http://localhost:8086/forwarding");
+        List<String> lines = slurp(url.openStream());
+        assertEquals(lines.size(), 2);
+        assertEquals(lines.get(0), "/forwarding");
+        assertEquals(lines.get(1), "/forwarded");
+    }
+    
     @AfterTest
     public void stop() throws Exception {
         server.stop();

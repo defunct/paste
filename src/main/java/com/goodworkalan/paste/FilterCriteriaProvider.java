@@ -32,6 +32,6 @@ public class FilterCriteriaProvider implements Provider<Criteria> {
      *         filter.
      */
     public Criteria get() {
-        return new Criteria(filtration.getRequest());
+        return filtration.getCriteria();
     }
 }

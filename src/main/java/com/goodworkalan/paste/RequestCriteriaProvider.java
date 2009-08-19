@@ -37,6 +37,6 @@ public class RequestCriteriaProvider implements Provider<Criteria> {
      * @return The criteria for the first request filtered by the Paste filter.
      */
     public Criteria get() {
-        return new Criteria(filtration.getRequest());
+        return filtration.getCriteria();
     }
 }

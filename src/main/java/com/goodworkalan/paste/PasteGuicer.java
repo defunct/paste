@@ -137,7 +137,7 @@ public class PasteGuicer {
      * @return The filtration structure for the root invocation.
      */
     static Filtration getRequestFiltration() {
-        return getFiltrations().getLast();
+        return getFiltrations().getFirst();
     }
 
     /**
@@ -211,13 +211,16 @@ public class PasteGuicer {
                         FilterChain chain)
     throws IOException, ServletException {
         LinkedList<Filtration> filtrations = getFiltrations();
+        for (Filtration filtration : filtrations) { 
+            filtration.setSubsequent();
+        }
         List<Janitor> requestJanitors;
         if (filtrations.isEmpty()) {
             requestJanitors = new ArrayList<Janitor>();
         } else {
             requestJanitors = filtrations.getFirst().getRequestJanitors();
         }
-        Filtration filtration = new Filtration(filtrations.isEmpty(), request, response, requestJanitors, new ArrayList<Janitor>());
+        Filtration filtration = new Filtration(request, response, requestJanitors, new ArrayList<Janitor>());
         filtrations.addLast(filtration);
         try {
             filter(filtration, interception, chain);

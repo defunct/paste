@@ -11,18 +11,19 @@ import com.google.inject.Provider;
  * @author Alan Gutierrez
  */
 public class FilterParametersProvider implements Provider<Parameters> {
-    /** The criteria for the current invocation of the paste filter. */
-    private final Criteria criteria;
+    /** The filtration for the current invocation of the paste filter. */
+    private final Filtration filtration;
 
     /**
-     * Provide the parameters specific to the current invocation of the paste
-     * filter.
+     * Create a provider that provide thes parameters specific to the current
+     * invocation of the paste filter.
      * 
-     * @author Alan Gutierrez
+     * @param filtration
+     *            The filtration for the current invocation of the paste filter.
      */
     @Inject
-    public FilterParametersProvider(@Filter Criteria criteria) {
-        this.criteria = criteria;
+    public FilterParametersProvider(@Filter Filtration filtration) {
+        this.filtration = filtration;
     }
 
     /**
@@ -33,6 +34,6 @@ public class FilterParametersProvider implements Provider<Parameters> {
      *         filter.
      */
     public Parameters get() {
-        return criteria.getParameters();
+        return filtration.getParameters();
     }
 }

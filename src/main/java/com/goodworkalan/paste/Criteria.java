@@ -1,13 +1,6 @@
 package com.goodworkalan.paste;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
-import com.goodworkalan.paste.util.NamedValue;
-import com.goodworkalan.paste.util.Parameters;
 
 /**
  * A wrapper around a request that extracts the request criteria -- the paths
@@ -17,8 +10,21 @@ import com.goodworkalan.paste.util.Parameters;
  * @author Alan Gutierrez
  */
 public class Criteria {
-    /** The HTTP request. */
-    private final HttpServletRequest request;
+    /** If true, this is the first call to criteria. */
+    /** The request URI. */
+    private final String requestUri;
+    
+    /** The servlet path. */
+    private final String servletPath;
+    
+    /** The context path. */
+    private final String contextPath;
+    
+    /** The extra path info. */
+    private final String pathInfo;
+    
+    /** The query string. */
+    private final String queryString;
     
     /**
      * Extract criteria from the given request.
@@ -26,7 +32,32 @@ public class Criteria {
      * @param request The request.
      */
     public Criteria(HttpServletRequest request) {
-        this.request = request;
+        String requestUri = (String) request.getAttribute("javax.servlet.include.request_uri");
+        if (requestUri == null) {
+            requestUri = request.getRequestURI();
+        }
+        this.requestUri = requestUri;
+        String contextPath = (String) request.getAttribute("javax.servlet.include.context_path");
+        if (contextPath == null) {
+            contextPath = request.getContextPath();
+        }
+        this.contextPath = contextPath;
+        String servletPath = (String) request.getAttribute("javax.servlet.include.servlet_path");
+        if (servletPath == null) {
+            servletPath = request.getPathInfo();
+        }
+        this.servletPath = servletPath;
+        String pathInfo = (String) request.getAttribute("javax.servlet.include.path_info");
+        if (pathInfo == null) {
+            pathInfo = request.getServletPath();
+        }
+        this.pathInfo = pathInfo;
+        String queryString =  (String) request.getAttribute("javax.servlet.include.query_string");
+        if (queryString == null) {
+            queryString = request.getQueryString();
+        }
+        this.queryString = queryString;
+
     }
 
     /**
@@ -36,13 +67,6 @@ public class Criteria {
      * @return The request URI.
      */
     public String getRequestURI() {
-        String requestUri = (String) request.getAttribute("javax.servlet.forward.request_uri");
-        if (requestUri == null) {
-            requestUri = (String) request.getAttribute("javax.servlet.include.request_uri");
-            if (requestUri == null) {
-                requestUri = request.getServletPath();
-            }
-        }
         return requestUri;
     }
 
@@ -53,13 +77,6 @@ public class Criteria {
      * @return The context path.
      */
     public String getContextPath() {
-        String contextPath = (String) request.getAttribute("javax.servlet.forward.context_path");
-        if (contextPath == null) {
-            contextPath = (String) request.getAttribute("javax.servlet.include.context_path");
-            if (contextPath == null) {
-                contextPath = request.getServletPath();
-            }
-        }
         return contextPath;
     }
 
@@ -70,13 +87,6 @@ public class Criteria {
      * @return The servlet path.
      */
     public String getPathInfo() {
-        String servletPath = (String) request.getAttribute("javax.servlet.forward.servlet_path");
-        if (servletPath == null) {
-            servletPath = (String) request.getAttribute("javax.servlet.include.servlet_path");
-            if (servletPath == null) {
-                servletPath = request.getServletPath();
-            }
-        }
         return servletPath;
     }
 
@@ -87,13 +97,6 @@ public class Criteria {
      * @return Any extra path info.
      */
     public String getServletPath() {
-        String pathInfo = (String) request.getAttribute("javax.servlet.forward.path_info");
-        if (pathInfo == null) {
-            pathInfo = (String) request.getAttribute("javax.servlet.include.path_info");
-            if (pathInfo == null) {
-                pathInfo = request.getPathInfo();
-            }
-        }
         return pathInfo;
     }
 
@@ -117,22 +120,7 @@ public class Criteria {
      * 
      * @return The parameters specific to this filter invocation.
      */
-    public Parameters getParameters() {
-        String query = (String) request.getAttribute("javax.servlet.forward.query_string");
-        if (query == null) {
-            query = (String) request.getAttribute("javax.servlet.include.query_string");
-        }
-        if (query == null) {
-            List<NamedValue> parameters = new ArrayList<NamedValue>();
-            Enumeration<String> names = Objects.toStringEnumeration(request.getParameterNames());
-            while (names.hasMoreElements()) {
-                String name = names.nextElement();
-                for (String value : request.getParameterValues(name)) {
-                    parameters.add(new NamedValue(NamedValue.REQUEST, name, value));
-                }
-            }
-            return new Parameters(parameters);
-        }
-        return Parameters.fromQueryString(query, NamedValue.REQUEST);
+    public String getQueryString() {
+        return queryString;
     }
 }
