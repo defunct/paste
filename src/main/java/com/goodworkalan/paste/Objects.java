@@ -4,12 +4,11 @@ import java.util.Enumeration;
 
 /**
  * A collection of package specific casts to generic types for older Servlet
- * interfaces. 
- *
+ * interfaces.
+ * 
  * @author Alan Gutierrez
  */
-class Objects
-{
+class Objects {
     /**
      * Cast an enumeration to a string enumeration.
      * 
@@ -18,8 +17,7 @@ class Objects
      * @return A string enumeration.
      */
     @SuppressWarnings("unchecked")
-    public static Enumeration<String> toStringEnumeration(Enumeration enumeration)
-    {
+    public static Enumeration<String> toStringEnumeration(Enumeration enumeration) {
         return enumeration;
     }
 }
