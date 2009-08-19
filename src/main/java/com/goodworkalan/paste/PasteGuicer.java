@@ -81,43 +81,32 @@ public class PasteGuicer {
      */
     public PasteGuicer(ServletContext servletContext, Map<String, String> initialization) {
         List<Module> modules = new ArrayList<Module>();
-        if (initialization.containsKey("Modules"))
-        {
-            try
-            {
-                for (String module : initialization.get("Modules").split(","))
-                {
+        if (initialization.containsKey("Modules")) {
+            try {
+                for (String module : initialization.get("Modules").split(",")) {
                     Class<?> moduleClass = Class.forName(module.trim());
                     modules.add((Module) moduleClass.newInstance());
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new PasteException(e);
             }
         }
 
         List<Router> routers = new ArrayList<Router>();
-        if (initialization.containsKey("Routers"))
-        {
-            try
-            {
-                for (String router : initialization.get("Routers").split(","))
-                {
+        if (initialization.containsKey("Routers")) {
+            try {
+                for (String router : initialization.get("Routers").split(",")) {
                     Class<?> routerClass = Class.forName(router.trim());
                     routers.add((Router) routerClass.newInstance());
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 throw new PasteException(e);
             }
         }
         
         Connections connections = new Connections();
         Connector connector = connections.newConnector();
-        for (Router router : routers)
-        {
+        for (Router router : routers) {
             router.connect(connector);
         }
         
