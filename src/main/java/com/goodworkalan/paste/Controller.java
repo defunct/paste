@@ -1,5 +1,6 @@
 package com.goodworkalan.paste;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,10 +8,16 @@ import java.lang.annotation.Target;
 
 import com.google.inject.BindingAnnotation;
 
-// TODO Document.
+/**
+ * Indicates that an object was created based on the matched controller. Used
+ * to annotate the controller object itself and the map of parameters matched
+ * by the controller's URL binding pattern.
+ *
+ * @author ALan Gutierrez
+ */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.PARAMETER })
 @BindingAnnotation
-public @interface Controller
-{
+public @interface Controller {
 }
