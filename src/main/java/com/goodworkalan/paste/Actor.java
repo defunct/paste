@@ -1,14 +1,12 @@
 package com.goodworkalan.paste;
 
-
 /**
  * A Guice created actor that acts upon a Guice created controller. Controllers
  * specify their actors using the {@link Actors} annotation.
  * 
  * @author Alan Gutierrez
  */
-public interface Actor
-{
+public interface Actor {
     /**
      * Act upon the given controller.
      * 

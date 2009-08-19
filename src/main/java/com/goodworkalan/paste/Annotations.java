@@ -17,8 +17,7 @@ import com.google.inject.Inject;
  * @author Alan Gutierrez
  */
 @ControllerScoped
-public class Annotations
-{
+public class Annotations {
     /** The request. */
     private final HttpServletRequest request;
     
@@ -35,8 +34,7 @@ public class Annotations
      *            The request.
      */
     @Inject
-    public Annotations(@Controller Parameters parameters, HttpServletRequest request)
-    {
+    public Annotations(@Controller Parameters parameters, HttpServletRequest request) {
         this.parameters = parameters;
         this.request = request;
     }
@@ -66,37 +64,26 @@ public class Annotations
      *            be invoked.
      * @return True if the method should be invoked.
      */
-    public boolean invoke(String[] on, String param, String[] methods)
-    {
+    public boolean invoke(String[] on, String param, String[] methods) {
         boolean audit = on.length == 0;
-        if (!audit)
-        {
-            if (!"".equals(param))
-            {
+        if (!audit) {
+            if (!"".equals(param)) {
                 String value = parameters.getFirst(param);
-                if (value != null)
-                {
-                    for (int i = 0; !audit && i < on.length; i++)
-                    {
+                if (value != null) {
+                    for (int i = 0; !audit && i < on.length; i++) {
                         audit = on[i].equals(value);
                     }
                 }
-            }
-            else
-            {
-                for (int i = 0; !audit &&  i < on.length; i++)
-                {
+            } else {
+                for (int i = 0; !audit && i < on.length; i++) {
                     audit = parameters.hasName(on[i]);
                 }
             }
         }
-        if (audit)
-        {
-            if (methods.length != 0)
-            {
+        if (audit) {
+            if (methods.length != 0) {
                 audit = false;
-                for (int i = 0; !audit && i < methods.length; i++)
-                {
+                for (int i = 0; !audit && i < methods.length; i++) {
                     audit = methods[i].equals(request.getMethod());
                 }
             }

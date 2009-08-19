@@ -158,7 +158,7 @@ class PasteModule extends AbstractModule {
             .toProvider(ControllerParametersProvider.class)
             .in(ControllerScoped.class);
         bind(Parameters.class)
-            .annotatedWith(Controller.class)
+            .toProvider(ControllerParametersProvider.class)
             .in(ControllerScoped.class);
         
         // We cheat here, we don't build these with guice, but seed them into

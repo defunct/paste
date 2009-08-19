@@ -15,8 +15,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Actors
-{
+public @interface Actors {
     /**
      * The list of actors that will act upon the controller.
      * 
