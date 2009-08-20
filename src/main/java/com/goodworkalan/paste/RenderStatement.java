@@ -123,7 +123,7 @@ public class RenderStatement {
     public <T extends RenderModule> T with(Class<T> renderClass) {
         Constructor<T> constructor;
         try {
-            constructor = renderClass.getConstructor(RenderStatement.class);
+            constructor = renderClass.getConstructor(Connector.class);
         } catch (Exception e) {
             throw new PasteException(0, e);
         }
