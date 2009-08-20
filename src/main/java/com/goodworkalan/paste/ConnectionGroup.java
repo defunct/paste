@@ -1,6 +1,5 @@
 package com.goodworkalan.paste;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class ConnectionGroup {
      * @return A path specification element to define the path.
      */
     public PathConnector<ConnectionGroup> path(String path) {
-        return new PathConnector<ConnectionGroup>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new ArrayList<Glob>(), new RuleMapBuilder<Pair<Integer,Class<?>>>(), path);
+        return new PathConnector<ConnectionGroup>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Pair<Integer,Class<?>>>(), Collections.singletonList(path));
     }
 
     /**
