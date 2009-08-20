@@ -1,20 +1,17 @@
-package com.goodworkalan.paste.faults;
-
-import java.util.Map;
+package com.goodworkalan.paste.validate;
 
 import com.goodworkalan.paste.Actor;
-import com.goodworkalan.paste.RequestScoped;
 
 // TODO Document.
 public class RaiseInvalid implements Actor
 {
     // TODO Document.
-    private Map<Object, Object> faults;
+    private Mistakes mistakes;
     
     // TODO Document.
-    public RaiseInvalid(@RequestScoped @Faults Map<Object, Object> faults)
+    public RaiseInvalid(Mistakes mistakes)
     {
-        this.faults = faults;
+        this.mistakes = mistakes;
     }
 
     /**
@@ -22,7 +19,7 @@ public class RaiseInvalid implements Actor
      */
     public Throwable actUpon(Object controller)
     {
-        if (faults.size() == 0)
+        if (mistakes.size() > 0)
         {
             try
             {

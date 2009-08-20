@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.faults;
+package com.goodworkalan.paste.validate;
 
 import com.goodworkalan.paste.stop.Stop;
 
