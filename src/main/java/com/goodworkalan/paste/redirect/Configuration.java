@@ -1,6 +1,5 @@
 package com.goodworkalan.paste.redirect;
 
-import com.goodworkalan.paste.paths.FormatArgument;
 
 /**
  * Configuration a redirection response.
@@ -16,7 +15,7 @@ class Configuration
     private final String format;
     
     /** The format arguments to use to create the redirection URL. */
-    private final FormatArgument[] formatArguments;
+    private final Class<?>[] formatArguments;
 
     /**
      * Create a configuration for a redirection response.
@@ -28,7 +27,7 @@ class Configuration
      * @param formatArguments
      *            The format arguments to use to create the redirection URL.
      */
-    public Configuration(int status, String format, FormatArgument[] formatArguments)
+    public Configuration(int status, String format, Class<?>[] formatArguments)
     {
         this.status = status;
         this.format = format;
@@ -60,7 +59,7 @@ class Configuration
      * 
      * @return The format arguments to use to create the redirection URL.
      */
-    public FormatArgument[] getFormatArguments()
+    public Class<?>[] getFormatArguments()
     {
         return formatArguments;
     }

@@ -1,6 +1,5 @@
 package com.goodworkalan.paste.forward;
 
-import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_CLASS_AS_PATH;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,7 +15,7 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.paths.FormatArgument;
+import com.goodworkalan.paste.paths.ControllerClassAsPath;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -46,7 +45,7 @@ public class ForwardRendererTest
         
         HttpServletResponse response = mock(HttpServletResponse.class);
         
-        Configuration configuration = new Configuration("controller", "/%s.ftl", new FormatArgument[] { CONTROLLER_CLASS_AS_PATH });
+        Configuration configuration = new Configuration("controller", "/%s.ftl", new Class<?>[] { ControllerClassAsPath.class });
         
         Renderer renderer = new ForwardRenderer(formatter, request, response, controller, configuration);
         renderer.render();

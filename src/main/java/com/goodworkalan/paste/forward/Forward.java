@@ -1,12 +1,10 @@
 package com.goodworkalan.paste.forward;
 
-import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_CLASS_AS_PATH;
-
 import com.goodworkalan.paste.Connector;
 import com.goodworkalan.paste.ControllerScoped;
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.paths.FormatArgument;
+import com.goodworkalan.paste.paths.ControllerClassAsPath;
 import com.google.inject.Provider;
 
 /**
@@ -24,7 +22,7 @@ public class Forward extends RenderModule {
     private String property = "controller";
 
     /** The format arguments to use to create the forward path. */
-    private FormatArgument[] formatArguments = new FormatArgument[] { CONTROLLER_CLASS_AS_PATH };
+    private Class<?>[] formatArguments = new Class<?>[] { ControllerClassAsPath.class };
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -79,7 +77,7 @@ public class Forward extends RenderModule {
      * @return This domain-specific language extension to continue specifying
      *         forward properties.
      */
-    public Forward format(String format, FormatArgument... formatArguments) {
+    public Forward format(String format, Class<?>... formatArguments) {
         this.format = format;
         this.formatArguments = formatArguments;
         return this;

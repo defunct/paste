@@ -1,7 +1,6 @@
 package com.goodworkalan.paste.forward;
 
 import com.goodworkalan.paste.RequestScoped;
-import com.goodworkalan.paste.paths.FormatArgument;
 
 /**
  * A configuration structure for the forward renderer.
@@ -17,7 +16,7 @@ class Configuration {
     private final String format;
 
     /** The format arguments to use to create the forward path. */
-    private final FormatArgument[] formatArguments;
+    private final Class<?>[] formatArguments;
 
     /**
      * Create a forward configuration with the given controller property, the
@@ -30,7 +29,7 @@ class Configuration {
      * @param formatArguments
      *            The format arguments to use to create the forward path.
      */
-    public Configuration(String property, String format, FormatArgument[] formatArguments) {
+    public Configuration(String property, String format, Class<?>[] formatArguments) {
         this.property = property;
         this.format = format;
         this.formatArguments = formatArguments;
@@ -59,7 +58,7 @@ class Configuration {
      * 
      * @return The format arguments to use to create the forward path.
      */
-    public FormatArgument[] getFormatArguments() {
+    public Class<?>[] getFormatArguments() {
         return formatArguments;
     }
 }

@@ -5,7 +5,6 @@ import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 import com.goodworkalan.paste.Connector;
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
 /**
@@ -23,7 +22,7 @@ public class Redirect extends RenderModule
     private String format;
     
     /** The format arguments to use to create the redirection URL. */
-    private FormatArgument[] formatArguments = new FormatArgument[0];
+    private Class<?>[] formatArguments = new Class<?>[0];
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -85,7 +84,7 @@ public class Redirect extends RenderModule
      * @return This domain-specific language extension to continue specifying
      *         redirect properties.
      */
-    public Redirect format(String format, FormatArgument...formatArguments)
+    public Redirect format(String format, Class<?>...formatArguments)
     {
         this.format = format;
         this.formatArguments = formatArguments;

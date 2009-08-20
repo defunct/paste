@@ -1,14 +1,10 @@
 package com.goodworkalan.paste.paths;
 
-import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_CLASS_AS_PATH;
-import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_CLASS_NAME;
-import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_PACKAGE_AS_PATH;
 import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.Controller;
-import com.goodworkalan.paste.paths.FormatArgument;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -16,7 +12,7 @@ import com.google.inject.Injector;
 
 public class FormatArgumentsTest
 {
-    private FormatArgument[] args(FormatArgument...formatArguments)
+    private Class<?>[] args(Class<?>...formatArguments)
     {
         return formatArguments;
     }
@@ -34,7 +30,7 @@ public class FormatArgumentsTest
         });
 
         PathFormatter formatter = new PathFormatter(injector);
-        assertEquals(formatter.format("/%s.ftl", args(CONTROLLER_CLASS_AS_PATH)), "/java/lang/Object.ftl");
+        assertEquals(formatter.format("/%s.ftl", args(ControllerClassAsPath.class)), "/java/lang/Object.ftl");
     }
 
     @Test
@@ -50,7 +46,7 @@ public class FormatArgumentsTest
         });
 
         PathFormatter formatter = new PathFormatter(injector);
-        assertEquals(formatter.format("/%s.ftl", args(CONTROLLER_PACKAGE_AS_PATH)), "/java/lang.ftl");
+        assertEquals(formatter.format("/%s.ftl", args(ControllerPackageAsPath.class)), "/java/lang.ftl");
     }
 
     @Test
@@ -66,6 +62,6 @@ public class FormatArgumentsTest
         });
 
         PathFormatter formatter = new PathFormatter(injector);
-        assertEquals(formatter.format("/%s.ftl", args(CONTROLLER_CLASS_NAME)), "/Object.ftl");
+        assertEquals(formatter.format("/%s.ftl", args(ControllerClassName.class)), "/Object.ftl");
     }
 }

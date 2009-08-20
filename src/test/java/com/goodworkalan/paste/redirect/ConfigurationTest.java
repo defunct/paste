@@ -1,22 +1,19 @@
 package com.goodworkalan.paste.redirect;
 
-import static com.goodworkalan.paste.paths.FormatArguments.REQUEST_DIRECTORY_NAME;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.paths.FormatArgument;
-import com.goodworkalan.paste.redirect.Configuration;
+import com.goodworkalan.paste.paths.PathDirectory;
 
 public class ConfigurationTest
 {
     @Test
     public void constructor()
     {
-        Configuration configuration = new Configuration(301, "%s/index", new FormatArgument[] { REQUEST_DIRECTORY_NAME });
+        Configuration configuration = new Configuration(301, "%s/index", new Class<?>[] { PathDirectory.class });
         assertEquals(configuration.getStatus(), 301);
         assertEquals(configuration.getFormat(), "%s/index");
-        assertSame(configuration.getFormatArguments()[0], REQUEST_DIRECTORY_NAME);
+        assertEquals(configuration.getFormatArguments()[0],  PathDirectory.class);
     }
 }
