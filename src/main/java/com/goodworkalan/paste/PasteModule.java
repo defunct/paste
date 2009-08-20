@@ -99,24 +99,6 @@ class PasteModule extends AbstractModule {
             .toProvider(HttpSessionProvider.class)
             .in(RequestScoped.class);
         
-        bind(HttpServletRequest.class)
-            .annotatedWith(Request.class)
-            .toProvider(RequestHttpServletRequestProvider.class)
-            .in(RequestScoped.class);
-        bind(ServletRequest.class)
-            .annotatedWith(Request.class)
-            .toProvider(RequestHttpServletRequestProvider.class)
-            .in(RequestScoped.class);
-        
-        bind(HttpServletRequest.class)
-            .annotatedWith(Filter.class)
-            .toProvider(FilterHttpServletRequestProvider.class)
-            .in(FilterScoped.class);
-        bind(ServletRequest.class)
-            .annotatedWith(Filter.class)
-            .toProvider(FilterHttpServletRequestProvider.class)
-            .in(FilterScoped.class);
-        
         // The default request is the filter request.
         bind(HttpServletRequest.class)
             .toProvider(FilterHttpServletRequestProvider.class)

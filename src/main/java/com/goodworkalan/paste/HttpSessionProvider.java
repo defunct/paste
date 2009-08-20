@@ -23,7 +23,7 @@ public class HttpSessionProvider implements Provider<HttpSession> {
      *            The request from the first invocation of the filter.
      */
     @Inject
-    public HttpSessionProvider(@Request HttpServletRequest request) {
+    public HttpSessionProvider(HttpServletRequest request) {
         this.request = request;
     }
 
