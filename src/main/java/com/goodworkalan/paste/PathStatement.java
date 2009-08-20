@@ -20,7 +20,7 @@ import com.mallardsoft.tuple.Pair;
  *            The type of parent element to return when the statement is
  *            terminated.
  */
-public class PathConnector<T> implements FilterClause<T> {
+public class PathStatement<T> implements FilterClause<T> {
     /** The parent element to return when the path statement is terminated. */
     private final T connector;
 
@@ -80,7 +80,7 @@ public class PathConnector<T> implements FilterClause<T> {
      * @param patterns
      *            The list of paths for this binding.
      */
-    public PathConnector(
+    public PathStatement(
             T connector,
             Map<Class<?>, Glob> controllerToGlob,
             List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections,
@@ -160,7 +160,7 @@ public class PathConnector<T> implements FilterClause<T> {
      * 
      * @return A path language element to specify a sub-path.
      */
-    public PathConnector<SubPathClause<T>> path(String path) {
+    public PathStatement<SubPathClause<T>> path(String path) {
         compile();
         List<GlobCompiler> subCompilers = new ArrayList<GlobCompiler>();
         for (Glob glob : globs) {
@@ -169,7 +169,7 @@ public class PathConnector<T> implements FilterClause<T> {
         List<Glob> globs = new ArrayList<Glob>();
         RuleMapBuilder<Pair<Integer, Class<?>>> rules = new RuleMapBuilder<Pair<Integer, Class<?>>>();
         connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>(globs, rules));
-        return new PathConnector<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));
+        return new PathStatement<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));
     }
 
     /**

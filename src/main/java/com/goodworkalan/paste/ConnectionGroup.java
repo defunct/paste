@@ -52,8 +52,8 @@ public class ConnectionGroup {
      *            The path to bind.
      * @return A path specification element to define the path.
      */
-    public PathConnector<ConnectionGroup> path(String path) {
-        return new PathConnector<ConnectionGroup>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Pair<Integer,Class<?>>>(), Collections.singletonList(path));
+    public PathStatement<ConnectionGroup> path(String path) {
+        return new PathStatement<ConnectionGroup>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Pair<Integer,Class<?>>>(), Collections.singletonList(path));
     }
 
     /**

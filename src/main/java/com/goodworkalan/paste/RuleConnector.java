@@ -44,7 +44,7 @@ public class RuleConnector<T> {
      * @param controllerToGlob
      * @param rules
      */
-    public RuleConnector(PathConnector<T> nextRuleConnector, Glob glob,
+    public RuleConnector(PathStatement<T> nextRuleConnector, Glob glob,
             Map<Class<?>, Glob> controllerToGlob,
             RuleMapBuilder<Pair<Integer, Class<?>>> rules) {
         this.glob = glob;

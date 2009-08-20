@@ -89,9 +89,9 @@ public class OrConnector<T> {
      * @param path An additional path to match.
      * @return A path element to continue specifying path properties.
      */
-    public PathConnector<T> path(String path) {
+    public PathStatement<T> path(String path) {
         List<String> orPatterns = new ArrayList<String>(patterns);
         orPatterns.add(path);
-        return new PathConnector<T>(parent, controllerToGlob, connections, compilers, rules, orPatterns);
+        return new PathStatement<T>(parent, controllerToGlob, connections, compilers, rules, orPatterns);
     }
 }
