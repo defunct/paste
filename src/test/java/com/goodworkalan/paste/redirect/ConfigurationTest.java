@@ -4,16 +4,16 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.paths.PathDirectory;
+import com.goodworkalan.paste.paths.PathDirectoryTest;
 
 public class ConfigurationTest
 {
     @Test
     public void constructor()
     {
-        Configuration configuration = new Configuration(301, "%s/index", new Class<?>[] { PathDirectory.class });
+        Configuration configuration = new Configuration(301, "%s/index", new Class<?>[] { PathDirectoryTest.class });
         assertEquals(configuration.getStatus(), 301);
         assertEquals(configuration.getFormat(), "%s/index");
-        assertEquals(configuration.getFormatArguments()[0],  PathDirectory.class);
+        assertEquals(configuration.getFormatArguments()[0],  PathDirectoryTest.class);
     }
 }

@@ -8,6 +8,7 @@ import com.google.inject.Inject;
  * 
  * @author Alan Gutierrez
  */
+// FIXME Rename PathFull.
 public class FullPath {
     /** The full path of the request URI. */
     private final String argument;
