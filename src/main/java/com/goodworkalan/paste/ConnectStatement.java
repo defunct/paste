@@ -19,6 +19,9 @@ import com.mallardsoft.tuple.Pair;
  * @author Alan Gutierrez
  */
 public class ConnectStatement {
+    /** The connector to return when the statement terminates. */
+    private final Connector end;
+    
     /** A map of controller classes to globs that match them. */
     private final Map<Class<?>, Glob> controllerToGlob;
     
@@ -32,6 +35,9 @@ public class ConnectStatement {
      * Create a connector group that will populate the given data structures
      * which are held by the connector.
      * 
+     * @param end
+     *            The connector to return when the statement terminates.
+     * 
      * @param controllerToGlob
      *            A map of controller classes to globs that match them.
      * @param connections
@@ -39,7 +45,8 @@ public class ConnectStatement {
      *            see if the controller is applicable based on additional
      *            request parameters.
      */
-    public ConnectStatement(Map<Class<?>, Glob> controllerToGlob, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)  {
+    public ConnectStatement(Connector end, Map<Class<?>, Glob> controllerToGlob, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)  {
+        this.end = end;
         this.controllerToGlob = controllerToGlob;
         this.connections = connections;
     }
@@ -57,8 +64,11 @@ public class ConnectStatement {
     }
 
     /**
-     * Terminate the domain-specific language connection statement.
+     * Terminate the connect statement and return teh connector.
+     * 
+     * @return The connector to continue to specify connections and renderers.
      */
-    public void end() {
+    public Connector end() {
+        return end;
     }
 }
