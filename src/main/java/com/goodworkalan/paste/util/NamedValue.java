@@ -5,8 +5,7 @@ package com.goodworkalan.paste.util;
  * 
  * @author Alan Gutierrez
  */
-public class NamedValue
-{
+public class NamedValue {
     /** Context for named values created from the HTTP request. */
     public final static NamedValue.Context REQUEST = new NamedValue.Context();
 
@@ -15,16 +14,16 @@ public class NamedValue
      * path.
      */
     public final static NamedValue.Context CONTROLLER = new NamedValue.Context();
-    
+
     /** Context for named values created for HTTP response. */
     public final static NamedValue.Context RESPONSE = new NamedValue.Context();
 
     /** The context in which the named value was created. */
     private final Context context;
-    
+
     /** The name of the value. */
     private final String name;
-    
+
     /** The value. */
     private final String value;
 
@@ -39,8 +38,7 @@ public class NamedValue
      * @param value
      *            The value.
      */
-    public NamedValue(Context context, String name, String value)
-    {
+    public NamedValue(Context context, String name, String value) {
         this.context = context;
         this.name = name;
         this.value = value;
@@ -51,8 +49,7 @@ public class NamedValue
      * 
      * @return The context in which the named value was created.
      */
-    public Object getContext()
-    {
+    public Object getContext() {
         return context;
     }
 
@@ -61,8 +58,7 @@ public class NamedValue
      * 
      * @return The name of the value.
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -71,8 +67,7 @@ public class NamedValue
      * 
      * @return The value.
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 
@@ -86,18 +81,16 @@ public class NamedValue
      * @return True if the given object is equal to this literal.
      */
     @Override
-    public boolean equals(Object object)
-    {
-        if (object instanceof NamedValue)
-        {
+    public boolean equals(Object object) {
+        if (object instanceof NamedValue) {
             NamedValue namedValue = (NamedValue) object;
             return context == namedValue.context
-                && name.equals(namedValue.name)
-                && value.equals(namedValue.value);
+                    && name.equals(namedValue.name)
+                    && value.equals(namedValue.value);
         }
         return false;
     }
-    
+
     /**
      * Return a hash code that combines the hash code of the context property,
      * name property and value property.
@@ -105,23 +98,21 @@ public class NamedValue
      * @return The hash code.
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 1;
         hash = hash * 37 + context.hashCode();
         hash = hash * 37 + name.hashCode();
         hash = hash * 37 + value.hashCode();
         return hash;
     }
-    
+
     /**
      * Return a string representation of the named value.
      * 
      * @return A string representation.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "{" + name + "=" + "\"" + value + "\"}";
     }
 
@@ -130,7 +121,6 @@ public class NamedValue
      * 
      * @author Alan Gutierrez
      */
-    public final static class Context
-    {
+    public final static class Context {
     }
 }
