@@ -192,10 +192,10 @@ public class PathStatement<T> implements FilterClause<T> {
      * @return An element that creates rules based on request properties other
      *         than the path.
      */
-    public RuleConnector<T> when() {
+    public WhenStatement<T> when() {
         compile();
         connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>(globs, rules));
-        return new RuleConnector<T>(this, globs.get(0), controllerToGlob, rules);
+        return new WhenStatement<T>(this, globs.get(0), controllerToGlob, rules);
     }
 
     /**

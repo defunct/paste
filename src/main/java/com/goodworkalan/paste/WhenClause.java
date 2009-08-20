@@ -39,7 +39,7 @@ public interface WhenClause<T> {
      * @return An element that creates rules based on request properties other
      *         than the path.
      */
-    public RuleConnector<T> when();
+    public WhenStatement<T> when();
 
     /**
      * Return the parent element of the path connector associated with this rule

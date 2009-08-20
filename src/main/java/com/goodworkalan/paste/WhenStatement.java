@@ -9,7 +9,7 @@ import com.goodworkalan.dovetail.Glob;
 import com.mallardsoft.tuple.Pair;
 
 // TODO Document.
-public class RuleConnector<T> {
+public class WhenStatement<T> {
     /**
      * The glob to return when the glob for the controller for this when clause
      * is requested.
@@ -44,7 +44,7 @@ public class RuleConnector<T> {
      * @param controllerToGlob
      * @param rules
      */
-    public RuleConnector(PathStatement<T> nextRuleConnector, Glob glob,
+    public WhenStatement(PathStatement<T> nextRuleConnector, Glob glob,
             Map<Class<?>, Glob> controllerToGlob,
             RuleMapBuilder<Pair<Integer, Class<?>>> rules) {
         this.glob = glob;
@@ -61,7 +61,7 @@ public class RuleConnector<T> {
      *            The request methods.
      * @return This rule element to continue specifying rules.
      */
-    public RuleConnector<T> method(String... methods) {
+    public WhenStatement<T> method(String... methods) {
         for (String method : methods) {
             rule.check(BindKey.METHOD, new Equals(method));
         }
@@ -75,7 +75,7 @@ public class RuleConnector<T> {
      *            The priority.
      * @return This rule element to continue specifying rules.
      */
-    public RuleConnector<T> priority(int priority) {
+    public WhenStatement<T> priority(int priority) {
         this.priority = priority;
         return this;
     }
