@@ -19,7 +19,7 @@ import com.mallardsoft.tuple.Pair;
  *            The type of parent element to return when the statement is
  *            terminated.
  */
-public class OrConnector<T> {
+public class OrClause<T> {
     /** The parent element to return when the path statement is terminated. */
     private final T parent;
 
@@ -68,7 +68,7 @@ public class OrConnector<T> {
      *            The list of paths to compile, multiple paths can be specified
      *            using an or clause. private final List<String> pattern;
      */
-    public OrConnector(
+    public OrClause(
             T connector,
             Map<Class<?>, Glob> controllerToGlob,
             List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections,

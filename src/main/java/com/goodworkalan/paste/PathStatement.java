@@ -101,8 +101,8 @@ public class PathStatement<T> implements FilterClause<T> {
      * 
      * @return An or language element to match an additional path.
      */
-    public OrConnector<T> or() {
-        return new OrConnector<T>(connector, controllerToGlob, connections, compilers, rules, patterns);
+    public OrClause<T> or() {
+        return new OrClause<T>(connector, controllerToGlob, connections, compilers, rules, patterns);
     }
 
     /**
