@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.Controller;
-import com.goodworkalan.paste.Evaluator;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.RequestScoped;
+import com.goodworkalan.paste.infuse.Evaluator;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.Inject;
 

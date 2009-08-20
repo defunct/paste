@@ -1,7 +1,8 @@
-package com.goodworkalan.paste;
+package com.goodworkalan.paste.infuse;
 
 import com.goodworkalan.infuse.Diffusion;
 import com.goodworkalan.infuse.PathException;
+import com.goodworkalan.paste.PasteException;
 
 /**
  * Extract values from an object using diffusion paths.
