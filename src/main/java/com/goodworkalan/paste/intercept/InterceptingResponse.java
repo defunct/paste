@@ -79,6 +79,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
      */
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
+        // FIXME Delete this and just mark intercepted. Less to maintain and test.
         if (out == null) {
             out = new InterceptingOutputStream(interception, super.getOutputStream());
         }
@@ -93,6 +94,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
      */
     @Override
     public PrintWriter getWriter() throws IOException {
+        // FIXME Delete this and just mark intercepted. Less to maintain and test.
         if (writer == null) {
             writer = new PrintWriter(new InterceptingWriter(interception, super.getWriter()));
         }
