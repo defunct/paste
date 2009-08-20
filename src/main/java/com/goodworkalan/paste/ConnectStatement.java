@@ -18,7 +18,7 @@ import com.mallardsoft.tuple.Pair;
  * 
  * @author Alan Gutierrez
  */
-public class ConnectionGroup {
+public class ConnectStatement {
     /** A map of controller classes to globs that match them. */
     private final Map<Class<?>, Glob> controllerToGlob;
     
@@ -39,7 +39,7 @@ public class ConnectionGroup {
      *            see if the controller is applicable based on additional
      *            request parameters.
      */
-    public ConnectionGroup(Map<Class<?>, Glob> controllerToGlob, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)  {
+    public ConnectStatement(Map<Class<?>, Glob> controllerToGlob, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)  {
         this.controllerToGlob = controllerToGlob;
         this.connections = connections;
     }
@@ -52,8 +52,8 @@ public class ConnectionGroup {
      *            The path to bind.
      * @return A path specification element to define the path.
      */
-    public PathStatement<ConnectionGroup> path(String path) {
-        return new PathStatement<ConnectionGroup>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Pair<Integer,Class<?>>>(), Collections.singletonList(path));
+    public PathStatement<ConnectStatement> path(String path) {
+        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Pair<Integer,Class<?>>>(), Collections.singletonList(path));
     }
 
     /**

@@ -20,7 +20,7 @@ public interface Connector
      * 
      * @return A domain-specific language element used to define a group
      */
-    public ConnectionGroup connect();
+    public ConnectStatement connect();
     
     /**
      * Return an element in the domain-specific language that will map

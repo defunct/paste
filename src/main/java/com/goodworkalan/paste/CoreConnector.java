@@ -55,10 +55,10 @@ public class CoreConnector implements Connector
      * 
      * @return A domain-specific language element used to define a group
      */
-    public ConnectionGroup connect() {
+    public ConnectStatement connect() {
         List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> group = new ArrayList<Pair<List<Glob>,RuleMapBuilder<Pair<Integer,Class<?>>>>>();
         connections.add(group);
-        return new ConnectionGroup(controllerToGlob, group);
+        return new ConnectStatement(controllerToGlob, group);
     }
 
     /**
