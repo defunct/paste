@@ -10,24 +10,21 @@ import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
 /**
- * An extension element in a domain-specific language use to specify the 
- * details of forwarding a controller to another filter or servlet. 
- *
+ * An extension element in a domain-specific language used to specify the
+ * details of rendering the controller or exception by forwarding it to another
+ * filter or servlet.
+ * 
  * @author Alan Gutierrez
  */
-public class Forward extends RenderModule
-{
+public class Forward extends RenderModule {
     /** The format to use to create the forward path. */
     private String format = "/%s.ftl";
-    
+
     /** The request property name to use to store the controller. */
     private String property = "controller";
-    
+
     /** The format arguments to use to create the forward path. */
-    private FormatArgument[] formatArguments = new FormatArgument[]
-    {
-            CONTROLLER_CLASS_AS_PATH
-    };
+    private FormatArgument[] formatArguments = new FormatArgument[] { CONTROLLER_CLASS_AS_PATH };
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -36,8 +33,7 @@ public class Forward extends RenderModule
      * @param end
      *            The connector to return when the render statement is complete.
      */
-    public Forward(Connector end)
-    {
+    public Forward(Connector end) {
         super(end);
     }
 
@@ -47,13 +43,10 @@ public class Forward extends RenderModule
      * filter or servlet.
      */
     @Override
-    protected void configure()
-    {
+    protected void configure() {
         bind(Renderer.class).to(ForwardRenderer.class).in(ControllerScoped.class);
-        bind(Configuration.class).toProvider(new Provider<Configuration>()
-        {
-            public Configuration get()
-            {
+        bind(Configuration.class).toProvider(new Provider<Configuration>() {
+            public Configuration get() {
                 return new Configuration(property, format, formatArguments);
             }
         }).in(ControllerScoped.class);
@@ -68,8 +61,7 @@ public class Forward extends RenderModule
      * @return This domain-specific language extension to continue specifying
      *         forward properties.
      */
-    public Forward property(String property)
-    {
+    public Forward property(String property) {
         this.property = property;
         return this;
     }
@@ -87,8 +79,7 @@ public class Forward extends RenderModule
      * @return This domain-specific language extension to continue specifying
      *         forward properties.
      */
-    public Forward format(String format, FormatArgument...formatArguments)
-    {
+    public Forward format(String format, FormatArgument... formatArguments) {
         this.format = format;
         this.formatArguments = formatArguments;
         return this;

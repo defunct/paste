@@ -14,45 +14,64 @@ import com.goodworkalan.paste.infuse.Evaluator;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.Inject;
 
-// TODO Document.
+/**
+ * A renderer that renders the controller by forwarding to another filter or
+ * servlet within the current web application.
+ * 
+ * @author Alan Gutierrez
+ */
 @RequestScoped
-public class ForwardRenderer implements Renderer
-{
-    // TODO Document.
+public class ForwardRenderer implements Renderer {
+    /** A formatter that formats strings according to injected parameters. */
     private final PathFormatter pathFormatter;
-    
-    // TODO Document.
+
+    /** The request. */
     private final HttpServletRequest request;
-    
-    // TODO Document.
+
+    /** The response. */
     private final HttpServletResponse response;
-    
-    // TODO Document.
+
+    /** The controller. */
     private final Object controller;
-    
-    // TODO Document.
+
+    /** The forward rendering configuration. */
     private final Configuration configuration;
-    
-    // TODO Document.
+
+    /**
+     * Construct a forward renderer.
+     * 
+     * @param pathFormatter
+     *            A formatter that formats strings according to injected
+     *            parameters.
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     * @param controller
+     *            The controller.
+     * @param configuration
+     *            The forward rendering configuration.
+     */
     @Inject
     public ForwardRenderer(
             PathFormatter pathFormatter,
             HttpServletRequest request,
             HttpServletResponse response,
             @Controller Object controller,
-            Configuration configuration)
-    {
+            Configuration configuration) {
         this.pathFormatter = pathFormatter;
         this.request = request;
         this.response = response;
         this.controller = controller;
         this.configuration = configuration;
     }
-    
-    // TODO Document.
-    public void render() throws ServletException, IOException
-    {
-        String path = pathFormatter.format(configuration.getFormat(), configuration.getFormatArguments());
+
+    /**
+     * Render the configuration by forwarding the request within the web
+     * application.
+     */
+    public void render() throws ServletException, IOException {
+        String path = pathFormatter.format(configuration.getFormat(),  configuration.getFormatArguments());
         request.setAttribute(configuration.getProperty(), controller);
         request.setAttribute("evaluator", new Evaluator(controller));
         RequestDispatcher dispatcher = request.getRequestDispatcher(path);

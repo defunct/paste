@@ -3,42 +3,63 @@ package com.goodworkalan.paste.forward;
 import com.goodworkalan.paste.RequestScoped;
 import com.goodworkalan.paste.paths.FormatArgument;
 
-// TODO Document.
+/**
+ * A configuration structure for the forward renderer.
+ * 
+ * @author Alan Gutierrez
+ */
 @RequestScoped
-class Configuration
-{
-    // TODO Document.
+class Configuration {
+    /** The request property name to use to store the controller. */
     private final String property;
-    
-    // TODO Document.
+
+    /** The format to use to create the forward path. */
     private final String format;
-    
-    // TODO Document.
+
+    /** The format arguments to use to create the forward path. */
     private final FormatArgument[] formatArguments;
 
-    // TODO Document.
-    public Configuration(String property, String format, FormatArgument[] formatArguments)
-    {
+    /**
+     * Create a forward configuration with the given controller property, the
+     * given format and the given format arguments.
+     * 
+     * @param property
+     *            The request property name to use to store the controller.
+     * @param format
+     *            The format to use to create the forward path.
+     * @param formatArguments
+     *            The format arguments to use to create the forward path.
+     */
+    public Configuration(String property, String format, FormatArgument[] formatArguments) {
         this.property = property;
         this.format = format;
         this.formatArguments = formatArguments;
     }
-    
-    // TODO Document.
-    public String getProperty()
-    {
+
+    /**
+     * Get the request property name to use to store the controller.
+     * 
+     * @return The request property name to use to store the controller.
+     */
+    public String getProperty() {
         return property;
     }
-    
-    // TODO Document.
-    public String getFormat()
-    {
+
+    /**
+     * Get the format to use to create the forward path.
+     * 
+     * @return The format to use to create the forward path.
+     */
+    public String getFormat() {
         return format;
     }
-    
-    // TODO Document.
-    public FormatArgument[] getFormatArguments()
-    {
+
+    /**
+     * Get the format arguments to use to create the forward path.
+     * 
+     * @return The format arguments to use to create the forward path.
+     */
+    public FormatArgument[] getFormatArguments() {
         return formatArguments;
     }
 }
