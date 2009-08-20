@@ -180,7 +180,7 @@ public class PathStatement<T> implements FilterClause<T> {
      *            The priority for this path.
      * @return A connector that provides only a <code>to</code> method.
      */
-    public ToConnector<T> priority(int priority) {
+    public ToClause<T> priority(int priority) {
         this.priority = priority;
         return this;
     }
