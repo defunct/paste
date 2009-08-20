@@ -18,10 +18,10 @@ import com.mallardsoft.tuple.Pair;
  * 
  * @author Alan Gutierrez
  */
-public class ViewConnector
+public class RenderStatement
 {
     // TODO Document.
-    private final ViewConnector parent;
+    private final RenderStatement parent;
     
     // TODO Document.
     protected final RuleMapBuilder<Pair<Integer, RenderModule>> rules;
@@ -36,7 +36,7 @@ public class ViewConnector
     private int priority;
     
     // TODO Document.
-    public ViewConnector(ViewConnector parent, RuleMapBuilder<Pair<Integer, RenderModule>> mapOfBindings, List<RuleSetBuilder<Pair<Integer, RenderModule>>> listOfSetOfRules) 
+    public RenderStatement(RenderStatement parent, RuleMapBuilder<Pair<Integer, RenderModule>> mapOfBindings, List<RuleSetBuilder<Pair<Integer, RenderModule>>> listOfSetOfRules) 
     {
         this.parent = parent;
         this.rules = mapOfBindings;
@@ -51,9 +51,9 @@ public class ViewConnector
     }
 
     // TODO Document.
-    public ViewConnector view()
+    public RenderStatement view()
     {
-        return new ViewConnector(this, rules, newView());
+        return new RenderStatement(this, rules, newView());
     }
     
     // TODO Document.
@@ -62,20 +62,20 @@ public class ViewConnector
     }
     
     // TODO Document.
-    public ViewConnector controller(Class<?> controllerClass)
+    public RenderStatement controller(Class<?> controllerClass)
     {
         listOfSetOfRules.get(0).check(BindKey.CONTROLLER_CLASS, new InstanceOf(controllerClass));
         return this;
     }
     
-    public ViewConnector status(int status)
+    public RenderStatement status(int status)
     {
         listOfSetOfRules.get(0).check(BindKey.STATUS, new Equals(status));
         return this;
     }
     
     // TODO Document.
-    public ViewConnector method(String...methods)
+    public RenderStatement method(String...methods)
     {
         for (String method : methods)
         {
@@ -85,14 +85,14 @@ public class ViewConnector
     }
     
     // TODO Document.
-    public ViewConnector exception(Class<? extends Throwable> exceptionClass)
+    public RenderStatement exception(Class<? extends Throwable> exceptionClass)
     {
         listOfSetOfRules.get(0).check(BindKey.EXCEPTION_CLASS, new Equals(exceptionClass));
         return this;
     }
     
     // TODO Document.
-    public ViewConnector priority(int priority)
+    public RenderStatement priority(int priority)
     {
         this.priority = priority;
         return this;
@@ -104,13 +104,13 @@ public class ViewConnector
         Constructor<T> constructor;
         try
         {
-            constructor = renderClass.getConstructor(ViewConnector.class);
+            constructor = renderClass.getConstructor(RenderStatement.class);
         }
         catch (Exception e)
         {
             throw new PasteException(0, e);
         }
-        ViewConnector end = new ViewConnector(parent, rules, Collections.singletonList(from.duplicate()));
+        RenderStatement end = new RenderStatement(parent, rules, Collections.singletonList(from.duplicate()));
         T module;
         try
         {

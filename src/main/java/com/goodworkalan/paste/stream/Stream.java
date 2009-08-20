@@ -2,7 +2,7 @@ package com.goodworkalan.paste.stream;
 
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ViewConnector;
+import com.goodworkalan.paste.RenderStatement;
 import com.google.inject.Provider;
 
 /**
@@ -28,7 +28,7 @@ public class Stream extends RenderModule
      *            The controller to return when the view connection statement is
      *            complete.
      */
-    public Stream(ViewConnector end)
+    public Stream(RenderStatement end)
     {
         super(end);
     }

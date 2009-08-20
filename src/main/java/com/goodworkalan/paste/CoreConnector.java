@@ -68,8 +68,8 @@ public class CoreConnector implements Connector
      * 
      * @return A domain-specific language used to define the renderer.
      */
-    public ViewConnector view() {
-        return new ViewConnector(null, viewRules, Collections.singletonList(viewRules.rule()));
+    public RenderStatement view() {
+        return new RenderStatement(null, viewRules, Collections.singletonList(viewRules.rule()));
     }
 
     /**

@@ -30,5 +30,5 @@ public interface Connector
      * @return A domain-specific language used to define the renderer.
      */
     // FIXME Rename render.
-    public ViewConnector view();
+    public RenderStatement view();
 }

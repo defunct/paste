@@ -5,7 +5,7 @@ import static com.goodworkalan.paste.paths.FormatArguments.CONTROLLER_CLASS_AS_P
 import com.goodworkalan.paste.ControllerScoped;
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ViewConnector;
+import com.goodworkalan.paste.RenderStatement;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
@@ -37,7 +37,7 @@ public class Forward extends RenderModule
      *            The controller to return when the view connection statement is
      *            complete.
      */
-    public Forward(ViewConnector end)
+    public Forward(RenderStatement end)
     {
         super(end);
     }

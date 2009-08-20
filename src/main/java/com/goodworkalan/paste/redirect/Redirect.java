@@ -4,7 +4,7 @@ import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.ViewConnector;
+import com.goodworkalan.paste.RenderStatement;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
@@ -33,7 +33,7 @@ public class Redirect extends RenderModule
      *            The controller to return when the view connection statement is
      *            complete.
      */
-    public Redirect(ViewConnector end)
+    public Redirect(RenderStatement end)
     {
         super(end);
     }
