@@ -6,11 +6,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.Inject;
 
 public class Including {
     @Inject
-    public Including(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/included").include(request, response);
+    public Including(Parameters parameters, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = "/included";
+        if ("true".equals(parameters.getFirst("qs"))) {
+            path += "?a=1&b=2";
+        }
+        request.getRequestDispatcher(path).include(request, response);
     }
 }

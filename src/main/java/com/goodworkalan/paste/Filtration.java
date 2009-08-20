@@ -114,10 +114,10 @@ class Filtration {
      * @return The parameters.
      */
     public Parameters getParameters() {
-        if (subsequent) {
-            throw new PasteException();
-        }
         if (parameters == null) {
+            if (subsequent) {
+                throw new PasteException();
+            }
             if (request.getAttribute("javax.servlet.include.request_uri") != null) {
                 String query = (String) request.getAttribute("javax.servlet.include.query_string");
                 if (query == null) {

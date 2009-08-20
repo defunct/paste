@@ -95,8 +95,18 @@ public class PasteFilterTest {
     
     @Test
     public void testInclude() throws Exception {
-        URL url = new URL("http://localhost:8086/including");
+        URL url = new URL("http://localhost:8086/including?qs=true");
         List<String> lines = slurp(url.openStream());
+        assertEquals(lines.size(), 7);
+        assertEquals(lines.get(0), "");
+        assertEquals(lines.get(1), "/included");
+        assertEquals(lines.get(2), "/included");
+        assertEquals(lines.get(3), "a=1&b=2");
+        assertEquals(lines.get(4), "");
+        assertEquals(lines.get(5), "1");
+        assertEquals(lines.get(6), "2");
+        url = new URL("http://localhost:8086/including");
+        lines = slurp(url.openStream());
         assertEquals(lines.size(), 5);
         assertEquals(lines.get(0), "");
         assertEquals(lines.get(1), "/included");
