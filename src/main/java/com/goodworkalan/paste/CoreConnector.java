@@ -1,7 +1,6 @@
 package com.goodworkalan.paste;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class CoreConnector implements Connector
      * @return A domain-specific language used to define the renderer.
      */
     public RenderStatement view() {
-        return new RenderStatement(null, viewRules, Collections.singletonList(viewRules.rule()));
+        return new RenderStatement(this, viewRules);
     }
 
     /**

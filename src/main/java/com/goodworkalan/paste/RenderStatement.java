@@ -1,14 +1,11 @@
 package com.goodworkalan.paste;
 
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.List;
 
 import com.goodworkalan.deviate.Equals;
 import com.goodworkalan.deviate.InstanceOf;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.deviate.RuleSetBuilder;
-import com.goodworkalan.deviate.RuleSetBuilderList;
 import com.mallardsoft.tuple.Pair;
 
 /**
@@ -18,112 +15,125 @@ import com.mallardsoft.tuple.Pair;
  * 
  * @author Alan Gutierrez
  */
-public class RenderStatement
-{
-    // TODO Document.
-    private final RenderStatement parent;
+public class RenderStatement {
+    /** The connector to return when the statement terminates. */
+    private final Connector end;
     
-    // TODO Document.
-    protected final RuleMapBuilder<Pair<Integer, RenderModule>> rules;
-    
-    // TODO Document.
+    /** A builder for a map of rule sets to priority and render modules pairs. */
+    protected final RuleMapBuilder<Pair<Integer, RenderModule>> mappings;
+
+    /** A builder for a set of rules for this render statement. */
     protected final RuleSetBuilder<Pair<Integer, RenderModule>> from;
-    
-    // TODO Document.
-    protected final List<RuleSetBuilder<Pair<Integer, RenderModule>>> listOfSetOfRules;
-    
-    // TODO Document.
+
+    /**
+     * The priority for this render statement to resolve ambiguties if two or
+     * more rule sets match a response.
+     */
     private int priority;
-    
-    // TODO Document.
-    public RenderStatement(RenderStatement parent, RuleMapBuilder<Pair<Integer, RenderModule>> mapOfBindings, List<RuleSetBuilder<Pair<Integer, RenderModule>>> listOfSetOfRules) 
-    {
-        this.parent = parent;
-        this.rules = mapOfBindings;
-        this.listOfSetOfRules = listOfSetOfRules;
-        this.from = listOfSetOfRules.get(0).duplicate();
+
+    /**
+     * Create a render statement.
+     * 
+     * @param end
+     *            The connector to return when the statement terminates.
+     * @param mappings
+     *            A builder for a map of rule sets to priority and render
+     *            modules pairs.
+     */
+    public RenderStatement(Connector end, RuleMapBuilder<Pair<Integer, RenderModule>> mappings) {
+        this.end = end;
+        this.mappings = mappings;
+        this.from = mappings.rule();
     }
 
-    // TODO Document.
-    public List<RuleSetBuilder<Pair<Integer, RenderModule>>> newView()
-    {
-        return Collections.singletonList(new RuleSetBuilderList<Pair<Integer, RenderModule>>(listOfSetOfRules).duplicate());
+    /**
+     * Match the controllers that are an instance of the given class.
+     * 
+     * @param controllerClass
+     *            The controller class.
+     * @return This render statement to continue to specify match criteria.
+     */
+    public RenderStatement controller(Class<?> controllerClass) {
+        from.check(BindKey.CONTROLLER_CLASS, new InstanceOf(controllerClass));
+        return this;
     }
 
-    // TODO Document.
-    public RenderStatement view()
-    {
-        return new RenderStatement(this, rules, newView());
-    }
-    
-    // TODO Document.
-    public void end()
-    {
-    }
-    
-    // TODO Document.
-    public RenderStatement controller(Class<?> controllerClass)
-    {
-        listOfSetOfRules.get(0).check(BindKey.CONTROLLER_CLASS, new InstanceOf(controllerClass));
+    /**
+     * Match the given HTTP response status code.
+     * 
+     * @param status
+     *            The status code.
+     * @return This render statement to continue to specify match criteria.
+     */
+    public RenderStatement status(int status) {
+        from.check(BindKey.STATUS, new Equals(status));
         return this;
     }
-    
-    public RenderStatement status(int status)
-    {
-        listOfSetOfRules.get(0).check(BindKey.STATUS, new Equals(status));
-        return this;
-    }
-    
-    // TODO Document.
-    public RenderStatement method(String...methods)
-    {
-        for (String method : methods)
-        {
-            listOfSetOfRules.get(0).check(BindKey.METHOD, new Equals(method));
+
+    /**
+     * Match the given HTTP request methods.
+     * 
+     * @param methods
+     *            The HTTP request methods.
+     * @return This render statement to continue to specify match criteria.
+     */
+    public RenderStatement method(String... methods) {
+        for (String method : methods) {
+            from.check(BindKey.METHOD, new Equals(method));
         }
         return this;
     }
-    
-    // TODO Document.
-    public RenderStatement exception(Class<? extends Throwable> exceptionClass)
-    {
-        listOfSetOfRules.get(0).check(BindKey.EXCEPTION_CLASS, new Equals(exceptionClass));
+
+    /**
+     * Match the excptions that are an instance of the given class.
+     * 
+     * @param exceptionClass
+     *            The exception class.
+     * @return This render statement to continue to specify match criteria.
+     */
+    public RenderStatement exception(Class<? extends Throwable> exceptionClass) {
+        from.check(BindKey.EXCEPTION_CLASS, new InstanceOf(exceptionClass));
         return this;
     }
-    
-    // TODO Document.
-    public RenderStatement priority(int priority)
-    {
+
+    /**
+     * Assign a priority for this render statement to resolve ambiguties if two
+     * or more rule sets match a response.
+     * 
+     * @param priority
+     *            The priority.
+     * @return This render statement to continue to specify match criteria.
+     */
+    public RenderStatement priority(int priority) {
         this.priority = priority;
         return this;
     }
-    
-    // TODO Document.
-    public <T extends RenderModule> T with(Class<T> renderClass)
-    {
+
+    /**
+     * Specify the render module that will render a controller or exception when
+     * the criteria specified by this render statement is matched.
+     * 
+     * @param renderClass
+     *            The render module class.
+     * @return The render module as a language element to specify rendering
+     *         properties.
+     * @param <T>
+     *            The type of render module.
+     */
+    public <T extends RenderModule> T with(Class<T> renderClass) {
         Constructor<T> constructor;
-        try
-        {
+        try {
             constructor = renderClass.getConstructor(RenderStatement.class);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new PasteException(0, e);
         }
-        RenderStatement end = new RenderStatement(parent, rules, Collections.singletonList(from.duplicate()));
         T module;
-        try
-        {
+        try {
             module = constructor.newInstance(end);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new PasteException(0, e);
         }
-        for (RuleSetBuilder<Pair<Integer, RenderModule>> setOfRules : listOfSetOfRules)
-        {
-            setOfRules.put(new Pair<Integer, RenderModule>(priority, module));
-        }
+        from.put(new Pair<Integer, RenderModule>(priority, module));
         return module;
     }
 }

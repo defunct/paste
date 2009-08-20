@@ -1,8 +1,8 @@
 package com.goodworkalan.paste.stream;
 
+import com.goodworkalan.paste.Connector;
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.RenderStatement;
 import com.google.inject.Provider;
 
 /**
@@ -25,10 +25,9 @@ public class Stream extends RenderModule
      * details of invoking a stream.
      * 
      * @param end
-     *            The controller to return when the view connection statement is
-     *            complete.
+     *            The connector to return when the render statement is complete.
      */
-    public Stream(RenderStatement end)
+    public Stream(Connector end)
     {
         super(end);
     }

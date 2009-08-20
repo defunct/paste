@@ -22,10 +22,9 @@ public class TestRouter implements Router {
         connector
             .view()
                 .controller(Forwarding.class)
-                    .with(Forward.class)
-                    .property("steve")
-                    .format("/forwarded")
-                    .end()
+                .with(Forward.class)
+                .property("steve")
+                .format("/forwarded")
                 .end();
     }
 }

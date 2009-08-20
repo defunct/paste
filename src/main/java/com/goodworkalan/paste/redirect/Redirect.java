@@ -2,9 +2,9 @@ package com.goodworkalan.paste.redirect;
 
 import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
+import com.goodworkalan.paste.Connector;
 import com.goodworkalan.paste.RenderModule;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.RenderStatement;
 import com.goodworkalan.paste.paths.FormatArgument;
 import com.google.inject.Provider;
 
@@ -30,10 +30,9 @@ public class Redirect extends RenderModule
      * details of an HTTP redirection.
      * 
      * @param end
-     *            The controller to return when the view connection statement is
-     *            complete.
+     *            The connector to return when the render statement is complete.
      */
-    public Redirect(RenderStatement end)
+    public Redirect(Connector end)
     {
         super(end);
     }
