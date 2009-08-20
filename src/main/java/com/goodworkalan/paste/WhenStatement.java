@@ -8,49 +8,60 @@ import com.goodworkalan.deviate.RuleSetBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.mallardsoft.tuple.Pair;
 
-// TODO Document.
+/**
+ * A statement that specifies the rules to apply after a path has matched to
+ * choose a controller based on additional request properties.
+ * 
+ * @author Alan Gutierrez
+ * 
+ * @param <T>
+ *            The type of parent element to return when the statement is
+ *            terminated.
+ */
 public class WhenStatement<T> {
+    /**
+     * A terminal language element that will return a language element that can
+     * either specify more rule sets or termiante the path statement.
+     */
+    private final WhenClause<T> when;
+
     /**
      * The glob to return when the glob for the controller for this when clause
      * is requested.
      */
     private final Glob glob;
 
+    /** A map of controller classes to globs that match them. */
     private final Map<Class<?>, Glob> controllerToGlob;
 
-    /**
-     * A terminal language element that will return a language element that can
-     * either specify more rule sets or termiante the path statement.
-     */
-    private final WhenClause<T> nextRuleConnector;
-
-    /** The builder of map of rule sets to priority and controller class pairs. */
-    protected final RuleMapBuilder<Pair<Integer, Class<?>>> rules;
-
     /** The rule set builder for this rule statement. */
-    protected final RuleSetBuilder<Pair<Integer, Class<?>>> rule;
+    private final RuleSetBuilder<Pair<Integer, Class<?>>> rule;
 
     /** The priority of the rule set to resolve ambiguities. */
     private int priority;
 
     /**
      * 
-     * @param nextRuleConnector A terminal language element that will return a language element
-     *         that can either specify more rule sets or termiante the path
-     *         statement.
+     * @param when
+     *            A terminal language element that will return a language
+     *            element that can either specify more rule sets or termiante
+     *            the path statement.
      * @param glob
      *            The glob to return when the glob for the controller for this
      *            when clause is requested.
      * @param controllerToGlob
+     *            A map of controller classes to globs that match them.
      * @param rules
+     *            The builder of map of rule sets to priority and controller
+     *            class pairs.
      */
-    public WhenStatement(PathStatement<T> nextRuleConnector, Glob glob,
+    public WhenStatement(PathStatement<T> when,
+            Glob glob,
             Map<Class<?>, Glob> controllerToGlob,
             RuleMapBuilder<Pair<Integer, Class<?>>> rules) {
+        this.when = when;
         this.glob = glob;
         this.controllerToGlob = controllerToGlob;
-        this.nextRuleConnector = nextRuleConnector;
-        this.rules = rules;
         this.rule = rules.rule();
     }
 
@@ -94,6 +105,6 @@ public class WhenStatement<T> {
             controllerToGlob.put(controller, glob);
         }
         rule.put(new Pair<Integer, Class<?>>(priority, controller));
-        return new Ending<WhenClause<T>>(nextRuleConnector);
+        return new Ending<WhenClause<T>>(when);
     }
 }
