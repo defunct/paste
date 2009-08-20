@@ -10,11 +10,15 @@ public class TestRouter implements Router {
             .connect()
                 .path("/forwarding").to(Forwarding.class).end()
                 .path("/forwarded").to(Forwarded.class).end()
+                .path("/including").to(Including.class).end()
+                .path("/included").to(Included.class).end()
+                .path("/controller/parameters/(c [0-9]+)").to(ControllerParameters.class).end()
                 .end();
         connector
             .view()
                 .controller(Forwarding.class)
                     .with(Forward.class)
+                    .property("steve")
                     .format("/forwarded")
                     .end()
                 .end();

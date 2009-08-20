@@ -37,9 +37,10 @@ public class Criteria {
                     ? (String)request.getAttribute("javax.servlet.include.request_uri")
                     : request.getRequestURI();
         this.contextPath =
-            isInclude
-                ? (String) request.getAttribute("javax.servlet.include.context_path")
-                : request.getContextPath();
+            cleanContextPath(
+                isInclude
+                    ? (String) request.getAttribute("javax.servlet.include.context_path")
+                    : request.getContextPath());
         this.servletPath =
             isInclude
                 ? (String) request.getAttribute("javax.servlet.include.servlet_path")
@@ -52,6 +53,19 @@ public class Criteria {
             isInclude
                 ? (String) request.getAttribute("javax.servlet.include.query_string")
                 : request.getQueryString();
+    }
+
+    /**
+     * During include, Jetty changes the context path into a single slash, when
+     * it is an empty string during request or forward. This method removes a
+     * trailing slash in any case.
+     * 
+     * @param contextPath
+     *            The context path.
+     * @return The context path less any trailing slash.
+     */
+    private static String cleanContextPath(String contextPath) { 
+        return contextPath.endsWith("/") ? contextPath.substring(0, contextPath.length() - 1) : contextPath;
     }
 
     /**
@@ -121,12 +135,7 @@ public class Criteria {
      * @return The path use to match against routes.
      */
     public String getPath() {
-        String path = getRequestURI();
-        String contextPath = getContextPath();
-        if (contextPath != null) {
-            path = path.substring(contextPath.length());
-        }
-        return path;
+        return getRequestURI().substring(getContextPath().length());
     }
     
     /**

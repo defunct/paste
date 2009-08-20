@@ -44,10 +44,8 @@ public class ControllerParametersProvider implements Provider<Parameters> {
     public Parameters get() {
         List<NamedValue> parameters = new ArrayList<NamedValue>();
         for (Map.Entry<String, String> entry : controllerMappings.entrySet()) {
-            parameters.add(new NamedValue(NamedValue.CONTROLLER,
-                    entry.getKey(), entry.getValue()));
+            parameters.add(new NamedValue(NamedValue.CONTROLLER, entry.getKey(), entry.getValue()));
         }
-
         for (NamedValue namedValue : filterParameters) {
             parameters.add(namedValue);
         }

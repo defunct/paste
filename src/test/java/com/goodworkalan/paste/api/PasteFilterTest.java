@@ -75,9 +75,33 @@ public class PasteFilterTest {
     public void testForward() throws Exception {
         URL url = new URL("http://localhost:8086/forwarding");
         List<String> lines = slurp(url.openStream());
-        assertEquals(lines.size(), 2);
+        assertEquals(lines.size(), 3);
         assertEquals(lines.get(0), "/forwarding");
         assertEquals(lines.get(1), "/forwarded");
+        assertEquals(lines.get(2), "true");
+    }
+    
+    @Test
+    public void testControllerParameters() throws Exception {
+        URL url = new URL("http://localhost:8086/controller/parameters/3?a=1&b=2");
+        List<String> lines = slurp(url.openStream());
+        assertEquals(lines.size(), 3);
+        assertEquals(lines.get(0), "1");
+        assertEquals(lines.get(1), "2");
+        assertEquals(lines.get(2), "3");
+    }
+    
+    
+    @Test
+    public void testInclude() throws Exception {
+        URL url = new URL("http://localhost:8086/including");
+        List<String> lines = slurp(url.openStream());
+        assertEquals(lines.size(), 5);
+        assertEquals(lines.get(0), "");
+        assertEquals(lines.get(1), "/included");
+        assertEquals(lines.get(2), "/included");
+        assertEquals(lines.get(3), "null");
+        assertEquals(lines.get(4), "");
     }
     
     @AfterTest
