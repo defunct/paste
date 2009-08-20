@@ -22,7 +22,7 @@ public class RuleConnector<T> {
      * A terminal language element that will return a language element that can
      * either specify more rule sets or termiante the path statement.
      */
-    private final NextRuleConnector<T> nextRuleConnector;
+    private final WhenClause<T> nextRuleConnector;
 
     /** The builder of map of rule sets to priority and controller class pairs. */
     protected final RuleMapBuilder<Pair<Integer, Class<?>>> rules;
@@ -89,11 +89,11 @@ public class RuleConnector<T> {
      *         that can either specify more rule sets or termiante the path
      *         statement.
      */
-    public Ending<NextRuleConnector<T>> to(Class<?> controller) {
+    public Ending<WhenClause<T>> to(Class<?> controller) {
         if (!controllerToGlob.containsKey(controller)) {
             controllerToGlob.put(controller, glob);
         }
         rule.put(new Pair<Integer, Class<?>>(priority, controller));
-        return new Ending<NextRuleConnector<T>>(nextRuleConnector);
+        return new Ending<WhenClause<T>>(nextRuleConnector);
     }
 }

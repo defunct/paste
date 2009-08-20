@@ -31,7 +31,7 @@ package com.goodworkalan.paste;
  * 
  * @author Alan Gutierrez
  */
-public interface NextRuleConnector<T> {
+public interface WhenClause<T> {
     /**
      * Create a new set of rules rules based on on request properties other than
      * the path.
