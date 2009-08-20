@@ -25,7 +25,7 @@ public class BinderTest
     public void anyController()
     {
         CoreConnector connector = new CoreConnector();
-        connector.view().with(Forward.class);
+        connector.render().with(Forward.class);
         RuleMap<Pair<Integer, RenderModule>> bindings = connector.getViewRules();
         List<Pair<Integer, RenderModule>> found = bindings.test().get();
         assertEquals(found.size(), 1);
@@ -43,7 +43,7 @@ public class BinderTest
     {
         CoreConnector connector = new CoreConnector();
         connector
-            .view()
+            .render()
             .controller(Date.class).controller(String.class)
             .with(Forward.class);
         RuleMap<Pair<Integer, RenderModule>> bindings = connector.getViewRules();

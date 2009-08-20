@@ -20,7 +20,7 @@ public class TestRouter implements Router {
                     .end()
                 .end();
         connector
-            .view()
+            .render()
                 .controller(Forwarding.class)
                 .with(Forward.class)
                 .property("steve")

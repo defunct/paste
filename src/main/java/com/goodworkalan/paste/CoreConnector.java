@@ -67,7 +67,7 @@ public class CoreConnector implements Connector
      * 
      * @return A domain-specific language used to define the renderer.
      */
-    public RenderStatement view() {
+    public RenderStatement render() {
         return new RenderStatement(this, viewRules);
     }
 
