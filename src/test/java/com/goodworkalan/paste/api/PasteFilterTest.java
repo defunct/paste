@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,26 @@ public class PasteFilterTest {
         assertEquals(lines.get(2), "/included");
         assertEquals(lines.get(3), "null");
         assertEquals(lines.get(4), "");
+    }
+    
+    @Test
+    public void testJanitorSession() throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8086/janitor/filter").openConnection();
+        slurp(connection.getInputStream());
+        String cookie = connection.getHeaderField("Set-Cookie").split(";")[0];
+        connection = (HttpURLConnection) new URL("http://localhost:8086/janitor/session").openConnection();
+        connection.setRequestProperty("Cookie", cookie);
+        List<String> lines = slurp(connection.getInputStream());
+        assertEquals(lines.size(), 1);
+        assertEquals(lines.get(0), "filter");
+        connection = (HttpURLConnection) new URL("http://localhost:8086/janitor/request").openConnection();
+        connection.setRequestProperty("Cookie", cookie);
+        slurp(connection.getInputStream());
+        connection = (HttpURLConnection) new URL("http://localhost:8086/janitor/session").openConnection();
+        connection.setRequestProperty("Cookie", cookie);
+        lines = slurp(connection.getInputStream());
+        assertEquals(lines.size(), 1);
+        assertEquals(lines.get(0), "request");
     }
     
     @AfterTest

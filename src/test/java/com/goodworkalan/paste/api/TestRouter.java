@@ -13,6 +13,11 @@ public class TestRouter implements Router {
                 .path("/including").to(Including.class).end()
                 .path("/included").to(Included.class).end()
                 .path("/controller/parameters/(c [0-9]+)").to(ControllerParameters.class).end()
+                .path("/janitor")
+                    .path("/filter").to(JanitorFilter.class).end()
+                    .path("/request").to(JanitorRequest.class).end()
+                    .path("/session").to(JanitorSession.class).end()
+                    .end()
                 .end();
         connector
             .view()

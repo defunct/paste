@@ -79,7 +79,6 @@ class PasteModule extends AbstractModule {
             .toProvider(RequestJanitorQueueProvider.class)
             .in(RequestScoped.class);
         bind(JanitorQueue.class)
-            .annotatedWith(Filter.class)
             .toProvider(FilterJanitorQueueProvider.class)
             .in(FilterScoped.class);
         
