@@ -27,8 +27,10 @@ import com.goodworkalan.paste.util.NamedValueList;
  * 
  */
 public class InterceptingResponse extends HttpServletResponseWrapper implements Response {
+    /** A thread local date formatter. */
     private final static ThreadLocal<DateFormat> format = new ThreadLocal<DateFormat>();
     
+    /** The list of headers. */
     private final List<NamedValue> headers;
 
     /** The intercept flag. */
@@ -37,15 +39,6 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
     /** The response status code. */
     private int status;
     
-    /** A lazily initialized intercepting wrapper around the response writer. */
-    private PrintWriter writer;
-
-    /**
-     * A lazily initialized intercepting wrapper around the response output
-     * stream.
-     */
-    private ServletOutputStream out;
-
     /**
      * Create an intercepting output stream that wraps the given response and
      * flips the given incerception flag if any meaningful response is sent.
@@ -60,7 +53,12 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
         this.headers = new ArrayList<NamedValue>();
         this.interception = interception;
     }
-    
+
+    /**
+     * Get the thread local date formatter or create it if it does not exist.
+     * 
+     * @return The thread local date formatter.
+     */
     private static DateFormat getDateFormat() {
         DateFormat dateFormat = format.get();
         if (dateFormat == null) {
@@ -71,34 +69,27 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
     }
 
     /**
-     * Get an output stream suitable for writing binary data to the response
-     * that will flip the intercept flag the moment any data is written.
+     * Get an output stream suitable for writing binary data and flip the
+     * intercept flag.
      * 
      * @return An output stream suitable for writing binary data to the
      *         response.
      */
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        // FIXME Delete this and just mark intercepted. Less to maintain and test.
-        if (out == null) {
-            out = new InterceptingOutputStream(interception, super.getOutputStream());
-        }
-        return out;
+        interception.intercept();
+        return super.getOutputStream();
     }
 
     /**
-     * Get a writer that can write character data to the response that will flip
-     * the intercept flag the moment any data is written.
+     * Get a writer that can write character data and flip the intercept flag.
      * 
      * @return A writer that can write character data to the response.
      */
     @Override
     public PrintWriter getWriter() throws IOException {
-        // FIXME Delete this and just mark intercepted. Less to maintain and test.
-        if (writer == null) {
-            writer = new PrintWriter(new InterceptingWriter(interception, super.getWriter()));
-        }
-        return writer;
+        interception.intercept();
+        return super.getWriter();
     }
 
     /**
