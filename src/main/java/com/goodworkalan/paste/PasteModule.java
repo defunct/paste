@@ -132,6 +132,9 @@ class PasteModule extends AbstractModule {
         bind(ServletResponse.class)
             .toProvider(HttpServletResponseProvider.class)
             .in(FilterScoped.class);
+        bind(Response.class)
+            .toProvider(ResponseProvider.class)
+            .in(FilterScoped.class);
 
         bind(Criteria.class)
             .annotatedWith(Request.class)

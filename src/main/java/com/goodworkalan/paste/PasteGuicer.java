@@ -193,8 +193,8 @@ public class PasteGuicer {
      * @throws ServletException
      *             For any other exception.
      */
-    private void filter(HttpServletRequest request,
-                        HttpServletResponse response,
+    private void filter(InterceptingRequest request,
+                        InterceptingResponse response,
                         Interception interception,
                         FilterChain chain)
     throws IOException, ServletException {

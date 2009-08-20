@@ -6,9 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.goodworkalan.paste.intercept.InterceptingRequest;
+import com.goodworkalan.paste.intercept.InterceptingResponse;
 import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.Parameters;
@@ -19,15 +18,15 @@ import com.google.inject.Key;
  *
  * @author Alan Gutierrez
  */
-public class Filtration {
+class Filtration {
     /** The paths and query string for this invocation of the Paste filter. */
     private final Criteria criteria;
     
     /** The servlet request. */
-    private final HttpServletRequest request;
+    private final InterceptingRequest request;
     
     /** The servlet response. */
-    private final HttpServletResponse response;
+    private final InterceptingResponse response;
     
     /** The map that backs the filter scope. */
     private final Map<Key<?>, Object> filterScope;
@@ -53,7 +52,7 @@ public class Filtration {
      * @param response
      *            The servlet response.
      */
-    public Filtration(HttpServletRequest request, HttpServletResponse response) {
+    public Filtration(InterceptingRequest request, InterceptingResponse response) {
         this.criteria = new Criteria(request);
         this.request = request;
         this.response = response;
@@ -77,7 +76,7 @@ public class Filtration {
      * 
      * @return The servlet request.
      */
-    public HttpServletRequest getRequest() {
+    public InterceptingRequest getRequest() {
         return request;
     }
     
@@ -86,7 +85,7 @@ public class Filtration {
      * 
      * @return The response.
      */
-    public HttpServletResponse getResponse() {
+    public InterceptingResponse getResponse() {
         return response;
     }
     
