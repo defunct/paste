@@ -14,8 +14,7 @@ import com.goodworkalan.paste.util.NamedValue.Context;
  * 
  * @author Alan Gutierrez
  */
-public class Parameters extends NamedValueList
-{
+public class Parameters extends NamedValueList {
     /**
      * Create a list of parameters as wrapper around the given list of named
      * values.
@@ -23,8 +22,7 @@ public class Parameters extends NamedValueList
      * @param namedValues
      *            The list of name values to copy.
      */
-    public Parameters(List<NamedValue> namedValues)
-    {
+    public Parameters(List<NamedValue> namedValues) {
         super(namedValues);
     }
 
