@@ -114,7 +114,7 @@ public class PathStatement<T> implements FilterClause<T> {
      * @return A filter clause to continue to specify match filters or to
      *         specify rules.
      */
-    public FilterClause<T> filtered(MatchTest matchTest) {
+    public FilterClause<T> filter(MatchTest matchTest) {
         for (GlobCompiler compiler : compilers) {
             compiler.test(matchTest);
         }
