@@ -10,36 +10,46 @@ import javax.servlet.ServletException;
 
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.Responder;
 import com.goodworkalan.paste.Response;
 import com.goodworkalan.paste.paths.PathFormatter;
 import com.google.inject.Inject;
 
-// TODO Document.
-public class RedirectRenderer implements Renderer
-{
-    // TODO Document.
+/**
+ * Render a redirect by sending a redirect status code and headers to the client.
+ *
+ * @author Alan Gutierrez
+ */
+public class RedirectRenderer implements Renderer {
+    /** The path formatter used to create the redirection path. */
     private final PathFormatter pathFormatter;
-    
-    // TODO Document.
+
+    /** The redirector service. */
     private final Redirector redirector;
 
-    // TODO Document.
+    /** The alternative HTTP response. */
     private final Response response;
 
-    // TODO Document.
+    /** The redirect renderer configuration. */
     private final Configuration configuration;
-    
-    // TODO Document.
-    private final Responder responder;
-    
-    // TODO Document.
+
+    /**
+     * Create a redirect renderer with the given path formatter, the given
+     * response service, the given redirection service and the given redirect
+     * renderer configuration.
+     * 
+     * @param pathFormatter
+     *            The path formatter used to create the redirection path.
+     * @param response
+     *            The alternative HTTP response service.
+     * @param redirector
+     *            The redirector service.
+     * @param configuration
+     *            The redirect renderer configuration.
+     */
     @Inject
-    public RedirectRenderer(PathFormatter pathFormatter, Response response, Responder responder, Redirector redirector, Configuration configuration)
-    {
+    public RedirectRenderer(PathFormatter pathFormatter, Response response, Redirector redirector, Configuration configuration) {
         this.pathFormatter = pathFormatter;
         this.response = response;
-        this.responder = responder;
         this.redirector = redirector;
         this.configuration = configuration;
     }
@@ -47,40 +57,26 @@ public class RedirectRenderer implements Renderer
     /**
      * Write a redirection header and body to the HTTP response.
      */
-    public void render() throws ServletException, IOException
-    {
-        if (configuration.getFormat() != null)
-        {
+    public void render() throws ServletException, IOException {
+        if (configuration.getFormat() != null) {
             String path = pathFormatter.format(configuration.getFormat(), configuration.getFormatArguments());
             redirector.redirect(path, configuration.getStatus());
         }
-        
-        if (!Redirects.isRedirectStatus(response.getStatus()))
-        {
+
+        if (!Redirects.isRedirectStatus(response.getStatus())) {
             throw new PasteException(0);
-        }
-        else if (response.getHeaders().getFirst("Location") == null)
-        {
+        } else if (response.getHeaders().getFirst("Location") == null) {
             throw new PasteException(0);
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 new URI(response.getHeaders().getFirst("Location"));
-            }
-            catch (URISyntaxException e)
-            {
+            } catch (URISyntaxException e) {
                 throw new PasteException(0, e);
             }
         }
-        
-        responder.send(response);
- 
-        String page = 
-            String.format(getPageFormat(),
-                          response.getStatus(), response.getHeaders().getFirst("Location"));
-        responder.getWriter().append(page);
+
+        String page = String.format(getPageFormat(), response.getStatus(), response.getHeaders().getFirst("Location"));
+        response.getWriter().append(page);
     }
 
     /**
@@ -90,14 +86,13 @@ public class RedirectRenderer implements Renderer
      * @throws IOException
      *             If an I/O error occurs.
      */
-    private String getPageFormat() throws IOException
-    {
-        Reader reader = new InputStreamReader(RedirectRenderer.class.getResourceAsStream("redirect.html"));
+    private String getPageFormat() throws IOException {
+        Reader reader = new InputStreamReader(RedirectRenderer.class
+                .getResourceAsStream("redirect.html"));
         StringBuilder newString = new StringBuilder();
         char[] buffer = new char[2048];
         int read;
-        while ((read = reader.read(buffer)) != -1)
-        {
+        while ((read = reader.read(buffer)) != -1) {
             newString.append(buffer, 0, read);
         }
         return newString.toString();

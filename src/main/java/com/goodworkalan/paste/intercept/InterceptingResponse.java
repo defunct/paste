@@ -55,6 +55,32 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
     }
 
     /**
+     * Sets the length of the content body in the response, setting the
+     * <code>Content-Length</code> header.
+     * 
+     * @param len
+     *            The length of the content being returned to the client.
+     */
+    @Override
+    public void setContentLength(int len) {
+        headers.add(new NamedValue(NamedValue.RESPONSE, "Content-Length", Integer.toString(len)));
+        super.setContentLength(len);
+    }
+
+    /**
+     * Sets the content type of the response being sent to the client, if the
+     * response has not been committed yet.
+     * 
+     * @param type
+     *            The content type.
+     */
+    @Override
+    public void setContentType(String type) {
+        headers.add(new NamedValue(NamedValue.RESPONSE, "Content-Type", type));
+        super.setContentType(type);
+    }
+
+    /**
      * Get the thread local date formatter or create it if it does not exist.
      * 
      * @return The thread local date formatter.

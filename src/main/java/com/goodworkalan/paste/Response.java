@@ -1,5 +1,10 @@
 package com.goodworkalan.paste;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletOutputStream;
+
 import com.goodworkalan.paste.util.NamedValueList;
 
 /**
@@ -101,4 +106,20 @@ public interface Response {
      *            The value.
      */
     public void addHeader(String name, String value);
+    
+    /**
+     * Get a writer that can write character data and flip the intercept flag.
+     * 
+     * @return A writer that can write character data to the response.
+     */
+    public PrintWriter getWriter() throws IOException;
+    
+    /**
+     * Get an output stream suitable for writing binary data and flip the
+     * intercept flag.
+     * 
+     * @return An output stream suitable for writing binary data to the
+     *         response.
+     */
+    public ServletOutputStream getOutputStream() throws IOException;
 }
