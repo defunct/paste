@@ -8,8 +8,7 @@ import com.google.inject.Inject;
  * 
  * @author Alan Gutierrez
  */
-// FIXME Rename PathFull.
-public class FullPath {
+public class PathFull {
     /** The full path of the request URI. */
     private final String argument;
     
@@ -21,7 +20,7 @@ public class FullPath {
      *            The criteria.
      */
     @Inject
-    public FullPath(Criteria criteria) {
+    public PathFull(Criteria criteria) {
         this.argument = criteria.getPath();
     }
 
