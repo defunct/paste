@@ -302,12 +302,14 @@ public class PasteGuicer {
                         filtration.getControllerScope().put(Key.get(Object.class, Controller.class), controller);
                     } catch (ProvisionException e) {
                         if (e.getCause() != null) {
+                            // FIXME Test this branch.
                             // If the controller threw an exception, we'll try to
                             // render it.
                             throwable = e.getCause();
+                        } else {
+                            // Otherwise, this is a big, bad server error.
+                            throw e;
                         }
-                        // Otherwise, this is a big, bad server error.
-                        throw e;
                     }
     
                     if (throwable != null) {
@@ -349,7 +351,7 @@ public class PasteGuicer {
                     .put(BindKey.CONTROLLER_CLASS, controller)
                     .put(BindKey.PATH, criteria.getPath())
                     .put(BindKey.STATUS, injector.getInstance(Response.class).getStatus())
-                    .put(BindKey.EXCEPTION_CLASS, throwable != null ? throwable.getClass() : null)
+                    .put(BindKey.EXCEPTION_CLASS, throwable)
                     .put(BindKey.METHOD, filtration.getRequest().getMethod())
                     .get();
 
