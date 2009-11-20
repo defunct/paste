@@ -6,7 +6,6 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.Request;
 import com.google.inject.Inject;
 
 /**
@@ -25,7 +24,7 @@ public class Redirector
     
     // TODO Document.
     @Inject
-    public Redirector(@Request HttpServletRequest request, HttpServletResponse response)
+    public Redirector(HttpServletRequest request, HttpServletResponse response)
     {
         this.request = request;
         this.response = response;
