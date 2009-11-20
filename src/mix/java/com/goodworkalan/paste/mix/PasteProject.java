@@ -10,7 +10,7 @@ public class PasteProject extends ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces(new Artifact("com.goodworkalan", "paste", "0.1"))
+                .produces(new Artifact("com.goodworkalan", "paste", "0.2"))
                 .main()
                     .depends()
                         .artifact(new Artifact("org.slf4j", "slf4j-api", "1.4.2"))
