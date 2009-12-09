@@ -1,12 +1,12 @@
-GUICELET
+PASTE
 
 A MVC web framework that uses Google Guice for constructor depenency
 injection of controllers, faciliating reuse by carefully separating URL
 binding from depenency injected controllers from views.
 
-    Wish and Discuss: http://alan.uservoice.com/pages/guicelet
-    Issues and Tasks: http://curlybraces.org/trac/guicelet
-    Source: http://github.com/bigeasy/guicelet/tree/master
+    Wish and Discuss: http://alan.uservoice.com/pages/7805-paste
+    Issues and Tasks: http://github.com/bigeasy/paste/issues
+    Source: http://github.com/bigeasy/paste/tree/master
 
     Contact: alan@blogometer.com
 
@@ -26,7 +26,7 @@ MOTIVATION
 
 DESIGN OBJECTIVES
 
-GuiceletFilter must:
+Paste must:
 
 - Be a team player in any Servlet environment.
 - Provide constructor injection of services into controllers.
