@@ -62,7 +62,7 @@ public class Start {
             "org.eclipse.jetty.plus.webapp.EnvConfiguration",
             "org.eclipse.jetty.plus.webapp.Configuration"
         });
-
+        
         server.setHandler(webAppContext);
 
         webAppContext.getWebInf();

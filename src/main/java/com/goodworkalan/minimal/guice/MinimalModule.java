@@ -9,6 +9,7 @@ import com.goodworkalan.infuse.guice.GuiceFactory;
 import com.goodworkalan.minimal.persistence.EntityFactoryProvider;
 import com.goodworkalan.minimal.persistence.EntityManagerFactoryProvider;
 import com.goodworkalan.minimal.persistence.EntityManagerProvider;
+import com.goodworkalan.paste.ApplicationScoped;
 import com.goodworkalan.paste.RequestScoped;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
@@ -24,7 +25,7 @@ public class MinimalModule extends AbstractModule {
      */
     @Override
     protected void configure() {
-        bind(EntityManagerFactory.class).toProvider(EntityManagerFactoryProvider.class).asEagerSingleton();
+        bind(EntityManagerFactory.class).toProvider(EntityManagerFactoryProvider.class).in(ApplicationScoped.class);
         bind(EntityManager.class).toProvider(EntityManagerProvider.class).in(RequestScoped.class);
         Multibinder<ObjectFactory> factories = Multibinder.newSetBinder(binder(), ObjectFactory.class);
         factories.addBinding().toProvider(EntityFactoryProvider.class);

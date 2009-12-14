@@ -3,7 +3,7 @@ package com.goodworkalan.minimal.persistence;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.goodworkalan.paste.Servlet;
+import com.goodworkalan.paste.Application;
 import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.google.inject.Inject;
@@ -27,7 +27,7 @@ public class EntityManagerFactoryProvider implements Provider<EntityManagerFacto
      *            The Servlet scoped janitor queue.
      */
     @Inject
-    public EntityManagerFactoryProvider(@Servlet JanitorQueue janitors) {
+    public EntityManagerFactoryProvider(@Application JanitorQueue janitors) {
         this.janitors = janitors;
     }
 

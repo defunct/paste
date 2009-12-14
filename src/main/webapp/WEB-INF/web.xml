@@ -30,10 +30,6 @@
         <env-entry-type>java.lang.Boolean</env-entry-type>
     </env-entry>
 	
-	<listener>
-        <listener-class>com.goodworkalan.minimal.servlet.MinimalServletContextListener</listener-class>
-    </listener>
-
     <filter>
         <filter-name>PasteFilter</filter-name>
         <filter-class>com.goodworkalan.paste.PasteFilter</filter-class>
