@@ -82,6 +82,24 @@ public class Scopes {
         }
     };
     
+    public final static Scope REACTION = new Scope() {
+        public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
+            return new Provider<T>() {
+                public T get() {
+                    Map<Key<?>, Object> map = PasteGuicer.getRequestFiltration().getFilterScope();
+
+                    @SuppressWarnings("unchecked")
+                    T t = (T) map.get(key);
+                    if (t == null) {
+                        t = unscoped.get();
+                        map.put(key, t);
+                    }
+                    return t;
+                }
+            };
+        }
+    };
+    
     public final static Scope FILTER = new Scope() {
         public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
             return new Provider<T>() {

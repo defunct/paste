@@ -2,9 +2,12 @@ package com.goodworkalan.paste;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
@@ -23,6 +26,7 @@ import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.redirect.Redirection;
 import com.goodworkalan.paste.redirect.Redirector;
 import com.goodworkalan.paste.stop.Abnormality;
+import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -65,11 +69,17 @@ public class PasteGuicer {
     private final RuleMap<Pair<Integer, RenderModule>> viewRuleMap;
 
     /** The list of janitors to run when the filter is shutdown. */
-    private final List<Janitor> janitors;
+    private final LinkedBlockingQueue<Janitor> janitors = new LinkedBlockingQueue<Janitor>();
 
     /** A stack of filter invocations. */
     private static final ThreadLocal<LinkedList<Filtration>> filtrations = new ThreadLocal<LinkedList<Filtration>>();
+    
+    /** The application scope map. */
+    private final Map<Key<?>, Object> applicationScope = new HashMap<Key<?>, Object>();
 
+    /** The map of annotations to controllers. */
+    private final Map<Class<?>, List<Class<?>>> reactions;
+    
     /**
      * Create a Paste guicer from using the given filter servlet context and the
      * given Paste filter initialization parameters.
@@ -109,14 +119,16 @@ public class PasteGuicer {
             router.connect(connector);
         }
         
-        List<Janitor> janitors = new ArrayList<Janitor>();
-        
-        modules.add(new PasteModule(servletContext, connector.getRoutes(), initialization, janitors));
+        modules.add(new PasteModule(servletContext, applicationScope, connector.getRoutes(), initialization, janitors, new Reactor() {
+            public <T> void react(T object) {
+                PasteGuicer.this.react(object);
+            }
+        }));
 
         this.injector = Guice.createInjector(modules);
-        this.janitors = janitors;
         this.controllerBindings = connector.getBindingTrees();
         this.viewRuleMap = connector.getViewRules();
+        this.reactions = connector.getReactions();
     }
 
     /**
@@ -135,6 +147,38 @@ public class PasteGuicer {
      */
     static Filtration getFilterFiltration() {
         return getFiltrations().getLast();
+    }
+    
+    public void start() {
+        react(new Startup());
+    }
+    
+    private <T> void react(final T object) {
+        Injector childInjector = injector.createChildInjector(new Module() {
+            @SuppressWarnings("unchecked")
+            public void configure(Binder binder) {
+                binder.bind((Class<T>) object.getClass())
+                      .annotatedWith(Reaction.class)
+                      .toInstance(object);
+            }
+        });
+        LinkedList<Filtration> filtrations = getFiltrations();
+        for (Filtration filtration : filtrations) { 
+            filtration.setSubsequent();
+        }
+        Filtration filtration = new Filtration(null, null);
+        filtrations.addLast(filtration);
+        try {
+            for (Class<?> reaction : reactions.get(object.getClass())) {
+                Object child = childInjector.getInstance(reaction);
+                if (child instanceof Runnable) {
+                    ((Runnable) child).run();
+                }
+            }
+        } finally {
+            filtrations.removeLast();
+            cleanUp(filtration.getJanitors());
+        }
     }
 
     /**
@@ -397,9 +441,9 @@ public class PasteGuicer {
      * Invoke the clean up method on each janitor in the given list of janitors.
      * 
      * @param janitors
-     *            The list of janitors that will clean up.
+     *            The collection of janitors to clean up.
      */
-    private void cleanUp(List<Janitor> janitors) {
+    private void cleanUp(Collection<Janitor> janitors) {
         for (Janitor janitor : janitors) {
             try {
                 janitor.cleanUp();

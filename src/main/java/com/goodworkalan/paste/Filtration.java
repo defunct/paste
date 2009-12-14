@@ -53,7 +53,7 @@ class Filtration {
      *            The servlet response.
      */
     public Filtration(InterceptingRequest request, InterceptingResponse response) {
-        this.criteria = new Criteria(request);
+        this.criteria = request == null ? null : new Criteria(request);
         this.request = request;
         this.response = response;
         this.filterScope = new HashMap<Key<?>, Object>();

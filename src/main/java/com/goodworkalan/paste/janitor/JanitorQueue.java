@@ -1,25 +1,19 @@
 package com.goodworkalan.paste.janitor;
 
-import java.util.List;
+import java.util.Collection;
 
 // TODO Document.
-public class JanitorQueue
-{
+public class JanitorQueue {
     // TODO Document.
-    private final List<Janitor> listOfJanitors;
+    private final Collection<Janitor> janitors;
 
     // TODO Document.
-    public JanitorQueue(List<Janitor> listOfJanitors)
-    {
-        this.listOfJanitors = listOfJanitors;
+    public JanitorQueue(Collection<Janitor> janitors) {
+        this.janitors = janitors;
     }
-    
+
     // TODO Document.
-    public void add(Janitor janitor)
-    {
-        synchronized (listOfJanitors)
-        {
-            listOfJanitors.add(janitor);
-        }
+    public void add(Janitor janitor) {
+        janitors.add(janitor);
     }
 }

@@ -8,6 +8,8 @@ package com.goodworkalan.paste;
  */
 public interface Connector
 {
+    public ReactStatement react();
+    
     /**
      * Create a new group of connections that will map paths to controller
      * classes. When processing a request, each group of connections is

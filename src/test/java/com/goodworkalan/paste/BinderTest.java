@@ -51,7 +51,7 @@ public class BinderTest
         assertEquals(found.size(), 1);
         assertEquals((int) Tuple.get1(found.get(0)), 0);
         assertTrue(Tuple.get2(found.get(0)) instanceof Forward);
-        found =  bindings.test().put(BindKey.CONTROLLER_CLASS, (Integer) 1).get();
+        found =  bindings.test().put(BindKey.CONTROLLER_CLASS, 1).get();
         assertEquals(found.size(), 0);
     }
 }

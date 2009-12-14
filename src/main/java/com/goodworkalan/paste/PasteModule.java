@@ -1,6 +1,6 @@
 package com.goodworkalan.paste;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -14,6 +14,7 @@ import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.AbstractModule;
+import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
 /**
@@ -32,25 +33,36 @@ class PasteModule extends AbstractModule {
     private final Map<String, String> initialization;
 
     /** The janitors to run when the filter shuts down. */
-    private final List<Janitor> servletJanitors;
+    private final Collection<Janitor> applicationJanitors;
+    
+    /** The application scope map. */
+    private final Map<Key<?>, Object> applicationScope;
+    
+    private final Reactor reactor;
 
     /**
      * Create a module with the given routes, given filter initialization
      * parameters, and the given list of janitors to run when the filter shuts
      * down.
      * 
+     * @param servletContext
+     *            The Servlet context.
+     * @param applicationScope
+     *            The application scope map.
      * @param routes
      *            The routes defined for the filter.
      * @param initialization
-     * @param servletJanitors
+     *            The filter initialization parameters.
+     * @param applicationJanitors
      *            The janitors to run when the filter shuts down.
      */
-    public PasteModule(ServletContext servletContext, Routes routes,
-            Map<String, String> initialization, List<Janitor> servletJanitors) {
+    public PasteModule(ServletContext servletContext, Map<Key<?>, Object> applicationScope, Routes routes, Map<String, String> initialization, Collection<Janitor> applicationJanitors, Reactor reactor) {
+        this.applicationScope = applicationScope;
         this.servletContext = servletContext;
         this.routes = routes;
         this.initialization = initialization;
-        this.servletJanitors = servletJanitors;
+        this.applicationJanitors = applicationJanitors;
+        this.reactor = reactor;
     }
 
     /**
@@ -59,11 +71,14 @@ class PasteModule extends AbstractModule {
     @Override
     protected void configure()
     {
+        bindScope(ApplicationScoped.class, new ApplicationScope(applicationScope));
         bindScope(SessionScoped.class, Scopes.SESSION);
         bindScope(RequestScoped.class, Scopes.REQUEST);
+        bindScope(ReactionScoped.class, Scopes.REACTION);
         bindScope(FilterScoped.class, Scopes.FILTER);
         bindScope(ControllerScoped.class, Scopes.CONTROLLER);
         
+        bind(Reactor.class).toInstance(reactor);
         bind(new TypeLiteral<Map<String, String>>() {})
             .annotatedWith(InitializationParameters.class)
             .toInstance(initialization);
@@ -72,8 +87,8 @@ class PasteModule extends AbstractModule {
             .toProvider(new ServletContextProvider(servletContext));
         
         bind(JanitorQueue.class)
-            .annotatedWith(Servlet.class)
-            .toInstance(new JanitorQueue(servletJanitors));
+            .annotatedWith(Application.class)
+            .toInstance(new JanitorQueue(applicationJanitors));
         bind(JanitorQueue.class)
             .annotatedWith(Request.class)
             .toProvider(RequestJanitorQueueProvider.class)

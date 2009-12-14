@@ -33,13 +33,21 @@ public class CoreConnector implements Connector
     /** A rule map to match a controller or exception to a renderer. */
     private final RuleMapBuilder<Pair<Integer, RenderModule>> viewRules;
     
+    /** The map of annotations to controllers. */
+    private final Map<Class<?>, List<Class<?>>> reactions;
+
     /**
      * Create a default connector.
      */
     public CoreConnector() {
+        this.reactions = new HashMap<Class<?>, List<Class<?>>>();
         this.controllerToGlob = new HashMap<Class<?>, Glob>();
         this.connections = new ArrayList<List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>>>();
         this.viewRules = new RuleMapBuilder<Pair<Integer, RenderModule>>();
+    }
+
+    public ReactStatement react() {
+        return new ReactStatement(this, reactions);
     }
 
     /**
@@ -79,6 +87,10 @@ public class CoreConnector implements Connector
      */
     public Routes getRoutes() {
         return new Routes(controllerToGlob);
+    }
+    
+    public Map<Class<?>, List<Class<?>>> getReactions() {
+        return reactions;
     }
 
     /**
