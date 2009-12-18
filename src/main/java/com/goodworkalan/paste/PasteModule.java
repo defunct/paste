@@ -1,5 +1,6 @@
 package com.goodworkalan.paste;
 
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
@@ -160,6 +161,10 @@ class PasteModule extends AbstractModule {
             .toProvider(ControllerParametersProvider.class)
             .in(ControllerScoped.class);
         
+        bind(Writer.class)
+            .annotatedWith(Request.class)
+            .toProvider(ResponseWriterProvider.class)
+            .in(ReactionScoped.class);
         // We cheat here, we don't build these with guice, but seed them into
         // the controller scope's backing map.
         bind(Object.class)

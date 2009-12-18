@@ -42,7 +42,7 @@ class Filtration {
     
     /** If true, subsequent calls to the filter have been made. */
     private boolean subsequent;
-
+    
     /**
      * Create a new filtration structure with the given servlet request and the
      * given servlet response.

@@ -32,7 +32,7 @@ public class Scopes {
             final String name = key.toString();
             return new Provider<T>() {
                 public T get() {
-                    HttpSession session = PasteGuicer.getRequestFiltration().getRequest().getSession();
+                    HttpSession session = PasteGuicer.getReactionFiltration().getRequest().getSession();
 
                     @SuppressWarnings("unchecked")
                     T t = (T) session.getAttribute(name);
@@ -68,7 +68,7 @@ public class Scopes {
             final String name = key.toString();
             return new Provider<T>() {
                 public T get() {
-                    HttpServletRequest request = PasteGuicer.getRequestFiltration().getRequest();
+                    HttpServletRequest request = PasteGuicer.getReactionFiltration().getRequest();
 
                     @SuppressWarnings("unchecked")
                     T t = (T) request.getAttribute(name);
@@ -86,7 +86,7 @@ public class Scopes {
         public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
             return new Provider<T>() {
                 public T get() {
-                    Map<Key<?>, Object> map = PasteGuicer.getRequestFiltration().getFilterScope();
+                    Map<Key<?>, Object> map = PasteGuicer.getReactionFiltration().getFilterScope();
 
                     @SuppressWarnings("unchecked")
                     T t = (T) map.get(key);

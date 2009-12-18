@@ -136,7 +136,7 @@ public class PasteGuicer {
      * 
      * @return The filtration structure for the root invocation.
      */
-    static Filtration getRequestFiltration() {
+    static Filtration getReactionFiltration() {
         return getFiltrations().getFirst();
     }
 

@@ -15,6 +15,6 @@ public class RequestFiltrationProvider implements Provider<Filtration> {
      *         invocation.
      */
     public Filtration get() {
-        return PasteGuicer.getRequestFiltration();
+        return PasteGuicer.getReactionFiltration();
     }
 }

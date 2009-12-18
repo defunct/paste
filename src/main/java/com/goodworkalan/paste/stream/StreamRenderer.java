@@ -107,12 +107,10 @@ public class StreamRenderer implements Renderer
             Annotation annotation = null;
             for (int j = 0; annotation == null && j < annotations[i].length; j++)
             {
-                if (annotations[i][j].getClass().getAnnotation(BindingAnnotation.class) != null)
-                {
+                if (annotations[i][j].annotationType().getAnnotation(BindingAnnotation.class) != null) {
                     annotation = annotations[i][j];
                 }
             }
-            // FIXME No.
             if (annotation == null)
             {
                 parameters[i] = injector.getInstance(type);
