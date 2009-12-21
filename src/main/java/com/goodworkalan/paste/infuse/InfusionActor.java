@@ -8,6 +8,7 @@ import com.goodworkalan.infuse.PathException;
 import com.goodworkalan.infuse.Tree;
 import com.goodworkalan.paste.Actor;
 import com.goodworkalan.paste.Controller;
+import com.goodworkalan.paste.stop.Abnormality;
 import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.Inject;
 
@@ -64,6 +65,7 @@ public class InfusionActor implements Actor
         }
         catch (PathException e)
         {
+            throw new Abnormality(500, e);
         }
         
         return null;

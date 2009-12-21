@@ -283,7 +283,7 @@ public class PasteGuicer {
 
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
-        for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings) {
+        CONTROLLERS: for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings) {
             // If a controller has written a response, we're done.
             if (interception.isIntercepted()) {
                 break;
@@ -368,7 +368,7 @@ public class PasteGuicer {
                             throwable = injector.getInstance(actor).actUpon(controller);
                             if (throwable != null) {
                                 // Go to rendering.
-                                break;
+                                break CONTROLLERS;
                             }
                         }
                     }
@@ -421,7 +421,7 @@ public class PasteGuicer {
                 // Render output.
                 injector.createChildInjector(renderModule).getInstance(Renderer.class).render();
             } else if (throwable != null) {
-                // No renderer for our excepion, to turn it into a big, bad 500.
+                // No renderer for our exception, to turn it into a big, bad 500.
                 if (throwable instanceof RuntimeException) {
                     throw (RuntimeException) throwable;
                 } else if (throwable instanceof Error) {
