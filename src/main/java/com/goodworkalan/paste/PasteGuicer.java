@@ -169,10 +169,12 @@ public class PasteGuicer {
         Filtration filtration = new Filtration(null, null);
         filtrations.addLast(filtration);
         try {
-            for (Class<?> reaction : reactions.get(object.getClass())) {
-                Object child = childInjector.getInstance(reaction);
-                if (child instanceof Runnable) {
-                    ((Runnable) child).run();
+            if (reactions.containsKey(object.getClass())) {
+                for (Class<?> reaction : reactions.get(object.getClass())) {
+                    Object child = childInjector.getInstance(reaction);
+                    if (child instanceof Runnable) {
+                        ((Runnable) child).run();
+                    }
                 }
             }
         } finally {
