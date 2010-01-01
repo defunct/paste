@@ -15,7 +15,6 @@ import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
 import com.goodworkalan.paste.util.Parameters;
 import com.google.inject.AbstractModule;
-import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
 /**
@@ -36,9 +35,6 @@ class PasteModule extends AbstractModule {
     /** The janitors to run when the filter shuts down. */
     private final Collection<Janitor> applicationJanitors;
     
-    /** The application scope map. */
-    private final Map<Key<?>, Object> applicationScope;
-    
     private final Reactor reactor;
 
     /**
@@ -57,8 +53,7 @@ class PasteModule extends AbstractModule {
      * @param applicationJanitors
      *            The janitors to run when the filter shuts down.
      */
-    public PasteModule(ServletContext servletContext, Map<Key<?>, Object> applicationScope, Routes routes, Map<String, String> initialization, Collection<Janitor> applicationJanitors, Reactor reactor) {
-        this.applicationScope = applicationScope;
+    public PasteModule(ServletContext servletContext, Routes routes, Map<String, String> initialization, Collection<Janitor> applicationJanitors, Reactor reactor) {
         this.servletContext = servletContext;
         this.routes = routes;
         this.initialization = initialization;
@@ -72,7 +67,7 @@ class PasteModule extends AbstractModule {
     @Override
     protected void configure()
     {
-        bindScope(ApplicationScoped.class, new ApplicationScope(applicationScope));
+        bindScope(ApplicationScoped.class, new ApplicationScope());
         bindScope(SessionScoped.class, Scopes.SESSION);
         bindScope(RequestScoped.class, Scopes.REQUEST);
         bindScope(ReactionScoped.class, Scopes.REACTION);

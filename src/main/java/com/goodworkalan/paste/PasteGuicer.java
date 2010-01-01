@@ -3,7 +3,6 @@ package com.goodworkalan.paste;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +73,6 @@ public class PasteGuicer {
     /** A stack of filter invocations. */
     private static final ThreadLocal<LinkedList<Filtration>> filtrations = new ThreadLocal<LinkedList<Filtration>>();
     
-    /** The application scope map. */
-    private final Map<Key<?>, Object> applicationScope = new HashMap<Key<?>, Object>();
-
     /** The map of annotations to controllers. */
     private final Map<Class<?>, List<Class<?>>> reactions;
     
@@ -119,7 +115,7 @@ public class PasteGuicer {
             router.connect(connector);
         }
         
-        modules.add(new PasteModule(servletContext, applicationScope, connector.getRoutes(), initialization, janitors, new Reactor() {
+        modules.add(new PasteModule(servletContext, connector.getRoutes(), initialization, janitors, new Reactor() {
             public <T> void react(T object) {
                 PasteGuicer.this.react(object);
             }
