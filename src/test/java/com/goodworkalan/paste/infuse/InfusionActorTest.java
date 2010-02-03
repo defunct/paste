@@ -15,7 +15,7 @@ import com.goodworkalan.paste.util.Parameters;
 
 public class InfusionActorTest
 {
-    @Test
+    @Test(enabled = false)
     public void constructor()
     {
         List<NamedValue> parameters = new ArrayList<NamedValue>();
