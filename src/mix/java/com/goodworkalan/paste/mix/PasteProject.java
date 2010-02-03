@@ -29,7 +29,6 @@ public class PasteProject extends ProjectModule {
                 .test()
                     .depends()
                         .artifact(new Artifact("org.slf4j/slf4j-log4j12/1.4.2"))
-                        .artifact(new Artifact("log4j/log4j-log4j12/1.4.2"))
                         .artifact(new Artifact("org.eclipse.jetty/jetty-xml/7.0.0.RC3"))
                         .artifact(new Artifact("org.eclipse.jetty/jetty-webapp/7.0.0.RC3"))
                         .artifact(new Artifact("org.eclipse.jetty/jetty-plus/7.0.0.RC3"))
