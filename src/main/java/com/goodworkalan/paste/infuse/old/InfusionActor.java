@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.infuse;
+package com.goodworkalan.paste.infuse.old;
 
 import java.util.Set;
 

@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import com.goodworkalan.infuse.CollectionFactory;
 import com.goodworkalan.infuse.DefaultConstructorFactory;
 import com.goodworkalan.infuse.ObjectFactory;
+import com.goodworkalan.paste.infuse.old.InfusionActor;
 import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.Parameters;
 
