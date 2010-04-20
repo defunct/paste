@@ -14,6 +14,7 @@ public class PasteProject extends ProjectModule {
                 .main()
                     .depends()
                         .artifact(new Artifact("org.slf4j/slf4j-api/1.4.2"))
+                        .artifact(new Artifact("com.goodworkalan/string-beans-url/0.1"))
                         .artifact(new Artifact("com.goodworkalan/infuse/0.1"))
                         .artifact(new Artifact("com.goodworkalan/dovetail/0.7"))
                         .artifact(new Artifact("aopalliance/aopalliance/1.0"))
