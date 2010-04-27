@@ -46,7 +46,7 @@ public class InfusionActor implements Actor {
 
     // FIXME Document.
     public Throwable actUpon(Object controller) {
-        UrlParser parser = new UrlParser(stringer, true);
+        UrlParser parser = new UrlParser(stringer);
         for (StashAssignment<?> assignment : assignments) {
             assignment.assign(injector, parser.getStash());
         }
