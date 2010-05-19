@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
+import javax.inject.Qualifier;
 
 /**
  * Indicates the map of strings to strings that contains the initialization
@@ -17,6 +17,6 @@ import com.google.inject.BindingAnnotation;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.PARAMETER })
-@BindingAnnotation
+@Qualifier
 public @interface InitializationParameters {
 }

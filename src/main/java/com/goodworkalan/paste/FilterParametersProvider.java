@@ -1,8 +1,9 @@
 package com.goodworkalan.paste;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import com.goodworkalan.paste.util.Parameters;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Provide the parameters specific to the current invocation of the paste

@@ -21,5 +21,5 @@ public @interface Actors {
      * 
      * @return The list of actors.
      */
-    Class<? extends Actor>[] value();
+    Class<? extends Runnable>[] value();
 }

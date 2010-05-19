@@ -1,7 +1,8 @@
 package com.goodworkalan.paste.paths;
 
+import javax.inject.Inject;
+
 import com.goodworkalan.paste.Criteria;
-import com.google.inject.Inject;
 
 /**
  * A format argument that returns the full path of the request URI.

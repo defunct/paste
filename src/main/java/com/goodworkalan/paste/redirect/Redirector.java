@@ -3,10 +3,9 @@ import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
 import java.net.URI;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.inject.Inject;
 
 /**
  * Initiate a redircecion.

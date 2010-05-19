@@ -1,6 +1,6 @@
 package com.goodworkalan.paste;
 
-import com.google.inject.Provider;
+import javax.inject.Provider;
 
 /**
  * A dummy provider for properties that are explicitly set into the scope.

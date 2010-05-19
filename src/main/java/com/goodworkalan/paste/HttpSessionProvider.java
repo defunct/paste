@@ -1,10 +1,9 @@
 package com.goodworkalan.paste;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Provide the HTTP session for the duration of a request.

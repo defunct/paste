@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
+import javax.inject.Scope;
 
 /**
  * Indicates that an object can be created by the infusion actor.
@@ -20,6 +20,6 @@ import com.google.inject.BindingAnnotation;
 @Documented
 @Target({ ElementType.PARAMETER, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@BindingAnnotation
+@Scope
 public @interface Infusable {
 }

@@ -1,9 +1,12 @@
 package com.goodworkalan.paste.stream;
 
+import java.util.List;
+
+import com.goodworkalan.ilk.inject.InjectorBuilder;
+import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.Connector;
-import com.goodworkalan.paste.RenderModule;
+import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
-import com.google.inject.Provider;
 
 /**
  * An extension element in the domain-specific language that is used to specify
@@ -12,13 +15,15 @@ import com.google.inject.Provider;
  * 
  * @author Alan Gutierrez
  */
-public class Stream extends RenderModule
-{
-    /** The method name to call or null if we match on mime-type. */
-    private String methodName;
-    
-    /** The mime-type to send. */
-    private String contentType;
+public class Stream {
+    /** The parent builder. */
+    private final Connector connector;
+
+    // TODO Document.
+    private final List<InjectorBuilder> modules;
+
+    // TODO Document.
+    private Configuration configuration = new Configuration();
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -27,26 +32,9 @@ public class Stream extends RenderModule
      * @param end
      *            The connector to return when the render statement is complete.
      */
-    public Stream(Connector end)
-    {
-        super(end);
-    }
-
-    /**
-     * Configure the a Guice child injector to include the properties necessary
-     * to create a {@link Renderer} that will generate an HTTP redirection.
-     */
-    @Override
-    protected void configure()
-    {
-        bind(Renderer.class).to(StreamRenderer.class);
-        bind(Configuration.class).toProvider(new Provider<Configuration>()
-        {
-            public Configuration get()
-            {
-                return new Configuration(methodName, contentType);
-            }
-        });
+    public Stream(Connector connector, List<InjectorBuilder> modules) {
+        this.connector = connector;
+        this.modules = modules;
     }
 
     /**
@@ -58,9 +46,8 @@ public class Stream extends RenderModule
      * @return This domain-specific language extension to continue specifying
      *         redirect properties.
      */
-    public Stream methodName(String methodName)
-    {
-        this.methodName = methodName;
+    public Stream methodName(String methodName) {
+        configuration.methodName = methodName;
         return this;
     }
 
@@ -72,9 +59,21 @@ public class Stream extends RenderModule
      * @return This domain-specific language extension to continue specifying
      *         redirect properties.
      */
-    public Stream contentType(String contentType)
-    {
-        this.contentType = contentType;
+    public Stream contentType(String contentType) {
+        configuration.contentType = contentType;
         return this;
+    }
+
+    public Connector end() {
+        modules.add(new InjectorBuilder() {
+            protected void build() {
+                instance(configuration, ilk(Configuration.class),
+                        Controller.class);
+                implementation(ilk(StreamRenderer.class), ilk(Renderer.class),
+                        null, InjectorScoped.class);
+            }
+        });
+        configuration = null;
+        return connector;
     }
 }

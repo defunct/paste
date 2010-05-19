@@ -2,9 +2,8 @@ package com.goodworkalan.paste;
 
 import java.lang.ref.WeakReference;
 
+import javax.inject.Provider;
 import javax.servlet.ServletContext;
-
-import com.google.inject.Provider;
 
 /**
  * Provides the servlet context used to create the paste filter.

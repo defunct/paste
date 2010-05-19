@@ -2,13 +2,13 @@ package com.goodworkalan.paste.infuse;
 
 import java.util.Set;
 
-import com.goodworkalan.paste.Actor;
+import javax.inject.Inject;
+
+import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.util.Parameters;
 import com.goodworkalan.stringbeans.Stringer;
 import com.goodworkalan.stringbeans.url.UrlParser;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 /**
  * An actor that sets bean properties in a controller.
@@ -19,7 +19,7 @@ import com.google.inject.Injector;
  * 
  * @author Alan Gutierrez
  */
-public class InfusionActor implements Actor {
+public class InfusionActor implements Runnable {
     /** The controller parameters. */
     private final Parameters parameters;
 
@@ -29,6 +29,8 @@ public class InfusionActor implements Actor {
     private final Injector injector;
     
     private final Set<StashAssignment<?>> assignments;
+    
+    private final Object controller;
 
     /**
      * Construct an infusion actor with the given controller parameters.
@@ -37,20 +39,20 @@ public class InfusionActor implements Actor {
      *            Parameters with the controller parameters.
      */
     @Inject
-    public InfusionActor(@Controller Parameters parameters, Stringer stringer, Injector injector, @Infusable Set<StashAssignment<?>> assignments) {
+    public InfusionActor(@Controller Parameters parameters, Stringer stringer, Injector injector, @Infusable Set<StashAssignment<?>> assignments, @Controller Object controller) {
         this.parameters = parameters;
         this.stringer = stringer;
         this.injector = injector;
         this.assignments = assignments;
+        this.controller = controller;
     }
 
     // FIXME Document.
-    public Throwable actUpon(Object controller) {
+    public void run() {
         UrlParser parser = new UrlParser(stringer);
         for (StashAssignment<?> assignment : assignments) {
             assignment.assign(injector, parser.getStash());
         }
         parser.populate(controller, parameters.toStringMap(true));
-        return null;
     }
 }

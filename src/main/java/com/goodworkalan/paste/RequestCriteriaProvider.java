@@ -1,7 +1,7 @@
 package com.goodworkalan.paste;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Provide the criteria for the first request filtered by the Paste filter. This

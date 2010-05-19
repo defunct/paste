@@ -1,11 +1,12 @@
 package com.goodworkalan.paste.forward;
 
+import java.util.List;
+
+import com.goodworkalan.ilk.inject.InjectorBuilder;
+import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.Connector;
-import com.goodworkalan.paste.ControllerScoped;
-import com.goodworkalan.paste.RenderModule;
+import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.paths.ControllerClassAsPath;
-import com.google.inject.Provider;
 
 /**
  * An extension element in a domain-specific language used to specify the
@@ -14,15 +15,14 @@ import com.google.inject.Provider;
  * 
  * @author Alan Gutierrez
  */
-public class Forward extends RenderModule {
-    /** The format to use to create the forward path. */
-    private String format = "/%s.ftl";
+public class Forward  {
+    /** The parent builder. */
+    private final Connector connector;
 
-    /** The request property name to use to store the controller. */
-    private String property = "controller";
-
-    /** The format arguments to use to create the forward path. */
-    private Class<?>[] formatArguments = new Class<?>[] { ControllerClassAsPath.class };
+    private final List<InjectorBuilder> modules;
+    
+    /** The configuration. FIXME Not how this does not favor immutability. */
+    private Configuration configuration = new Configuration();
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -31,23 +31,9 @@ public class Forward extends RenderModule {
      * @param end
      *            The connector to return when the render statement is complete.
      */
-    public Forward(Connector end) {
-        super(end);
-    }
-
-    /**
-     * Configure the a Guice child injector to include the properties necessary
-     * to create a {@link Renderer} that will forward the request to another
-     * filter or servlet.
-     */
-    @Override
-    protected void configure() {
-        bind(Renderer.class).to(ForwardRenderer.class).in(ControllerScoped.class);
-        bind(Configuration.class).toProvider(new Provider<Configuration>() {
-            public Configuration get() {
-                return new Configuration(property, format, formatArguments);
-            }
-        }).in(ControllerScoped.class);
+    public Forward(Connector connector, List<InjectorBuilder> modules) {
+        this.connector = connector;
+        this.modules = modules;
     }
 
     /**
@@ -60,7 +46,7 @@ public class Forward extends RenderModule {
      *         forward properties.
      */
     public Forward property(String property) {
-        this.property = property;
+        configuration.property = property;
         return this;
     }
 
@@ -78,8 +64,23 @@ public class Forward extends RenderModule {
      *         forward properties.
      */
     public Forward format(String format, Class<?>... formatArguments) {
-        this.format = format;
-        this.formatArguments = formatArguments;
+        configuration.format = format;
+        configuration.formatArguments = formatArguments;
         return this;
+    }
+    
+    public Connector end() {
+        modules.add(new InjectorBuilder() {
+            protected void build() {
+                instance(configuration, ilk(Configuration.class), Controller.class);
+                implementation(ilk(ForwardRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
+            } 
+        });
+        // If the element is reused you'll get an NPE. (This is enforcement
+        // enough. It doesn't build a lot extra into the code to make the
+        // configuration
+        // separate.
+        configuration = null;
+        return connector;
     }
 }

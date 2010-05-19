@@ -1,28 +1,20 @@
 package com.goodworkalan.paste.infuse;
 
 import com.goodworkalan.ilk.Ilk;
+import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.stash.Stash;
-import com.google.inject.Injector;
-import com.google.inject.Key;
 
 public class StashAssignment<T> {
     private final Stash.Key stashKey;
     
-    private final Key<T> guiceKey;
-    
     private final Ilk<T> ilk;
     
-    public StashAssignment(Stash.Key stashKey, Class<T> keyClass) {
-        this(stashKey, keyClass, Key.get(keyClass));
-    }
-
-    public StashAssignment(Stash.Key stashKey, Class<T> keyClass, Key<T> guiceKey) {
+    public StashAssignment(Stash.Key stashKey, Ilk<T> ilk) {
         this.stashKey = stashKey;
-        this.ilk = new Ilk<T>(keyClass);
-        this.guiceKey = guiceKey;
+        this.ilk = ilk;
     }
     
     public void assign(Injector injector, Stash stash) {
-        stash.put(stashKey, ilk, injector.getInstance(guiceKey));
+        stash.put(stashKey, ilk, injector.create(ilk, null));
     }
 }

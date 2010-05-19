@@ -2,12 +2,12 @@ package com.goodworkalan.paste.api;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.util.Parameters;
-import com.google.inject.Inject;
 
 public class Including {
     @Inject

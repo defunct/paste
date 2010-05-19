@@ -1,13 +1,13 @@
 package com.goodworkalan.paste;
 
+
 /**
  * Used by {@link Router} instances to define path to controller mappings and
  * controller to renderer mappings.
  * 
  * @author Alan Gutierrez
  */
-public interface Connector
-{
+public interface Connector {
     public ReactStatement react();
     
     /**

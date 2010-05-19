@@ -6,13 +6,13 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 
 import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.Response;
 import com.goodworkalan.paste.paths.PathFormatter;
-import com.google.inject.Inject;
 
 /**
  * Render a redirect by sending a redirect status code and headers to the client.
@@ -58,9 +58,9 @@ public class RedirectRenderer implements Renderer {
      * Write a redirection header and body to the HTTP response.
      */
     public void render() throws ServletException, IOException {
-        if (configuration.getFormat() != null) {
-            String path = pathFormatter.format(configuration.getFormat(), configuration.getFormatArguments());
-            redirector.redirect(path, configuration.getStatus());
+        if (configuration.format != null) {
+            String path = pathFormatter.format(configuration.format, configuration.formatArguments);
+            redirector.redirect(path, configuration.status);
         }
 
         if (!Redirects.isRedirectStatus(response.getStatus())) {

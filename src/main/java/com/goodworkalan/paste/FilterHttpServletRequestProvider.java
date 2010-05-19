@@ -1,9 +1,8 @@
 package com.goodworkalan.paste;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Provide the HTTP request specific to the current invocation of the paste

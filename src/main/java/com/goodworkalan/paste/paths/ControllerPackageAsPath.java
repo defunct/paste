@@ -1,7 +1,8 @@
 package com.goodworkalan.paste.paths;
 
+import javax.inject.Inject;
+
 import com.goodworkalan.paste.Controller;
-import com.google.inject.Inject;
 
 /**
  * A format argument that returns the currently selected controller package

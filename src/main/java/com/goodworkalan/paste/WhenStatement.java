@@ -48,17 +48,14 @@ public class WhenStatement<T> {
      *            the path statement.
      * @param glob
      *            The glob to return when the glob for the controller for this
-     *            when clause is requested.
+     *            when clause is requested in the routes reverse lookup.
      * @param controllerToGlob
      *            A map of controller classes to globs that match them.
      * @param rules
      *            The builder of map of rule sets to priority and controller
      *            class pairs.
      */
-    public WhenStatement(PathStatement<T> when,
-            Glob glob,
-            Map<Class<?>, Glob> controllerToGlob,
-            RuleMapBuilder<Pair<Integer, Class<?>>> rules) {
+    public WhenStatement(PathStatement<T> when, Glob glob, Map<Class<?>, Glob> controllerToGlob, RuleMapBuilder<Pair<Integer, Class<?>>> rules) {
         this.when = when;
         this.glob = glob;
         this.controllerToGlob = controllerToGlob;
@@ -101,6 +98,7 @@ public class WhenStatement<T> {
      *         statement.
      */
     public Ending<WhenClause<T>> to(Class<?> controller) {
+        // Record that first glob as the path that is returned during reverse lookup.
         if (!controllerToGlob.containsKey(controller)) {
             controllerToGlob.put(controller, glob);
         }

@@ -9,6 +9,7 @@ import com.goodworkalan.deviate.RuleMap;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
+import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.mallardsoft.tuple.Pair;
 import com.mallardsoft.tuple.Tuple;
 
@@ -31,7 +32,7 @@ public class CoreConnector implements Connector
     private final List<List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>>> connections;
     
     /** A rule map to match a controller or exception to a renderer. */
-    private final RuleMapBuilder<Pair<Integer, RenderModule>> viewRules;
+    private final RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>> viewRules;
     
     /** The map of annotations to controllers. */
     private final Map<Class<?>, List<Class<?>>> reactions;
@@ -43,7 +44,7 @@ public class CoreConnector implements Connector
         this.reactions = new HashMap<Class<?>, List<Class<?>>>();
         this.controllerToGlob = new HashMap<Class<?>, Glob>();
         this.connections = new ArrayList<List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>>>();
-        this.viewRules = new RuleMapBuilder<Pair<Integer, RenderModule>>();
+        this.viewRules = new RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>>();
     }
 
     public ReactStatement react() {
@@ -121,7 +122,7 @@ public class CoreConnector implements Connector
      * 
      * @return The rule map to match a controller or exception to a renderer.
      */
-    public RuleMap<Pair<Integer, RenderModule>> getViewRules() {
+    public RuleMap<Pair<Integer, List<InjectorBuilder>>> getViewRules() {
         return viewRules.newRuleMap();
     }
 }

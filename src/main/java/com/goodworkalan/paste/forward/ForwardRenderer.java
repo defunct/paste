@@ -2,6 +2,7 @@ package com.goodworkalan.paste.forward;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
 import com.goodworkalan.paste.RequestScoped;
-import com.goodworkalan.paste.infuse.Evaluator;
 import com.goodworkalan.paste.paths.PathFormatter;
-import com.google.inject.Inject;
 
 /**
  * A renderer that renders the controller by forwarding to another filter or
@@ -71,9 +70,8 @@ public class ForwardRenderer implements Renderer {
      * application.
      */
     public void render() throws ServletException, IOException {
-        String path = pathFormatter.format(configuration.getFormat(),  configuration.getFormatArguments());
-        request.setAttribute(configuration.getProperty(), controller);
-        request.setAttribute("evaluator", new Evaluator(controller));
+        String path = pathFormatter.format(configuration.format,  configuration.formatArguments);
+        request.setAttribute(configuration.property, controller);
         RequestDispatcher dispatcher = request.getRequestDispatcher(path);
         dispatcher.forward(request, response);
     }

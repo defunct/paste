@@ -2,8 +2,9 @@ package com.goodworkalan.paste;
 
 import static org.testng.Assert.assertEquals;
 
+import javax.inject.Inject;
+
 import com.goodworkalan.paste.util.Parameters;
-import com.google.inject.Inject;
 
 public class BindingController
 {

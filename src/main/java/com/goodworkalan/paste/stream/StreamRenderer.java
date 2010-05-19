@@ -1,23 +1,21 @@
 package com.goodworkalan.paste.stream;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 
+import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.ilk.Ilk;
+import com.goodworkalan.ilk.inject.Boxed;
+import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.ControllerScoped;
-import com.goodworkalan.paste.PasteException;
 import com.goodworkalan.paste.Renderer;
-import com.google.inject.BindingAnnotation;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Key;
 
 /**
  * Render output by calling a method on the controller that either returns a
@@ -44,9 +42,9 @@ public class StreamRenderer implements Renderer
     private final Configuration configuration;
     
     /** The final controller for the request. */
-    private final Object controller;
+    private final Boxed<Object> controller;
     
-    /** The Guice injector. */
+    /** The dependency injector. */
     private final Injector injector;
 
     /**
@@ -68,7 +66,7 @@ public class StreamRenderer implements Renderer
      *            The Guice injector.
      */
     @Inject
-    public StreamRenderer(Configuration configuration, @Controller Object controller, Injector injector)
+    public StreamRenderer(Configuration configuration, @Controller Boxed<Object> controller, Injector injector)
     {
         this.configuration = configuration;
         this.controller = controller;
@@ -90,7 +88,7 @@ public class StreamRenderer implements Renderer
             Output output = method.getAnnotation(Output.class);
             if (output != null)
             {
-                if (output.contentType().equals(configuration.getContentType()))
+                if (output.contentType().equals(configuration.contentType))
                 {
                     outputMethod = method;
                     break;
@@ -98,52 +96,18 @@ public class StreamRenderer implements Renderer
             }
         }
         
-        Class<?>[] types = outputMethod.getParameterTypes();
-        Annotation[][] annotations = outputMethod.getParameterAnnotations();
-        Object[] parameters = new Object[types.length];
-        for (int i = 0; i < types.length; i++)
-        {
-            Class<?> type = outputMethod.getParameterTypes()[i];
-            Annotation annotation = null;
-            for (int j = 0; annotation == null && j < annotations[i].length; j++)
-            {
-                if (annotations[i][j].annotationType().getAnnotation(BindingAnnotation.class) != null) {
-                    annotation = annotations[i][j];
-                }
-            }
-            if (annotation == null)
-            {
-                parameters[i] = injector.getInstance(type);
-            }
-            else
-            {
-                parameters[i] = injector.getInstance(Key.get(type, annotation));
-            }
-        }
+        Ilk.Box box = injector.inject(controller.box, outputMethod);
+
+        HttpServletResponse response = injector.create(HttpServletResponse.class, null);
+        response.setContentType(configuration.contentType);
         
-        Object result;
-        try
-        {
-            result = outputMethod.invoke(controller, parameters);
-        }
-        catch (Exception e)
-        {
-            throw new PasteException(0, e);
-        }
-        
-        HttpServletResponse response = injector.getInstance(HttpServletResponse.class);
-        response.setContentType(configuration.getContentType());
-        
-        if (result instanceof URI)
-        {
-            URI uri = (URI) result;
-            HttpServletRequest request = injector.getInstance(HttpServletRequest.class);
+        if (URI.class.isAssignableFrom(box.key.rawClass)) {
+            URI uri = box.cast(new Ilk<URI>(URI.class));
+            HttpServletRequest request = injector.create(HttpServletRequest.class, null);
             RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
             dispatcher.forward(request, response);
-        }
-        else if (result instanceof CharSequence)
-        {
-            response.getWriter().write(((CharSequence) result).toString());
+        } else  if (CharSequence.class.isAssignableFrom(box.key.rawClass)) {
+            response.getWriter().write(box.cast(new Ilk<CharSequence>(CharSequence.class)).toString());
             response.getWriter().flush();
         }
     }

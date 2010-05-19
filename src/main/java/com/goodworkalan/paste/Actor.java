@@ -15,6 +15,5 @@ public interface Actor {
      * @return An exception thrown during execution that might be reported using
      *         a renderer.
      */
-    // FIXME Why not just throw the exception?
-    public Throwable actUpon(Object controller);
+    public void act(Object controller);
 }

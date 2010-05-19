@@ -1,8 +1,9 @@
 package com.goodworkalan.paste;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import com.goodworkalan.paste.janitor.JanitorQueue;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Provides a queue of janitors that will cleanup when the filter and all of the

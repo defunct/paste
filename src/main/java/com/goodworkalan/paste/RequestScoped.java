@@ -5,12 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.ScopeAnnotation;
+import javax.inject.Scope;
 
 // TODO Document.
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@ScopeAnnotation
+@Scope
 public @interface RequestScoped
 {
 }

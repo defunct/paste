@@ -1,11 +1,18 @@
 package com.goodworkalan.paste;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.goodworkalan.deviate.Equals;
 import com.goodworkalan.deviate.InstanceOf;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.deviate.RuleSetBuilder;
+import com.goodworkalan.ilk.inject.InjectorBuilder;
+import com.goodworkalan.reflective.Reflection;
+import com.goodworkalan.reflective.Reflective;
+import com.goodworkalan.reflective.ReflectiveException;
 import com.mallardsoft.tuple.Pair;
 
 /**
@@ -20,10 +27,10 @@ public class RenderStatement {
     private final Connector end;
     
     /** A builder for a map of rule sets to priority and render modules pairs. */
-    protected final RuleMapBuilder<Pair<Integer, RenderModule>> mappings;
+    protected final RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>> mappings;
 
     /** A builder for a set of rules for this render statement. */
-    protected final RuleSetBuilder<Pair<Integer, RenderModule>> from;
+    protected final RuleSetBuilder<Pair<Integer, List<InjectorBuilder>>> from;
 
     /**
      * The priority for this render statement to resolve ambiguties if two or
@@ -40,7 +47,7 @@ public class RenderStatement {
      *            A builder for a map of rule sets to priority and render
      *            modules pairs.
      */
-    public RenderStatement(Connector end, RuleMapBuilder<Pair<Integer, RenderModule>> mappings) {
+    public RenderStatement(Connector end, RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>> mappings) {
         this.end = end;
         this.mappings = mappings;
         this.from = mappings.rule();
@@ -120,20 +127,21 @@ public class RenderStatement {
      * @param <T>
      *            The type of render module.
      */
-    public <T extends RenderModule> T with(Class<T> renderClass) {
-        Constructor<T> constructor;
+    public <T> T with(final Class<T> renderClass) {
+        Reflective reflective = new Reflective();
+        final List<InjectorBuilder> modules = new ArrayList<InjectorBuilder>();
+        from.put(new Pair<Integer, List<InjectorBuilder>>(priority, modules));
         try {
-            constructor = renderClass.getConstructor(Connector.class);
-        } catch (Exception e) {
+            return reflective.reflect(new Reflection<T>() {
+                public T reflect() throws InstantiationException,
+                         IllegalAccessException, InvocationTargetException,
+                         NoSuchFieldException, NoSuchMethodException {
+                    Constructor<T> constructor = renderClass.getConstructor(Connector.class, List.class);
+                    return constructor.newInstance(end, modules);
+                 } 
+             });
+        } catch (ReflectiveException e) {
             throw new PasteException(0, e);
         }
-        T module;
-        try {
-            module = constructor.newInstance(end);
-        } catch (Exception e) {
-            throw new PasteException(0, e);
-        }
-        from.put(new Pair<Integer, RenderModule>(priority, module));
-        return module;
     }
 }

@@ -3,11 +3,10 @@ package com.goodworkalan.paste.paths;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.goodworkalan.ilk.inject.Injector;
+import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Criteria;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 public class FormatTest {
     protected Class<?>[] args(Class<?>... formatArguments) {
@@ -15,13 +14,13 @@ public class FormatTest {
     }
     
     protected Injector getControllerInjector() {
-        return Guice.createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(Object.class).annotatedWith(Controller.class).toInstance(
-                        new Object());
+        InjectorBuilder newInjector = new InjectorBuilder();
+        newInjector.module(new InjectorBuilder() {
+            protected void build() {
+                instance(new Object(), ilk(Object.class), Controller.class);
             }
         });
+        return newInjector.newInjector();
     }
     
     protected Injector getPathInjector(String path) {
@@ -32,14 +31,15 @@ public class FormatTest {
     protected Injector getPathInjector(String path, final String welcomeFile) {
         final Criteria criteria = mock(Criteria.class);
         when(criteria.getPath()).thenReturn(path);
-        return Guice.createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(Criteria.class).toInstance(criteria);
+        InjectorBuilder newInjector = new InjectorBuilder();
+        newInjector.module(new InjectorBuilder() {
+            protected void build() {
+                instance(criteria, ilk(Criteria.class), null);
                 if (welcomeFile != null) {
-                    bind(String.class).annotatedWith(WelcomeFile.class).toInstance("index.html");
+                    instance("index.html", ilk(String.class), WelcomeFile.class);
                 }
             }
         });
+        return newInjector.newInjector();
     }
 }

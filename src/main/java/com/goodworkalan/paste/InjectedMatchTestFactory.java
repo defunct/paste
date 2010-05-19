@@ -2,7 +2,8 @@ package com.goodworkalan.paste;
 
 import com.goodworkalan.dovetail.MatchTest;
 import com.goodworkalan.dovetail.MatchTestFactory;
-import com.google.inject.Injector;
+import com.goodworkalan.ilk.Ilk;
+import com.goodworkalan.ilk.inject.Injector;
 
 /**
  * A Dovetail match test factory that uses the Guice injector of the Paste
@@ -13,7 +14,7 @@ import com.google.inject.Injector;
  * @author Alan Gutierrez
  * 
  */
-public class GuiceMatchTestFactory implements MatchTestFactory {
+public class InjectedMatchTestFactory implements MatchTestFactory {
     /** The Guice injector of the Paste filter. */
     private final Injector injector;
 
@@ -24,7 +25,7 @@ public class GuiceMatchTestFactory implements MatchTestFactory {
      * @param injector
      *            The Guice injector of the Paste filter.
      */
-    public GuiceMatchTestFactory(Injector injector) {
+    public InjectedMatchTestFactory(Injector injector) {
         this.injector = injector;
     }
 
@@ -35,6 +36,6 @@ public class GuiceMatchTestFactory implements MatchTestFactory {
      * @return A match test.
      */
     public MatchTest getInstance(Class<? extends MatchTest> matchTestClass) {
-        return injector.getInstance(matchTestClass);
+        return injector.create(new Ilk<MatchTest>(matchTestClass), null);
     }
 }

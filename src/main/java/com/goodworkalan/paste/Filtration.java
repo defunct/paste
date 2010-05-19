@@ -2,16 +2,13 @@ package com.goodworkalan.paste;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.goodworkalan.paste.intercept.InterceptingRequest;
 import com.goodworkalan.paste.intercept.InterceptingResponse;
 import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.Parameters;
-import com.google.inject.Key;
 
 /**
  * A structure that contains the scopes for a single filtration.
@@ -28,11 +25,11 @@ class Filtration {
     /** The servlet response. */
     private final InterceptingResponse response;
     
-    /** The map that backs the filter scope. */
-    private final Map<Key<?>, Object> filterScope;
-    
-    /** The map that backs the controller scope. */
-    private final Map<Key<?>, Object> controllerScope;
+//    /** The map that backs the filter scope. */
+//    private final Map<Key<?>, Object> filterScope;
+//    
+//    /** The map that backs the controller scope. */
+//    private final Map<Key<?>, Object> controllerScope;
     
     /** The list of janitors. */
     private final List<Janitor> janitors;
@@ -56,8 +53,8 @@ class Filtration {
         this.criteria = request == null ? null : new Criteria(request);
         this.request = request;
         this.response = response;
-        this.filterScope = new HashMap<Key<?>, Object>();
-        this.controllerScope = new HashMap<Key<?>, Object>();
+//        this.filterScope = new HashMap<Key<?>, Object>();
+//        this.controllerScope = new HashMap<Key<?>, Object>();
         this.janitors = new ArrayList<Janitor>();
     }
 
@@ -116,7 +113,7 @@ class Filtration {
     public Parameters getParameters() {
         if (parameters == null) {
             if (subsequent) {
-                throw new PasteException();
+                throw new PasteException(0);
             }
             if (request.getAttribute("javax.servlet.include.request_uri") != null) {
                 String query = (String) request.getAttribute("javax.servlet.include.query_string");
@@ -126,9 +123,9 @@ class Filtration {
                 parameters = Parameters.fromQueryString(query, NamedValue.REQUEST);
             } else {
                 List<NamedValue> namedValues = new ArrayList<NamedValue>();
-                Enumeration<String> names = Objects.toStringEnumeration(request.getParameterNames());
+                Enumeration<?> names = request.getParameterNames();
                 while (names.hasMoreElements()) {
-                    String name = names.nextElement();
+                    String name = names.nextElement().toString();
                     for (String value : request.getParameterValues(name)) {
                         namedValues.add(new NamedValue(NamedValue.REQUEST, name, value));
                     }
@@ -144,18 +141,18 @@ class Filtration {
      * 
      * @return The map that backs the filter scope.
      */
-    Map<Key<?>, Object> getFilterScope() {
-        return filterScope;
-    }
-
-    /**
-     * Get the map that backs the controller scope.
-     * 
-     * @return The map that backs the controller scope.
-     */
-    Map<Key<?>, Object> getControllerScope() {
-        return controllerScope;
-    }
+//    Map<Key<?>, Object> getFilterScope() {
+//        return filterScope;
+//    }
+//
+//    /**
+//     * Get the map that backs the controller scope.
+//     * 
+//     * @return The map that backs the controller scope.
+//     */
+//    Map<Key<?>, Object> getControllerScope() {
+//        return controllerScope;
+//    }
 
     /**
      * Get the list of per filter invocation janitors.

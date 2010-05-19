@@ -1,8 +1,9 @@
 package com.goodworkalan.paste.paths;
 
+import javax.inject.Inject;
+
+import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.RequestScoped;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 /**
  * A formatter that formats a sprintf string using objects built from the
@@ -38,7 +39,7 @@ public class PathFormatter {
     public String format(String format, Class<?>[] formatArguments) {
         Object[] arguments = new Object[formatArguments.length];
         for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = injector.getInstance(formatArguments[i]);
+            arguments[i] = injector.create(formatArguments[i], null);
         }
         return String.format(format, arguments);
     }

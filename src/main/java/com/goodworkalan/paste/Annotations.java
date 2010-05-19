@@ -1,9 +1,9 @@
 package com.goodworkalan.paste;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import com.goodworkalan.paste.util.Parameters;
-import com.google.inject.Inject;
 
 /**
  * A helper class that implements the logic used by actors to select a method in

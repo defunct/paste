@@ -1,9 +1,8 @@
 package com.goodworkalan.paste;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Provide the response specific to the current invocation of the paste filter.

@@ -2,11 +2,11 @@ package com.goodworkalan.paste.api;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.util.Parameters;
-import com.google.inject.Inject;
 
 public class ControllerParameters {
     @Inject

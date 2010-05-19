@@ -27,7 +27,7 @@ public class PasteFilter implements Filter {
     private static final long serialVersionUID = 20081122L;
 
     /** The implementation delegate. */
-    private PasteGuicer guicer;
+    private Responder responder;
 
     /**
      * Initialize the Paste filter.
@@ -42,8 +42,8 @@ public class PasteFilter implements Filter {
             String name = e.nextElement();
             initialization.put(name, config.getInitParameter(name));
         }
-        guicer = new PasteGuicer(config.getServletContext(), initialization);
-        guicer.start();
+        responder = new Responder(config.getServletContext(), initialization);
+        responder.start();
     }
 
     /**
@@ -60,7 +60,7 @@ public class PasteFilter implements Filter {
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
-        guicer.filter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+        responder.filter((HttpServletRequest) request, (HttpServletResponse) response, chain);
     }
 
     /**
@@ -68,7 +68,7 @@ public class PasteFilter implements Filter {
      * instances.
      */
     public void destroy() {
-        guicer.destroy();
+        responder.destroy();
     }
 }
 

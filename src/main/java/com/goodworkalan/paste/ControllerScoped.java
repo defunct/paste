@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.google.inject.ScopeAnnotation;
+import javax.inject.Scope;
 
 /**
  * Indicates that an object should be created in the controller scope, so that
@@ -18,6 +18,6 @@ import com.google.inject.ScopeAnnotation;
 @Documented
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@ScopeAnnotation
+@Scope
 public @interface ControllerScoped {
 }
