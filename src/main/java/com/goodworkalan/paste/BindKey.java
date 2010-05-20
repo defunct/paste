@@ -6,11 +6,9 @@ package com.goodworkalan.paste;
  * 
  * @author Alan Gutierrez
  */
-public enum BindKey
-{
+public enum BindKey {
     /** The controller package. */
-    PACKAGE,
-    CONTROLL_ER,
+    PACKAGE, CONTROLL_ER,
     /** The controller class. */
     CONTROLLER_CLASS,
     /** Huh? */

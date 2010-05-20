@@ -7,11 +7,9 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.redirect.Redirects;
 
-public class RedirectsTest
-{
+public class RedirectsTest {
     @Test
-    public void isRedirectStatus()
-    {
+    public void isRedirectStatus() {
         new Redirects();
         assertFalse(Redirects.isRedirectStatus(200));
         assertTrue(Redirects.isRedirectStatus(300));

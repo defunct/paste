@@ -16,11 +16,9 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.MockHttpServletRequest;
 
-public class RedirectionTest
-{
+public class RedirectionTest {
     @Test
-    public void constructor()
-    {
+    public void constructor() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         when(request.getRequest().getRequestURL()).thenReturn(new StringBuffer("http://domain.com/foo/baz"));
         

@@ -2,11 +2,9 @@ package com.goodworkalan.paste;
 
 import org.testng.annotations.Test;
 
-public class BasicScopeTest
-{
+public class BasicScopeTest {
     @Test
-    public void get()
-    {
+    public void get() {
 //        Provider<Object> provider = new Provider<Object>()
 //        {
 //            public Object get()

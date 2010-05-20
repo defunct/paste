@@ -6,11 +6,9 @@ import javax.inject.Inject;
 
 import com.goodworkalan.paste.util.Parameters;
 
-public class BindingController
-{
+public class BindingController {
     @Inject
-    public BindingController(@Controller Parameters parameters)
-    {
+    public BindingController(@Controller Parameters parameters) {
         assertEquals(parameters.getFirst("user"), "alan");
     }
 }

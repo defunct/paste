@@ -19,11 +19,10 @@ import com.mallardsoft.tuple.Tuple;
  * 
  * @author Alan Gutierrez
  */
-public class CoreConnector implements Connector
-{
+public class CoreConnector implements Connector {
     /** A map of controller classes to the globs that define their URL bindings. */
     private Map<Class<?>, Glob> controllerToGlob;
-    
+
     /**
      * A list of connection groups, a connection group consisting of URL
      * bindings. URL bindings consisting of a list of globs paired with rule map

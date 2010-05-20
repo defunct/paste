@@ -12,23 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-public class Mocks
-{
-    public static HttpServletRequest request()
-    {
+public class Mocks {
+    public static HttpServletRequest request() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeaderNames()).thenAnswer(new Answer<Enumeration<Object>>() {
             public Enumeration<Object> answer(InvocationOnMock invocation)
-                    throws Throwable
-            {
+            throws Throwable  {
                 return new Vector<Object>().elements();
             }
         });
         return request;
     }
     
-    public static HttpServletResponse response()
-    {
+    public static HttpServletResponse response() {
         HttpServletResponse response = mock(HttpServletResponse.class);
         return response;
     }

@@ -11,17 +11,13 @@ import org.testng.annotations.Test;
 import com.goodworkalan.paste.janitor.Janitor;
 import com.goodworkalan.paste.janitor.JanitorQueue;
 
-public class JanitorQueueTest
-{
+public class JanitorQueueTest {
     @Test
-    public void add()
-    {
+    public void add() {
         List<Janitor> janitors = new ArrayList<Janitor>();
         JanitorQueue queue = new JanitorQueue(janitors);
-        Janitor janitor = new Janitor()
-        {
-            public void cleanUp()
-            {
+        Janitor janitor = new Janitor() {
+            public void cleanUp() {
             }
         };
         queue.add(janitor);

@@ -15,19 +15,16 @@ import org.testng.annotations.Test;
 import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.Parameters;
 
-public class AnnotationsTest
-{
+public class AnnotationsTest {
     @Test
-    public void any()
-    {
+    public void any() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         Annotations annotations = new Annotations(new Parameters(new ArrayList<NamedValue>()), request);
         assertTrue(annotations.invoke(new String[] {}, "", new String[0]));
     }
 
     @Test
-    public void on()
-    {
+    public void on() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         List<NamedValue> parameters = new ArrayList<NamedValue>();
         parameters.add(new NamedValue(NamedValue.REQUEST, "save", "Save"));
@@ -37,8 +34,7 @@ public class AnnotationsTest
     }
 
     @Test
-    public void param()
-    {
+    public void param() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         List<NamedValue> parameters = new ArrayList<NamedValue>();
         parameters.add(new NamedValue(NamedValue.REQUEST, "on", "save"));
@@ -49,8 +45,7 @@ public class AnnotationsTest
     }
 
     @Test
-    public void method()
-    {
+    public void method() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getMethod()).thenReturn("POST");
         Annotations annotations = new Annotations(new Parameters(new ArrayList<NamedValue>()), request);

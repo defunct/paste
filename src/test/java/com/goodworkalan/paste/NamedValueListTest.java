@@ -15,28 +15,23 @@ import org.testng.annotations.Test;
 import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.NamedValueList;
 
-public class NamedValueListTest
-{
+public class NamedValueListTest {
     @Test
-    public void add()
-    {
+    public void add() {
         List<NamedValue> list = new ArrayList<NamedValue>();
         list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
         NamedValueList namedValues = new NamedValueList(list);
         assertEquals(namedValues.size(), 1);
-        for (Map.Entry<String, List<String>> entry : namedValues.toStringListMap().entrySet())
-        {
+        for (Map.Entry<String, List<String>> entry : namedValues.toStringListMap().entrySet()) {
             assertEquals(entry.getKey(), "hello");
-            for (String value : entry.getValue())
-            {
+            for (String value : entry.getValue()) {
                 assertEquals(value, "world");
             }
         }
     }
     
     @Test
-    public void getFirst()
-    {
+    public void getFirst() {
         List<NamedValue> list = new ArrayList<NamedValue>();
         list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
         NamedValueList map = new NamedValueList(list);

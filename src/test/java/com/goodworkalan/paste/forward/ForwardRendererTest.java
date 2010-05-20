@@ -6,10 +6,9 @@ import javax.servlet.ServletException;
 
 import org.testng.annotations.Test;
 
-public class ForwardRendererTest
-{
-    @Test public void forward() throws ServletException, IOException
-    {
+public class ForwardRendererTest {
+    @Test
+    public void forward() throws ServletException, IOException {
 //        final Object controller = new Object();
 //        
 //        Injector injector = Guice.createInjector(new AbstractModule()

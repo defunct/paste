@@ -2,11 +2,9 @@ package com.goodworkalan.paste;
 
 import org.testng.annotations.Test;
 
-public class BinderTest
-{
+public class BinderTest {
     @Test
-    public void constructor()
-    {
+    public void constructor() {
         new CoreConnector();
     }
 

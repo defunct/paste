@@ -1,5 +1,4 @@
 package com.goodworkalan.paste;
 
-public class Bindable
-{
+public class Bindable {
 }

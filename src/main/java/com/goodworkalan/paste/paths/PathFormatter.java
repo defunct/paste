@@ -28,7 +28,7 @@ public class PathFormatter {
 
     /**
      * Format the sprintf format string using format objects created from the
-     * Guice injector for the current filter.
+     * dependency injector for the current filter.
      * 
      * @param format
      *            The sprintf format.

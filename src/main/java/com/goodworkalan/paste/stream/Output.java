@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * @author Alan Gutierrez
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD })
+@Target(ElementType.METHOD)
 public @interface Output {
     String contentType() default "application/octet-stream";
 }
