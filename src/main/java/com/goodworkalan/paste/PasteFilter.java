@@ -37,9 +37,9 @@ public class PasteFilter implements Filter {
      */
     public void init(FilterConfig config) throws ServletException {
         Map<String, String> initialization = new HashMap<String, String>();
-        Enumeration<String> e = Objects.toStringEnumeration(config.getInitParameterNames());
+        Enumeration<?> e = config.getInitParameterNames();
         while (e.hasMoreElements()) {
-            String name = e.nextElement();
+            String name = e.nextElement().toString();
             initialization.put(name, config.getInitParameter(name));
         }
         responder = new Responder(config.getServletContext(), initialization);

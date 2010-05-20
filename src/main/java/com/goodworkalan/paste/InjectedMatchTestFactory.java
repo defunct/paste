@@ -36,6 +36,6 @@ public class InjectedMatchTestFactory implements MatchTestFactory {
      * @return A match test.
      */
     public MatchTest getInstance(Class<? extends MatchTest> matchTestClass) {
-        return injector.create(new Ilk<MatchTest>(matchTestClass), null);
+        return injector.instance(new Ilk<MatchTest>(matchTestClass), null);
     }
 }

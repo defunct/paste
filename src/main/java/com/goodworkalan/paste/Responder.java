@@ -100,8 +100,8 @@ class Responder implements Reactor {
         
 
         List<InjectorBuilder> modules = new ArrayList<InjectorBuilder>();
-        if (initialization.containsKey("TypeBindings")) {
-            for (String className : initialization.get("TypeBindings").split(",")) {
+        if (initialization.containsKey("Modules")) {
+            for (String className : initialization.get("Modules").split(",")) {
                 Class<?> moduleClass;
                 try {
                     moduleClass = classLoader.loadClass(className);
@@ -125,7 +125,7 @@ class Responder implements Reactor {
         }
 
         List<Router> routers = new ArrayList<Router>();
-        if (initialization.containsKey("Routes")) {
+        if (initialization.containsKey("Routers")) {
             try {
                 for (String className : initialization.get("Routers").split(",")) {
                     Class<?> moduleClass;
@@ -185,7 +185,7 @@ class Responder implements Reactor {
             Injector reactionInjector = newInjector.newInjector();
             try {
                 for (Class<?> reaction : reactions.get(object.getClass())) {
-                    Object child = reactionInjector.create(reaction, null);
+                    Object child = reactionInjector.instance(reaction, null);
                     if (child instanceof Runnable) {
                         ((Runnable) child).run();
                     }
@@ -358,7 +358,7 @@ class Responder implements Reactor {
     throws IOException, ServletException {
         // Use Guice to generate the criteria for this invocation, which will
         // in turn provide us with a path we can match.
-        Criteria criteria = injector.create(Criteria.class, Filter.class);
+        Criteria criteria = injector.instance(Criteria.class, Filter.class);
 
         PasteControllerException caught = null;
         Injector controllerInjector = null;
@@ -388,7 +388,7 @@ class Responder implements Reactor {
                 Class<?> controllerClass = null;
                 Map<String, String> mappings = null;
 
-                HttpServletRequest request = injector.create(HttpServletRequest.class, Filter.class);
+                HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
                 // Apply the rule set associated with each matched glob.
                 for (Match<RuleMap<Pair<Integer, Class<?>>>> mapping : matches) {
                     List<Pair<Integer, Class<?>>> bindings = mapping.getObject()
@@ -430,7 +430,7 @@ class Responder implements Reactor {
                     
                     
                     try {
-                        controller = controllerInjector.create(controllerClass, Controller.class);
+                        controller = controllerInjector.instance(controllerClass, Controller.class);
                     } catch (InjectException e) {
                         if (e.getCode() == InjectException.INVOCATION_TARGET) {
                             try {
@@ -449,7 +449,7 @@ class Responder implements Reactor {
                     if (actors != null) {
                         for (Class<? extends Runnable> actor : actors.value()) {
                             try {
-                                injector.create(actor, null).run();
+                                injector.instance(actor, null).run();
                             } catch (PasteControllerException pce) {
                                 caught = pce;
                                 break CONTROLLERS;
@@ -464,10 +464,10 @@ class Responder implements Reactor {
         // an abrupt change of course.
         if (caught.getControllerException() instanceof Redirection) {
             // FIXME Who says that this actually gets rendered as a redirect?
-            injector.create(Redirector.class, null).redirect(((Redirection) caught.getControllerException()).getWhere());
+            injector.instance(Redirector.class, null).redirect(((Redirection) caught.getControllerException()).getWhere());
         } else if (caught.getControllerException() instanceof Abnormality) {
             // Set the response status.
-            injector.create(Response.class, null).setStatus(((Abnormality) caught.getControllerException()).getStatus());
+            injector.instance(Response.class, null).setStatus(((Abnormality) caught.getControllerException()).getStatus());
         }
 
         if (controllerInjector != null || caught != null) {
@@ -478,9 +478,9 @@ class Responder implements Reactor {
                     .put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName())
                     .put(BindKey.CONTROLLER_CLASS, controller)
                     .put(BindKey.PATH, criteria.getPath())
-                    .put(BindKey.STATUS, injector.create(Response.class, null).getStatus())
+                    .put(BindKey.STATUS, injector.instance(Response.class, null).getStatus())
                     .put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getControllerException())
-                    .put(BindKey.METHOD, injector.create(HttpServletRequest.class, null).getMethod())
+                    .put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod())
                     .get();
 
             // Find the render module with the highest priority.
@@ -507,7 +507,7 @@ class Responder implements Reactor {
                 for (InjectorBuilder module : renderModules) {
                     newInjector.module(module);
                 }
-                newInjector.newInjector().create(Renderer.class, null).render();
+                newInjector.newInjector().instance(Renderer.class, null).render();
             } else if (caught != null) {
                 throw caught;
             }
@@ -515,7 +515,7 @@ class Responder implements Reactor {
 
         // Down the filter chain, unless we've just sent a response.
         if (!interception.isIntercepted()) {
-            chain.doFilter(injector.create(ServletRequest.class, null), injector.create(ServletResponse.class, null));
+            chain.doFilter(injector.instance(ServletRequest.class, null), injector.instance(ServletResponse.class, null));
         }
     }
 

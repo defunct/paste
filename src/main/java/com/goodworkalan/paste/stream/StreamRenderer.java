@@ -34,9 +34,8 @@ import com.goodworkalan.paste.Renderer;
  * @author Alan Gutierrez
  */
 @ControllerScoped
-public class StreamRenderer implements Renderer
-{
-    /** 
+public class StreamRenderer implements Renderer {
+    /**
      * The properties set by the domain-specific renderer connection language.
      */
     private final Configuration configuration;
@@ -66,8 +65,7 @@ public class StreamRenderer implements Renderer
      *            The Guice injector.
      */
     @Inject
-    public StreamRenderer(Configuration configuration, @Controller Boxed<Object> controller, Injector injector)
-    {
+    public StreamRenderer(Configuration configuration, @Controller Boxed<Object> controller, Injector injector) {
         this.configuration = configuration;
         this.controller = controller;
         this.injector = injector;
@@ -78,18 +76,14 @@ public class StreamRenderer implements Renderer
      * character sequence or accepts an output stream or writer to stream the
      * output.
      */
-    public void render() throws ServletException, IOException
-    {
+    public void render() throws ServletException, IOException {
         Class<? extends Object> controllerClass = controller.getClass();
-        
+
         Method outputMethod = null;
-        for (Method method : controllerClass.getMethods())
-        {
+        for (Method method : controllerClass.getMethods()) {
             Output output = method.getAnnotation(Output.class);
-            if (output != null)
-            {
-                if (output.contentType().equals(configuration.contentType))
-                {
+            if (output != null) {
+                if (output.contentType().equals(configuration.contentType)) {
                     outputMethod = method;
                     break;
                 }
@@ -98,12 +92,12 @@ public class StreamRenderer implements Renderer
         
         Ilk.Box box = injector.inject(controller.box, outputMethod);
 
-        HttpServletResponse response = injector.create(HttpServletResponse.class, null);
+        HttpServletResponse response = injector.instance(HttpServletResponse.class, null);
         response.setContentType(configuration.contentType);
         
         if (URI.class.isAssignableFrom(box.key.rawClass)) {
             URI uri = box.cast(new Ilk<URI>(URI.class));
-            HttpServletRequest request = injector.create(HttpServletRequest.class, null);
+            HttpServletRequest request = injector.instance(HttpServletRequest.class, null);
             RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
             dispatcher.forward(request, response);
         } else  if (CharSequence.class.isAssignableFrom(box.key.rawClass)) {

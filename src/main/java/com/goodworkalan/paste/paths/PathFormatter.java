@@ -39,7 +39,7 @@ public class PathFormatter {
     public String format(String format, Class<?>[] formatArguments) {
         Object[] arguments = new Object[formatArguments.length];
         for (int i = 0; i < arguments.length; i++) {
-            arguments[i] = injector.create(formatArguments[i], null);
+            arguments[i] = injector.instance(formatArguments[i], null);
         }
         return String.format(format, arguments);
     }

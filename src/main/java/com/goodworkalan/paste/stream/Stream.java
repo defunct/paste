@@ -67,10 +67,8 @@ public class Stream {
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {
-                instance(configuration, ilk(Configuration.class),
-                        Controller.class);
-                implementation(ilk(StreamRenderer.class), ilk(Renderer.class),
-                        null, InjectorScoped.class);
+                instance(configuration, ilk(Configuration.class), Controller.class);
+                implementation(ilk(StreamRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }
         });
         configuration = null;

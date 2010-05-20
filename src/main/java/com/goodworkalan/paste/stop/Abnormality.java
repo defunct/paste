@@ -6,21 +6,20 @@ package com.goodworkalan.paste.stop;
  * 
  * @author Alan Gutierrez
  */
-public class Abnormality extends Stop
-{
+public class Abnormality extends Stop {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The HTTP response status. */
     private final int status;
-    
+
     /**
      * Create a new abnormality with the given HTTP status code.
      * 
-     * @param statusCode The HTTP response status.
+     * @param statusCode
+     *            The HTTP response status.
      */
-    public Abnormality(int statusCode)
-    {
+    public Abnormality(int statusCode) {
         this.status = statusCode;
     }
 
@@ -33,8 +32,7 @@ public class Abnormality extends Stop
      * @param cause
      *            The cause of the abnormality.
      */
-    public Abnormality(int status, Throwable cause)
-    {
+    public Abnormality(int status, Throwable cause) {
         super(cause);
         this.status = status;
     }
@@ -44,8 +42,7 @@ public class Abnormality extends Stop
      * 
      * @return The HTTP response status.
      */
-    public int getStatus()
-    {
+    public int getStatus() {
         return status;
     }
 }

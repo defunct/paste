@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 // TODO Document.
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface Arg
-{
+public @interface Arg {
     String path();
 }

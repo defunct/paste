@@ -17,6 +17,6 @@ public class ControllerProvider implements Provider<Object> {
     }
     
     public Object get() {
-        return injector.create(controllerClass, null);
+        return injector.instance(controllerClass, null);
     }
 }

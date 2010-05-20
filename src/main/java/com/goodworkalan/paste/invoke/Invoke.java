@@ -9,17 +9,16 @@ import java.lang.annotation.Target;
 // TODO Document.
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Invoke
-{
+public @interface Invoke {
     // TODO Document.
     String[] on() default {};
-    
+
     // TODO Document.
     String param() default "";
-    
+
     // TODO Document.
-    String[] methods() default {}; 
-    
+    String[] methods() default {};
+
     // TODO Document.
     String[] arguments() default {};
 }

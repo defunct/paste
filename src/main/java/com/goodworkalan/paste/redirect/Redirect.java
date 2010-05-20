@@ -22,7 +22,7 @@ public class Redirect {
 
     // TODO Document.
     private final List<InjectorBuilder> modules;
-    
+
     // TODO Document.
     private Configuration configuration = new Configuration();
 
@@ -72,7 +72,7 @@ public class Redirect {
         configuration.formatArguments = formatArguments;
         return this;
     }
-    
+
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {

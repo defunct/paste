@@ -11,16 +11,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A list of named values that can be queried and converted into different
- * maps.
+ * A list of named values that can be queried and converted into different maps.
  * 
  * @author Alan Gutierrez
  */
-public class NamedValueList implements Iterable<NamedValue>
-{
+public class NamedValueList implements Iterable<NamedValue> {
     /** The list of named values. */
     private final List<NamedValue> namedValues;
-
 
     /**
      * Create a named value list from the given list of named values.
@@ -28,18 +25,16 @@ public class NamedValueList implements Iterable<NamedValue>
      * @param namedValues
      *            The list of named values.
      */
-    public NamedValueList(List<NamedValue> namedValues)
-    {
+    public NamedValueList(List<NamedValue> namedValues) {
         this.namedValues = namedValues;
     }
-    
+
     /**
      * Return an iterator over the named values.
      * 
      * @return An iterator over the named values.
      */
-    public Iterator<NamedValue> iterator()
-    {
+    public Iterator<NamedValue> iterator() {
         return namedValues.iterator();
     }
 
@@ -48,8 +43,7 @@ public class NamedValueList implements Iterable<NamedValue>
      * 
      * @return The size of the named value list.
      */
-    public int size()
-    {
+    public int size() {
         return namedValues.size();
     }
 
@@ -68,56 +62,43 @@ public class NamedValueList implements Iterable<NamedValue>
      * @return A named value list with the named values in the given contexts at
      *         the head of the list.
      */
-    public NamedValueList reorder(NamedValue.Context...contexts)
-    {
+    public NamedValueList reorder(NamedValue.Context... contexts) {
         Set<NamedValue.Context> seen = new HashSet<NamedValue.Context>();
         List<NamedValue> reordered = new ArrayList<NamedValue>();
-        for (NamedValue.Context context : contexts)
-        {
-            if (!seen.contains(context))
-            {
+        for (NamedValue.Context context : contexts) {
+            if (!seen.contains(context)) {
                 seen.add(context);
-                for (NamedValue namedValue : namedValues)
-                {
-                    if (namedValue.getContext() == context)
-                    {
+                for (NamedValue namedValue : namedValues) {
+                    if (namedValue.getContext() == context) {
                         reordered.add(namedValue);
                     }
                 }
             }
         }
-        for (NamedValue namedValue : namedValues)
-        {
-            if (!seen.contains(namedValue.getContext()))
-            {
+        for (NamedValue namedValue : namedValues) {
+            if (!seen.contains(namedValue.getContext())) {
                 reordered.add(namedValue);
             }
         }
         return new NamedValueList(reordered);
     }
     
-    public NamedValueList include(NamedValue.Context...contexts)
-    {
+    public NamedValueList include(NamedValue.Context... contexts) {
         List<NamedValue> included = new ArrayList<NamedValue>();
         Set<NamedValue.Context> include = new HashSet<NamedValue.Context>(Arrays.asList(contexts));
-        for (NamedValue namedValue : namedValues)
-        {
-            if (include.contains(namedValue.getContext()))
-            {
+        for (NamedValue namedValue : namedValues) {
+            if (include.contains(namedValue.getContext())) {
                 included.add(namedValue);
             }
         }
         return new NamedValueList(included);
     }
-    
-    public NamedValueList exclude(NamedValue.Context...contexts)
-    {
+
+    public NamedValueList exclude(NamedValue.Context... contexts) {
         List<NamedValue> excluded = new ArrayList<NamedValue>();
         Set<NamedValue.Context> exclude = new HashSet<NamedValue.Context>(Arrays.asList(contexts));
-        for (NamedValue namedValue : namedValues)
-        {
-            if (!exclude.contains(namedValue.getContext()))
-            {
+        for (NamedValue namedValue : namedValues) {
+            if (!exclude.contains(namedValue.getContext())) {
                 excluded.add(namedValue);
             }
         }
@@ -131,14 +112,11 @@ public class NamedValueList implements Iterable<NamedValue>
      * 
      * @return A map of names to of lists of values.
      */
-    public LinkedHashMap<String, List<String>> toStringListMap()
-    {
+    public LinkedHashMap<String, List<String>> toStringListMap() {
         LinkedHashMap<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-        for (NamedValue namedValue : namedValues)
-        {
+        for (NamedValue namedValue : namedValues) {
             List<String> values = map.get(namedValue.getName());
-            if (values == null)
-            {
+            if (values == null) {
                 values = new ArrayList<String>();
                 map.put(namedValue.getName(), values);
             }
@@ -147,14 +125,11 @@ public class NamedValueList implements Iterable<NamedValue>
         return map;
     }
     
-    public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull)
-    {
+    public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull) {
         LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-        for (NamedValue namedValue : namedValues)
-        {
+        for (NamedValue namedValue : namedValues) {
             String value = namedValue.getValue();
-            if (spaceIsNull && (namedValue.getValue() == null || namedValue.getValue().trim().length() == 0))
-            {
+            if (spaceIsNull && (namedValue.getValue() == null || namedValue.getValue().trim().length() == 0)) {
                 value = null;
             }
             map.put(namedValue.getName(), value);
@@ -170,12 +145,9 @@ public class NamedValueList implements Iterable<NamedValue>
      *            The value name.
      * @return The first value found or null.
      */
-    public String getFirst(String name)
-    {
-        for (NamedValue namedValue : namedValues)
-        {
-            if (namedValue.getName().equals(name))
-            {
+    public String getFirst(String name) {
+        for (NamedValue namedValue : namedValues) {
+            if (namedValue.getName().equals(name)) {
                 return namedValue.getValue();
             }
         }
@@ -191,12 +163,9 @@ public class NamedValueList implements Iterable<NamedValue>
      * @return True if a named value with the given name exists in the named
      *         value list.
      */
-    public boolean hasName(String name)
-    {
-        for (NamedValue namedValue : namedValues)
-        {
-            if (namedValue.getName().equals(name))
-            {
+    public boolean hasName(String name) {
+        for (NamedValue namedValue : namedValues) {
+            if (namedValue.getName().equals(name)) {
                 return true;
             }
         }
@@ -208,11 +177,9 @@ public class NamedValueList implements Iterable<NamedValue>
      * 
      * @return The set of names in the named value set.
      */
-    public Set<String> getNames()
-    {
+    public Set<String> getNames() {
         Set<String> names = new HashSet<String>();
-        for (NamedValue namedValue : namedValues)
-        {
+        for (NamedValue namedValue : namedValues) {
             names.add(namedValue.getName());
         }
         return names;
@@ -223,24 +190,19 @@ public class NamedValueList implements Iterable<NamedValue>
      * 
      * @return A URL encoded query string.
      */
-    public String toQueryString()
-    {
+    public String toQueryString() {
         StringBuilder queryString = new StringBuilder();
         String separator = "";
-        for (NamedValue namedValue : this)
-        {
+        for (NamedValue namedValue : this) {
             queryString.append(separator);
-            try
-            {
-                queryString.append(URLEncoder.encode(namedValue.getName(), "UTF-8"));
+            try {
+                queryString.append(URLEncoder.encode(namedValue.getName(),
+                        "UTF-8"));
                 queryString.append("=");
-                if (namedValue.getValue() != null)
-                {
+                if (namedValue.getValue() != null) {
                     queryString.append(URLEncoder.encode(namedValue.getValue(), "UTF-8"));
                 }
-            }
-            catch (UnsupportedEncodingException e)
-            {
+            } catch (UnsupportedEncodingException e) {
             }
             separator = "&";
         }
@@ -257,10 +219,8 @@ public class NamedValueList implements Iterable<NamedValue>
      * @return True if the given object is equal to this named value list.
      */
     @Override
-    public boolean equals(Object object)
-    {
-        if (object instanceof NamedValueList)
-        {
+    public boolean equals(Object object) {
+        if (object instanceof NamedValueList) {
             NamedValueList namedValueList = (NamedValueList) object;
             return namedValues.equals(namedValueList.namedValues);
         }
@@ -273,8 +233,7 @@ public class NamedValueList implements Iterable<NamedValue>
      * 
      * @return The hash code.
      */
-    public int hashCode()
-    {
+    public int hashCode() {
         return namedValues.hashCode();
     }
 
@@ -284,8 +243,7 @@ public class NamedValueList implements Iterable<NamedValue>
      * @return A string representation.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return namedValues.toString();
     }
 }

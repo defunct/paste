@@ -7,8 +7,7 @@ import com.goodworkalan.paste.stop.Stop;
  * 
  * @author Alan Gutierrez
  */
-public class Redirection extends Stop
-{
+public class Redirection extends Stop {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
@@ -21,18 +20,16 @@ public class Redirection extends Stop
      * @param where
      *            The redirection URL.
      */
-    public Redirection(String where)
-    {
+    public Redirection(String where) {
         this.where = where;
     }
-    
+
     /**
      * Get the redirection URL.
      * 
      * @return The redirection URL.
      */
-    public String getWhere()
-    {
+    public String getWhere() {
         return where;
     }
 }

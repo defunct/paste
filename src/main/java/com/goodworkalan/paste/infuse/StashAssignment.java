@@ -15,6 +15,6 @@ public class StashAssignment<T> {
     }
     
     public void assign(Injector injector, Stash stash) {
-        stash.put(stashKey, ilk, injector.create(ilk, null));
+        stash.put(stashKey, ilk, injector.instance(ilk, null));
     }
 }
