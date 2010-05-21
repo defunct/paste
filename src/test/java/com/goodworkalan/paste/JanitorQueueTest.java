@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.janitor.Janitor;
-import com.goodworkalan.paste.janitor.JanitorQueue;
+import com.goodworkalan.paste.controller.Janitor;
+import com.goodworkalan.paste.controller.JanitorQueue;
 
 public class JanitorQueueTest {
     @Test

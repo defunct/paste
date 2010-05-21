@@ -9,9 +9,9 @@ import java.net.URISyntaxException;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 
-import com.goodworkalan.paste.PasteException;
-import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.Response;
+import com.goodworkalan.paste.controller.PasteException;
+import com.goodworkalan.paste.controller.Renderer;
+import com.goodworkalan.paste.controller.Response;
 import com.goodworkalan.paste.paths.PathFormatter;
 
 /**

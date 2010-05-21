@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.InjectException;
 import com.goodworkalan.ilk.inject.Injector;
-import com.goodworkalan.paste.Annotations;
-import com.goodworkalan.paste.PasteException;
-import com.goodworkalan.paste.qualifiers.Controller;
+import com.goodworkalan.paste.controller.Annotations;
+import com.goodworkalan.paste.controller.PasteException;
+import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.reflective.Reflective;
 
 // TODO Document.

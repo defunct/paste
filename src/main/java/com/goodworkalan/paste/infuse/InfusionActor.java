@@ -5,8 +5,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import com.goodworkalan.ilk.inject.Injector;
-import com.goodworkalan.paste.qualifiers.Controller;
-import com.goodworkalan.paste.util.Parameters;
+import com.goodworkalan.paste.controller.Parameters;
+import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.stringbeans.Stringer;
 import com.goodworkalan.stringbeans.url.UrlParser;
 

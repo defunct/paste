@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.Criteria;
-import com.goodworkalan.paste.qualifiers.Request;
+import com.goodworkalan.paste.controller.Criteria;
+import com.goodworkalan.paste.controller.qualifiers.Request;
 
 public class Forwarded {
     @Inject

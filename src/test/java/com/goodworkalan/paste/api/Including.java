@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.util.Parameters;
+import com.goodworkalan.paste.controller.Parameters;
 
 public class Including {
     @Inject

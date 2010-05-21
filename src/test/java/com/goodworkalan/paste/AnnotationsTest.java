@@ -12,8 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.util.NamedValue;
-import com.goodworkalan.paste.util.Parameters;
+import com.goodworkalan.paste.controller.Annotations;
+import com.goodworkalan.paste.controller.NamedValue;
+import com.goodworkalan.paste.controller.Parameters;
 
 public class AnnotationsTest {
     @Test
@@ -27,7 +28,7 @@ public class AnnotationsTest {
     public void on() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         List<NamedValue> parameters = new ArrayList<NamedValue>();
-        parameters.add(new NamedValue(NamedValue.REQUEST, "save", "Save"));
+        parameters.add(new NamedValue("save", "Save"));
         Annotations annotations = new Annotations(new Parameters(parameters), request);
         assertTrue(annotations.invoke(new String[] { "save" }, "", new String[0]));
         assertFalse(annotations.invoke(new String[] { "cancel" }, "", new String[0]));
@@ -37,7 +38,7 @@ public class AnnotationsTest {
     public void param() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         List<NamedValue> parameters = new ArrayList<NamedValue>();
-        parameters.add(new NamedValue(NamedValue.REQUEST, "on", "save"));
+        parameters.add(new NamedValue("on", "save"));
         Annotations annotations = new Annotations(new Parameters(parameters), request);
         assertTrue(annotations.invoke(new String[] { "save" }, "on", new String[0]));
         assertFalse(annotations.invoke(new String[] { "cancel" }, "on", new String[0]));

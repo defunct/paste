@@ -15,6 +15,7 @@ import org.mockito.stubbing.Answer;
 import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.MockHttpServletRequest;
+import com.goodworkalan.paste.controller.Redirection;
 
 public class RedirectionTest {
     @Test

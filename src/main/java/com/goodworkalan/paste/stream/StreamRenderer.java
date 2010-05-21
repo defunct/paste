@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
-import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.qualifiers.Controller;
-import com.goodworkalan.paste.scopes.ControllerScoped;
+import com.goodworkalan.paste.controller.Renderer;
+import com.goodworkalan.paste.controller.qualifiers.Controller;
+import com.goodworkalan.paste.controller.scopes.ControllerScoped;
 
 /**
  * Render output by calling a method on the controller that either returns a

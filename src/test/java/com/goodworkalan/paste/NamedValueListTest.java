@@ -3,7 +3,6 @@ package com.goodworkalan.paste;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -12,14 +11,14 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.util.NamedValue;
-import com.goodworkalan.paste.util.NamedValueList;
+import com.goodworkalan.paste.controller.NamedValue;
+import com.goodworkalan.paste.controller.NamedValueList;
 
 public class NamedValueListTest {
     @Test
     public void add() {
         List<NamedValue> list = new ArrayList<NamedValue>();
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        list.add(new NamedValue("hello", "world"));
         NamedValueList namedValues = new NamedValueList(list);
         assertEquals(namedValues.size(), 1);
         for (Map.Entry<String, List<String>> entry : namedValues.toStringListMap().entrySet()) {
@@ -33,7 +32,7 @@ public class NamedValueListTest {
     @Test
     public void getFirst() {
         List<NamedValue> list = new ArrayList<NamedValue>();
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        list.add(new NamedValue("hello", "world"));
         NamedValueList map = new NamedValueList(list);
         assertEquals(map.getFirst("hello"), "world");
         assertNull(map.getFirst("world"));
@@ -45,7 +44,7 @@ public class NamedValueListTest {
     public void hasName()
     {
         List<NamedValue> list = new ArrayList<NamedValue>();
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        list.add(new NamedValue("hello", "world"));
         NamedValueList namedValue = new NamedValueList(list);
         assertTrue(namedValue.hasName("hello"));
         assertFalse(namedValue.hasName("world"));
@@ -55,11 +54,10 @@ public class NamedValueListTest {
     public void iterable()
     {
         List<NamedValue> list = new ArrayList<NamedValue>();
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        list.add(new NamedValue("hello", "world"));
         NamedValueList namedValues = new NamedValueList(list);
         for (NamedValue namedValue : namedValues)
         {
-            assertSame(namedValue.getContext(), NamedValue.REQUEST);
             assertEquals(namedValue.getName(), "hello");
             assertEquals(namedValue.getValue(), "world");
         }
@@ -69,7 +67,7 @@ public class NamedValueListTest {
     public void getNames()
     {
         List<NamedValue> list = new ArrayList<NamedValue>();
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        list.add(new NamedValue( "hello", "world"));
         NamedValueList namedValues = new NamedValueList(list);
         for (String name : namedValues.getNames())
         {
@@ -81,8 +79,8 @@ public class NamedValueListTest {
     public void size()
     {
         List<NamedValue> list = new ArrayList<NamedValue>();
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
-        list.add(new NamedValue(NamedValue.REQUEST, "hello", "nurse"));
+        list.add(new NamedValue("hello", "world"));
+        list.add(new NamedValue("hello", "nurse"));
         NamedValueList namedValues = new NamedValueList(list);
         assertEquals(namedValues.size(), 2);
     }
@@ -93,10 +91,10 @@ public class NamedValueListTest {
         List<NamedValue> listOne = new ArrayList<NamedValue>();
         NamedValueList one = new NamedValueList(listOne);
         assertTrue(one.equals(one));
-        listOne.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        listOne.add(new NamedValue("hello", "world"));
         List<NamedValue> listTwo = new ArrayList<NamedValue>();
         NamedValueList two = new NamedValueList(listTwo);
-        listTwo.add(new NamedValue(NamedValue.REQUEST, "hello", "world"));
+        listTwo.add(new NamedValue("hello", "world"));
         assertTrue(one.equals(two));
         assertFalse(one.equals(null));
     }

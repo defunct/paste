@@ -14,7 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.janitor.Janitor;
+import com.goodworkalan.paste.controller.Janitor;
 
 /**
  * A filter that dispatches requests to controllers by matching the request path

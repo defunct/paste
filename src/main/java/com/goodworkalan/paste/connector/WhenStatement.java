@@ -6,7 +6,7 @@ import com.goodworkalan.deviate.Equals;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.deviate.RuleSetBuilder;
 import com.goodworkalan.dovetail.Glob;
-import com.goodworkalan.paste.BindKey;
+import com.goodworkalan.paste.servlet.BindKey;
 import com.mallardsoft.tuple.Pair;
 
 /**

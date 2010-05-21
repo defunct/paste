@@ -10,8 +10,8 @@ import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.Routes;
-import com.goodworkalan.paste.qualifiers.Controller;
+import com.goodworkalan.paste.controller.Routes;
+import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.mallardsoft.tuple.Pair;
 import com.mallardsoft.tuple.Tuple;
 
@@ -81,7 +81,7 @@ public class Cassette {
      * @return A controller lookup.
      */
     Routes getRoutes() {
-        return new Routes(controllerToGlob);
+        return new CoreRoutes(controllerToGlob);
     }
 
     /**
