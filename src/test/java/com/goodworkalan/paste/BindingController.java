@@ -4,6 +4,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.inject.Inject;
 
+import com.goodworkalan.paste.qualifiers.Controller;
 import com.goodworkalan.paste.util.Parameters;
 
 public class BindingController {

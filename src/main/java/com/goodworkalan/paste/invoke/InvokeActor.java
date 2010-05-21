@@ -8,9 +8,9 @@ import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.InjectException;
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.Annotations;
-import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.PasteException;
-import com.goodworkalan.reflective.ReflectiveException;
+import com.goodworkalan.paste.qualifiers.Controller;
+import com.goodworkalan.reflective.Reflective;
 
 // TODO Document.
 public class InvokeActor implements Runnable {
@@ -39,7 +39,7 @@ public class InvokeActor implements Runnable {
                 try {
                     injector.inject(controller.box, method);
                 } catch (InjectException e) {
-                    if (e.getCode() == ReflectiveException.INVOCATION_TARGET) {
+                    if (e.code == Reflective.INVOCATION_TARGET) {
                         throw new PasteException(PasteException.ACTOR_EXCEPTION, e);
                     }
                     throw e;

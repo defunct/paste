@@ -8,10 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
-import com.goodworkalan.paste.RequestScoped;
 import com.goodworkalan.paste.paths.PathFormatter;
+import com.goodworkalan.paste.qualifiers.Controller;
+import com.goodworkalan.paste.scopes.RequestScoped;
 
 /**
  * A renderer that renders the controller by forwarding to another filter or

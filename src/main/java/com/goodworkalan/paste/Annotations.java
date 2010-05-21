@@ -3,6 +3,8 @@ package com.goodworkalan.paste;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
+import com.goodworkalan.paste.qualifiers.Controller;
+import com.goodworkalan.paste.scopes.ControllerScoped;
 import com.goodworkalan.paste.util.Parameters;
 
 /**

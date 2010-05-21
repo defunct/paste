@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.Criteria;
-import com.goodworkalan.paste.Request;
+import com.goodworkalan.paste.qualifiers.Request;
 import com.goodworkalan.paste.util.Parameters;
 
 public class Included {

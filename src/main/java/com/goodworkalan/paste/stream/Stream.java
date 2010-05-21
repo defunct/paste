@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.ilk.inject.InjectorScoped;
-import com.goodworkalan.paste.Connector;
-import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Renderer;
+import com.goodworkalan.paste.connector.Connector;
+import com.goodworkalan.paste.qualifiers.Controller;
 
 /**
  * An extension element in the domain-specific language that is used to specify

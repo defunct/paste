@@ -1,0 +1,4 @@
+Thu May 20 19:03:20 CDT 2010
+
+    Note that binding to classes instead of instances means that you have to
+    make implementation classes visible publiclly so that they can be created.

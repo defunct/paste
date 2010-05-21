@@ -9,8 +9,12 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Indicates the welcome file to use with the {@link PathFile} argument
- * when the path ends with a slash.
+ * Indicates the welcome file to use with the {@link PathFile} argument when the
+ * path ends with a slash.
+ * <p>
+ * I could never find the welcome file in the Servlet API, but it just now
+ * occurred to me that I can find it by opening web.xml and reading through the
+ * XML, if I am that determined.
  * 
  * @author Alan Gutierrez
  */

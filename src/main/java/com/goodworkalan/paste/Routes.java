@@ -18,8 +18,7 @@ public class Routes {
 
     // TODO Document.
     public String path(Class<?> controllerClass) {
-        return controllerToGlob.get(controllerClass).path(
-                Collections.<String, String> emptyMap());
+        return controllerToGlob.get(controllerClass).path(Collections.<String, String> emptyMap());
     }
 
     // TODO Document.

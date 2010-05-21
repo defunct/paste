@@ -17,9 +17,29 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Actors {
     /**
-     * The list of actors that will act upon the controller.
+     * This list of actors that will be executed before the controller is created.
+     * The controller parameters and controller class will be available, but the controller
+     * will not yet be instanciated and should not be instanciated.
+     */
+    Class<? extends Runnable>[] before() default {};
+ 
+    /**
+     * The list of actors that will act upon the controller after the controller
+     * has been created.
      * 
      * @return The list of actors.
      */
-    Class<? extends Runnable>[] value();
+    Class<? extends Runnable>[] value() default {};
+
+    /**
+     * This list of actors that will act upon the controller after the
+     * controller has been created and after the controllers of the
+     * <code>value</code> value property have been run.
+     * <p>
+     * The the two sets of after actors are offered for aesthetics. If there
+     * are not before actors, then you can just use the value property. If there
+     * are before actors you can use the after property to balance the before
+     * property.
+     */
+    Class<? extends Runnable>[] after() default {};
 }

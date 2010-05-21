@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.Controller;
 import com.goodworkalan.paste.Criteria;
+import com.goodworkalan.paste.qualifiers.Controller;
 
 public class FormatTest {
     protected Class<?>[] args(Class<?>... formatArguments) {

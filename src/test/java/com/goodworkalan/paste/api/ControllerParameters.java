@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
-import com.goodworkalan.paste.Controller;
+import com.goodworkalan.paste.qualifiers.Controller;
 import com.goodworkalan.paste.util.Parameters;
 
 public class ControllerParameters {

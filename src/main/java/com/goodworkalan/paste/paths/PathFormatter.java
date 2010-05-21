@@ -3,7 +3,7 @@ package com.goodworkalan.paste.paths;
 import javax.inject.Inject;
 
 import com.goodworkalan.ilk.inject.Injector;
-import com.goodworkalan.paste.RequestScoped;
+import com.goodworkalan.paste.scopes.RequestScoped;
 
 /**
  * A formatter that formats a sprintf string using objects built from the

@@ -34,9 +34,9 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/string-beans/string-beans-url/0.1/string-beans-url-0.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/infuse/infuse/0.1/infuse-0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/infuse/infuse/0.1/infuse-0.1-sources.jar">
+	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/infuse/infuse/0.1.1/infuse-0.1.1.jar" sourcepath="M2_REPO/com/github/bigeasy/infuse/infuse/0.1.1/infuse-0.1.1-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/infuse/infuse/0.1/infuse-0.1-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/infuse/infuse/0.1.1/infuse-0.1.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/dovetail/dovetail/0.7/dovetail-0.7.jar" sourcepath="M2_REPO/com/github/bigeasy/dovetail/dovetail/0.7/dovetail-0.7-sources.jar">
@@ -86,9 +86,9 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/org/objenesis/objenesis/1.0/objenesis-1.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/string-beans/string-beans/0.1.0.1/string-beans-0.1.0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/string-beans/string-beans/0.1.0.1/string-beans-0.1.0.1-sources.jar">
+	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/string-beans/string-beans/0.1.0.2/string-beans-0.1.0.2.jar" sourcepath="M2_REPO/com/github/bigeasy/string-beans/string-beans/0.1.0.2/string-beans-0.1.0.2-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/string-beans/string-beans/0.1.0.1/string-beans-0.1.0.1-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/string-beans/string-beans/0.1.0.2/string-beans-0.1.0.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/permeate/permeate/0.1/permeate-0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/permeate/permeate/0.1/permeate-0.1-sources.jar">
@@ -106,9 +106,9 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/diffuse/diffuse/0.1.0.2/diffuse-0.1.0.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/reflective/reflective/0.3/reflective-0.3.jar" sourcepath="M2_REPO/com/github/bigeasy/reflective/reflective/0.3/reflective-0.3-sources.jar">
+	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/reflective/reflective/0.5/reflective-0.5.jar" sourcepath="M2_REPO/com/github/bigeasy/reflective/reflective/0.5/reflective-0.5-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/reflective/reflective/0.3/reflective-0.3-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/reflective/reflective/0.5/reflective-0.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/javax/inject/inject/1.0/inject-1.0.jar" sourcepath="M2_REPO/javax/inject/inject/1.0/inject-1.0-sources.jar">
@@ -124,6 +124,11 @@
 	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/class-association/class-association/0.1/class-association-0.1.jar" sourcepath="M2_REPO/com/github/bigeasy/class-association/class-association/0.1/class-association-0.1-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/class-association/class-association/0.1/class-association-0.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/reflective/reflective-exception/0.5/reflective-exception-0.5.jar" sourcepath="M2_REPO/com/github/bigeasy/reflective/reflective-exception/0.5/reflective-exception-0.5-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/reflective/reflective-exception/0.5/reflective-exception-0.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar" sourcepath="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar"/>
@@ -152,9 +157,9 @@
 			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/verbiage/verbiage/0.1.0.4/verbiage-0.1.0.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/reflective/reflective-getter/0.3/reflective-getter-0.3.jar" sourcepath="M2_REPO/com/github/bigeasy/reflective/reflective-getter/0.3/reflective-getter-0.3-sources.jar">
+	<classpathentry kind="var" path="M2_REPO/com/github/bigeasy/reflective/reflective-getter/0.5/reflective-getter-0.5.jar" sourcepath="M2_REPO/com/github/bigeasy/reflective/reflective-getter/0.5/reflective-getter-0.5-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/reflective/reflective-getter/0.3/reflective-getter-0.3-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:/Users/alan/.m2/repository/com/github/bigeasy/reflective/reflective-getter/0.5/reflective-getter-0.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar"/>
@@ -181,5 +186,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ilk"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ilk-association"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ilk-inject"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ilk-inject-list"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

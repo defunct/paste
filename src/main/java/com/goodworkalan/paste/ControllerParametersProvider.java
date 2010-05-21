@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.goodworkalan.paste.qualifiers.Controller;
+import com.goodworkalan.paste.qualifiers.Filter;
 import com.goodworkalan.paste.util.NamedValue;
 import com.goodworkalan.paste.util.Parameters;
 
