@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * 
  * @author Alan Gutierrez
  */
-public class InterceptingRequest extends HttpServletRequestWrapper {
+class InterceptingRequest extends HttpServletRequestWrapper {
     /** The intercept flag. */
     private final Interception interception;
 

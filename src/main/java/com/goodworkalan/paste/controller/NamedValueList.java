@@ -1,12 +1,13 @@
 package com.goodworkalan.paste.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,8 +18,6 @@ import java.util.Set;
 public class NamedValueList extends ArrayList<NamedValue> {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
-    /** The list of named values. */
-    private final List<NamedValue> namedValues;
 
     /**
      * Create a named value list from the given list of named values.
@@ -27,25 +26,66 @@ public class NamedValueList extends ArrayList<NamedValue> {
      *            The list of named values.
      */
     public NamedValueList(List<NamedValue> namedValues) {
-        this.namedValues = namedValues;
+        super(namedValues);
+    }
+    
+    public NamedValueList(Map<String, String> map) {
+        this(fromMap(map));
     }
 
     /**
-     * Return an iterator over the named values.
+     * Construct a name value list from the given query string.
      * 
-     * @return An iterator over the named values.
+     * @param queryString
+     *            The query string.
      */
-    public Iterator<NamedValue> iterator() {
-        return namedValues.iterator();
+    public NamedValueList(String queryString) {
+        this(fromQueryString(queryString, "UTF-8"));
     }
-
+    
+    protected static List<NamedValue> fromMap(Map<String, String> map) {
+        List<NamedValue> namedValues = new ArrayList<NamedValue>();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            namedValues.add(new NamedValue(entry.getKey(), entry.getValue()));
+        }
+        return namedValues;
+    }
+    
+    protected static List<NamedValue> catenate(NamedValueList...namedValueLists) {
+        List<NamedValue> namedValues = new ArrayList<NamedValue>();
+        for (NamedValueList namedValueList : namedValueLists) {
+            namedValues.addAll(namedValueList);
+        }
+        return namedValues;
+    }
+    
     /**
-     * Returns the number of elements in this named value list.
+     * Create a parameter list from the given query string placing the named
+     * values in the given context.
      * 
-     * @return The size of the named value list.
+     * @param query
+     *            The query string to parse.
+     * @param context
+     *            The context in which the parameter was specified.
+     * @return A list of parameters contained in the query string.
      */
-    public int size() {
-        return namedValues.size();
+    static List<NamedValue> fromQueryString(String query, String encoding) {
+        try {
+            String[] parameters = query.split("&");
+            List<NamedValue> namedValues = new ArrayList<NamedValue>(parameters.length);
+            for (String parameter : parameters) {
+                String[] pair = parameter.split("=", 2);
+                String name = URLDecoder.decode(pair[0], encoding);
+                String value = "";
+                if (pair.length == 2) {
+                    value = URLDecoder.decode(pair[1], encoding);
+                }
+                namedValues.add(new NamedValue(name, value));
+            }
+            return namedValues;
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -57,7 +97,7 @@ public class NamedValueList extends ArrayList<NamedValue> {
      */
     public LinkedHashMap<String, List<String>> toStringListMap() {
         LinkedHashMap<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-        for (NamedValue namedValue : namedValues) {
+        for (NamedValue namedValue : this) {
             List<String> values = map.get(namedValue.getName());
             if (values == null) {
                 values = new ArrayList<String>();
@@ -70,7 +110,7 @@ public class NamedValueList extends ArrayList<NamedValue> {
     
     public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull) {
         LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-        for (NamedValue namedValue : namedValues) {
+        for (NamedValue namedValue : this) {
             String value = namedValue.getValue();
             if (spaceIsNull && (namedValue.getValue() == null || namedValue.getValue().trim().length() == 0)) {
                 value = null;
@@ -88,10 +128,10 @@ public class NamedValueList extends ArrayList<NamedValue> {
      *            The value name.
      * @return The first value found or null.
      */
-    public String getFirst(String name) {
-        for (NamedValue namedValue : namedValues) {
+    public NamedValue get(String name) {
+        for (NamedValue namedValue : this) {
             if (namedValue.getName().equals(name)) {
-                return namedValue.getValue();
+                return namedValue;
             }
         }
         return null;
@@ -106,8 +146,8 @@ public class NamedValueList extends ArrayList<NamedValue> {
      * @return True if a named value with the given name exists in the named
      *         value list.
      */
-    public boolean hasName(String name) {
-        for (NamedValue namedValue : namedValues) {
+    public boolean contains(String name) {
+        for (NamedValue namedValue : this) {
             if (namedValue.getName().equals(name)) {
                 return true;
             }
@@ -121,8 +161,8 @@ public class NamedValueList extends ArrayList<NamedValue> {
      * @return The set of names in the named value set.
      */
     public Set<String> getNames() {
-        Set<String> names = new HashSet<String>();
-        for (NamedValue namedValue : namedValues) {
+        Set<String> names = new LinkedHashSet<String>();
+        for (NamedValue namedValue : this) {
             names.add(namedValue.getName());
         }
         return names;
@@ -150,43 +190,5 @@ public class NamedValueList extends ArrayList<NamedValue> {
             separator = "&";
         }
         return queryString.toString();
-    }
-
-    /**
-     * A named value list is equal to another named value object list whose of
-     * the same length whose named values at each position in the list are equal
-     * to the named values in this list.
-     * 
-     * @param object
-     *            An object to which to compare this object.
-     * @return True if the given object is equal to this named value list.
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof NamedValueList) {
-            NamedValueList namedValueList = (NamedValueList) object;
-            return namedValues.equals(namedValueList.namedValues);
-        }
-        return false;
-    }
-
-    /**
-     * Return a hash code that combines the hash code each named value in the
-     * list.
-     * 
-     * @return The hash code.
-     */
-    public int hashCode() {
-        return namedValues.hashCode();
-    }
-
-    /**
-     * Return a string representation of the named value.
-     * 
-     * @return A string representation.
-     */
-    @Override
-    public String toString() {
-        return namedValues.toString();
     }
 }

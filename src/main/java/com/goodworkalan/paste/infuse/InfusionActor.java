@@ -1,13 +1,13 @@
 package com.goodworkalan.paste.infuse;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
-import com.goodworkalan.stringbeans.Stringer;
+import com.goodworkalan.stringbeans.Converter;
 import com.goodworkalan.stringbeans.url.UrlParser;
 
 /**
@@ -20,18 +20,12 @@ import com.goodworkalan.stringbeans.url.UrlParser;
  * @author Alan Gutierrez
  */
 public class InfusionActor implements Runnable {
-    /** The controller parameters. */
     private final Parameters parameters;
-
-    /** The string beans configuration. */
-    private final Stringer stringer;
-    
+    private final Converter converter;
     private final Injector injector;
-    
-    private final Set<StashAssignment<?>> assignments;
-    
+    private final List<StashAssignment<?>> assignments;
     private final Object controller;
-
+    
     /**
      * Construct an infusion actor with the given controller parameters.
      * 
@@ -39,17 +33,16 @@ public class InfusionActor implements Runnable {
      *            Parameters with the controller parameters.
      */
     @Inject
-    public InfusionActor(@Controller Parameters parameters, Stringer stringer, Injector injector, @Infusable Set<StashAssignment<?>> assignments, @Controller Object controller) {
+    public InfusionActor(@Controller Parameters parameters, Converter converter, Injector injector, List<StashAssignment<?>> assignments, @Controller Object controller) {
         this.parameters = parameters;
-        this.stringer = stringer;
+        this.converter = converter;
         this.injector = injector;
         this.assignments = assignments;
         this.controller = controller;
     }
 
-    // FIXME Document.
     public void run() {
-        UrlParser parser = new UrlParser(stringer);
+        UrlParser parser = new UrlParser(converter);
         for (StashAssignment<?> assignment : assignments) {
             assignment.assign(injector, parser.getStash());
         }

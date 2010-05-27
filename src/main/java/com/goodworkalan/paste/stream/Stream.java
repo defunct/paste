@@ -1,7 +1,10 @@
 package com.goodworkalan.paste.stream;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import com.goodworkalan.ilk.IlkReflect;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.connector.Connector;
@@ -67,6 +70,12 @@ public class Stream {
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {
+                reflector(new IlkReflect.Reflector() {
+                    public Object newInstance(Constructor<?> constructor, Object[] arguments)
+                    throws InstantiationException, IllegalAccessException, InvocationTargetException {
+                        return constructor.newInstance(arguments);
+                    }
+                });
                 instance(configuration, ilk(Configuration.class), Controller.class);
                 implementation(ilk(StreamRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }

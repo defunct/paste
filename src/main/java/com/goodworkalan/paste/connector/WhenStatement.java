@@ -7,7 +7,7 @@ import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.deviate.RuleSetBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.paste.servlet.BindKey;
-import com.mallardsoft.tuple.Pair;
+import com.goodworkalan.paste.servlet.Cassette;
 
 /**
  * A statement that specifies the rules to apply after a path has matched to
@@ -36,7 +36,7 @@ public class WhenStatement<T> {
     private final Map<Class<?>, Glob> controllerToGlob;
 
     /** The rule set builder for this rule statement. */
-    private final RuleSetBuilder<Pair<Integer, Class<?>>> rule;
+    private final RuleSetBuilder<Cassette.ControllerCandidate> rule;
 
     /** The priority of the rule set to resolve ambiguities. */
     private int priority;
@@ -56,7 +56,7 @@ public class WhenStatement<T> {
      *            The builder of map of rule sets to priority and controller
      *            class pairs.
      */
-    WhenStatement(PathStatement<T> when, Glob glob, Map<Class<?>, Glob> controllerToGlob, RuleMapBuilder<Pair<Integer, Class<?>>> rules) {
+    WhenStatement(PathStatement<T> when, Glob glob, Map<Class<?>, Glob> controllerToGlob, RuleMapBuilder<Cassette.ControllerCandidate> rules) {
         this.when = when;
         this.glob = glob;
         this.controllerToGlob = controllerToGlob;
@@ -103,7 +103,7 @@ public class WhenStatement<T> {
         if (!controllerToGlob.containsKey(controller)) {
             controllerToGlob.put(controller, glob);
         }
-        rule.put(new Pair<Integer, Class<?>>(priority, controller));
+        rule.put(new Cassette.ControllerCandidate(priority, controller));
         return new End<WhenClause<T>>(when);
     }
 }

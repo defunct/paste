@@ -34,10 +34,10 @@ public class NamedValueListTest {
         List<NamedValue> list = new ArrayList<NamedValue>();
         list.add(new NamedValue("hello", "world"));
         NamedValueList map = new NamedValueList(list);
-        assertEquals(map.getFirst("hello"), "world");
-        assertNull(map.getFirst("world"));
+        assertEquals(map.get("hello").getName(), "world");
+        assertNull(map.get("world"));
         list.clear();
-        assertNull(map.getFirst("hello"));
+        assertNull(map.get("hello"));
     }
 
     @Test
@@ -46,8 +46,8 @@ public class NamedValueListTest {
         List<NamedValue> list = new ArrayList<NamedValue>();
         list.add(new NamedValue("hello", "world"));
         NamedValueList namedValue = new NamedValueList(list);
-        assertTrue(namedValue.hasName("hello"));
-        assertFalse(namedValue.hasName("world"));
+        assertTrue(namedValue.contains("hello"));
+        assertFalse(namedValue.contains("world"));
     }
     
     @Test

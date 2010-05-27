@@ -12,8 +12,6 @@ import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.Routes;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
-import com.mallardsoft.tuple.Pair;
-import com.mallardsoft.tuple.Tuple;
 
 /**
  * This cassette is given to the {@link Controller} and acts as the interface
@@ -47,19 +45,52 @@ import com.mallardsoft.tuple.Tuple;
  * 
  * @author Alan Gutierrez
  */
-public class Cassette {
+public final class Cassette {
+    public static final class Connection {
+        public List<Glob> globs;
+        
+        public RuleMapBuilder<ControllerCandidate> rules;
+        
+        public Connection(List<Glob> globs, RuleMapBuilder<ControllerCandidate> rules) {
+            this.globs = globs;
+            this.rules = rules;
+        }
+    }
+    
+    public static final class ControllerCandidate {
+        public int priority;
+        
+        public Class<?> controllerClass;
+        
+        public ControllerCandidate(int priority, Class<?> controllerClass) {
+            this.priority = priority;
+            this.controllerClass = controllerClass;
+        }
+    }
+    
+    public static final class RenderCandidate {
+        public int priority;
+        
+        public List<InjectorBuilder> modules;
+
+        public RenderCandidate(int priority, List<InjectorBuilder> modules) {
+            this.priority = priority;
+            this.modules = modules;
+        }
+    }
+
     /** A map of controller classes to the globs that define their URL bindings. */
-    public Map<Class<?>, Glob> controllerToGlob;
+    public Map<Class<?>, Glob> routes;
 
     /**
      * A list of connection groups, a connection group consisting of URL
      * bindings. URL bindings consisting of a list of globs paired with rule map
      * of tests to further winnow the match based on request parameters.
      */
-    public List<List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>>> connections;
+    public List<List<Connection>> connections;
     
     /** A rule map to match a controller or exception to a renderer. */
-    public RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>> viewRules;
+    public RuleMapBuilder<RenderCandidate> renderers;
     
     /** The map of annotations to controllers. */
     public Map<Class<?>, List<Class<?>>> reactions;
@@ -81,7 +112,7 @@ public class Cassette {
      * @return A controller lookup.
      */
     Routes getRoutes() {
-        return new CoreRoutes(controllerToGlob);
+        return new CoreRoutes(routes);
     }
 
     /**
@@ -92,13 +123,13 @@ public class Cassette {
      * 
      * @return The list of connection groups.
      */
-    List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> getBindingTrees() {
-        List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> trees = new ArrayList<GlobTree<RuleMap<Pair<Integer, Class<?>>>>>();
-        for (List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> listOfControllerPathMappings : connections) {
-            GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree = new GlobTree<RuleMap<Pair<Integer, Class<?>>>>();
-            for (Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>> mapping : listOfControllerPathMappings) {
-                RuleMap<Pair<Integer, Class<?>>> rules = Tuple.get2(mapping).newRuleMap();
-                for (Glob glob : Tuple.get1(mapping)) {
+    List<GlobTree<RuleMap<ControllerCandidate>>> getConnections() {
+        List<GlobTree<RuleMap<ControllerCandidate>>> trees = new ArrayList<GlobTree<RuleMap<ControllerCandidate>>>();
+        for (List<Connection> listOfControllerPathMappings : connections) {
+            GlobTree<RuleMap<ControllerCandidate>> tree = new GlobTree<RuleMap<ControllerCandidate>>();
+            for (Connection mapping : listOfControllerPathMappings) {
+                RuleMap<ControllerCandidate> rules = mapping.rules.newRuleMap();
+                for (Glob glob : mapping.globs) {
                     tree.add(glob, rules);
                 }
             }
@@ -112,7 +143,7 @@ public class Cassette {
      * 
      * @return The rule map to match a controller or exception to a renderer.
      */
-    RuleMap<Pair<Integer, List<InjectorBuilder>>> getViewRules() {
-        return viewRules.newRuleMap();
+    RuleMap<RenderCandidate> getRenderers() {
+        return renderers.newRuleMap();
     }
 }

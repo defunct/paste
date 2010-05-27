@@ -7,7 +7,7 @@ import java.util.Map;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
-import com.mallardsoft.tuple.Pair;
+import com.goodworkalan.paste.servlet.Cassette;
 
 /**
  * An element for a group of connections in the domain-specific object to URL
@@ -29,7 +29,7 @@ public class ConnectStatement {
      * A list of globs to sets of rule mappings the further test to see if the
      * controller is applicable based on additional request parameters.
      */
-    private final List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections;
+    private final List<Cassette.Connection> connections;
 
     /**
      * Create a connector group that will populate the given data structures
@@ -45,7 +45,7 @@ public class ConnectStatement {
      *            see if the controller is applicable based on additional
      *            request parameters.
      */
-    ConnectStatement(Connector end, Map<Class<?>, Glob> controllerToGlob, List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections)  {
+    ConnectStatement(Connector end, Map<Class<?>, Glob> controllerToGlob, List<Cassette.Connection> connections)  {
         this.end = end;
         this.controllerToGlob = controllerToGlob;
         this.connections = connections;
@@ -60,7 +60,7 @@ public class ConnectStatement {
      * @return A path specification element to define the path.
      */
     public PathStatement<ConnectStatement> path(String path) {
-        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Pair<Integer,Class<?>>>(), Collections.singletonList(path));
+        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Cassette.ControllerCandidate>(), Collections.singletonList(path));
     }
 
     /**

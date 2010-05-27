@@ -2,13 +2,15 @@ package com.goodworkalan.paste.redirect;
 
 import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import com.goodworkalan.ilk.IlkReflect;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.controller.Renderer;
-import com.goodworkalan.paste.controller.qualifiers.Controller;
 
 /**
  * An extension element in a domain-specific language use to specify the details
@@ -76,7 +78,13 @@ public class Redirect {
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {
-                instance(configuration, ilk(Configuration.class), Controller.class);
+                reflector(new IlkReflect.Reflector() {
+                    public Object newInstance(Constructor<?> constructor, Object[] arguments)
+                    throws InstantiationException, IllegalAccessException, InvocationTargetException {
+                        return constructor.newInstance(arguments);
+                    }
+                });
+                instance(configuration, ilk(Configuration.class), null);
                 implementation(ilk(RedirectRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }
         });

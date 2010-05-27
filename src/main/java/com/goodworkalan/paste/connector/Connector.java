@@ -7,9 +7,7 @@ import java.util.List;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.ilk.association.IlkAssociation;
-import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.servlet.Cassette;
-import com.mallardsoft.tuple.Pair;
 
 /**
  * Used by {@link Router} instances to define path to controller mappings and
@@ -25,9 +23,9 @@ public class Connector {
      */
     public Connector(Cassette cassette) {
         cassette.reactions = new HashMap<Class<?>, List<Class<?>>>();
-        cassette.controllerToGlob = new HashMap<Class<?>, Glob>();
-        cassette.connections = new ArrayList<List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>>>();
-        cassette.viewRules = new RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>>();
+        cassette.routes = new HashMap<Class<?>, Glob>();
+        cassette.connections = new ArrayList<List<Cassette.Connection>>();
+        cassette.renderers = new RuleMapBuilder<Cassette.RenderCandidate>();
         cassette.interceptors = new IlkAssociation<Class<?>>(true);
         this.cassette = cassette;
     }
@@ -53,9 +51,9 @@ public class Connector {
      * @return A domain-specific language element used to define a group
      */
     public ConnectStatement connect() {
-        List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> group = new ArrayList<Pair<List<Glob>,RuleMapBuilder<Pair<Integer,Class<?>>>>>();
+        List<Cassette.Connection> group = new ArrayList<Cassette.Connection>();
         cassette.connections.add(group);
-        return new ConnectStatement(this, cassette.controllerToGlob, group);
+        return new ConnectStatement(this, cassette.routes, group);
     }
 
     /**
@@ -66,6 +64,10 @@ public class Connector {
      * @return A domain-specific language used to define the renderer.
      */
     public RenderStatement render() {
-        return new RenderStatement(this, cassette.viewRules);
+        return new RenderStatement(this, cassette.renderers);
+    }
+    
+    public void end() {
+        
     }
 }

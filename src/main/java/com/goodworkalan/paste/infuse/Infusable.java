@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Scope;
+import javax.inject.Qualifier;
 
 /**
  * Indicates that an object can be created by the infusion actor.
@@ -20,6 +20,6 @@ import javax.inject.Scope;
 @Documented
 @Target({ ElementType.PARAMETER, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Scope
+@Qualifier
 public @interface Infusable {
 }

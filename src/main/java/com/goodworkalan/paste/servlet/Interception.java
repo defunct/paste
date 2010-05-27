@@ -9,7 +9,7 @@ package com.goodworkalan.paste.servlet;
  * 
  * @author Alan Gutierrez
  */
-public class Interception {
+class Interception {
     /** The intercept flag. */
     private boolean intercepted;
 

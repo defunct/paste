@@ -11,9 +11,9 @@ import com.goodworkalan.deviate.RuleSetBuilder;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.servlet.BindKey;
+import com.goodworkalan.paste.servlet.Cassette;
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
-import com.mallardsoft.tuple.Pair;
 
 /**
  * An element in the controller connection domain-specific language that
@@ -27,10 +27,10 @@ public class RenderStatement {
     private final Connector end;
     
     /** A builder for a map of rule sets to priority and render modules pairs. */
-    protected final RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>> mappings;
+    protected final RuleMapBuilder<Cassette.RenderCandidate> mappings;
 
     /** A builder for a set of rules for this render statement. */
-    protected final RuleSetBuilder<Pair<Integer, List<InjectorBuilder>>> from;
+    protected final RuleSetBuilder<Cassette.RenderCandidate> from;
 
     /**
      * The priority for this render statement to resolve ambiguties if two or
@@ -47,7 +47,7 @@ public class RenderStatement {
      *            A builder for a map of rule sets to priority and render
      *            modules pairs.
      */
-    RenderStatement(Connector end, RuleMapBuilder<Pair<Integer, List<InjectorBuilder>>> mappings) {
+    RenderStatement(Connector end, RuleMapBuilder<Cassette.RenderCandidate> mappings) {
         this.end = end;
         this.mappings = mappings;
         this.from = mappings.rule();
@@ -129,7 +129,7 @@ public class RenderStatement {
      */
     public <T> T with(final Class<T> renderClass) {
         final List<InjectorBuilder> modules = new ArrayList<InjectorBuilder>();
-        from.put(new Pair<Integer, List<InjectorBuilder>>(priority, modules));
+        from.put(new Cassette.RenderCandidate(priority, modules));
         try {
             try {
                 Constructor<T> constructor = renderClass.getConstructor(Connector.class, List.class);

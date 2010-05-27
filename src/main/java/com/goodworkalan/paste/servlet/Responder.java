@@ -1,11 +1,14 @@
 package com.goodworkalan.paste.servlet;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.FilterChain;
@@ -22,23 +25,25 @@ import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Globber;
 import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.ilk.Ilk;
-import com.goodworkalan.ilk.inject.InjectException;
+import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
+import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.connector.Router;
 import com.goodworkalan.paste.controller.Abnormality;
 import com.goodworkalan.paste.controller.Actors;
 import com.goodworkalan.paste.controller.Criteria;
+import com.goodworkalan.paste.controller.Headers;
 import com.goodworkalan.paste.controller.InitializationParameters;
 import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
+import com.goodworkalan.paste.controller.NamedValueList;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.Reactor;
 import com.goodworkalan.paste.controller.Redirection;
 import com.goodworkalan.paste.controller.Renderer;
-import com.goodworkalan.paste.controller.Response;
 import com.goodworkalan.paste.controller.Routes;
 import com.goodworkalan.paste.controller.Startup;
 import com.goodworkalan.paste.controller.qualifiers.Application;
@@ -46,20 +51,16 @@ import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.paste.controller.qualifiers.Filter;
 import com.goodworkalan.paste.controller.qualifiers.Reaction;
 import com.goodworkalan.paste.controller.qualifiers.Request;
+import com.goodworkalan.paste.controller.qualifiers.Response;
 import com.goodworkalan.paste.controller.scopes.ApplicationScoped;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
 import com.goodworkalan.paste.controller.scopes.FilterScoped;
 import com.goodworkalan.paste.controller.scopes.ReactionScoped;
 import com.goodworkalan.paste.controller.scopes.RequestScoped;
 import com.goodworkalan.paste.controller.scopes.SessionScoped;
-import com.goodworkalan.paste.providers.ControllerProvider;
-import com.goodworkalan.paste.providers.EnumeratedParametersProvider;
-import com.goodworkalan.paste.providers.RequestParametersProvider;
-import com.goodworkalan.paste.redirect.Redirector;
+import com.goodworkalan.paste.redirect.Redirect;
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
-import com.mallardsoft.tuple.Pair;
-import com.mallardsoft.tuple.Tuple;
 
 /**
  * An object internal to the Paste filter that implements the filtration. The
@@ -78,20 +79,26 @@ import com.mallardsoft.tuple.Tuple;
  * @author Alan Gutierrez
  */
 class Responder implements Reactor {
+    // TODO Document.
+    private final static String SESSION_SCOPE_ATTRIBUTE_NAME = "com.goodworkalan.paste.Responder.session";
+
     /** The dependency injector. */
     private final Injector injector;
 
     /**
-     * A list of Dovetail URL bindings that map a path to a Deviate rule set
-     * that further winnows the matches based on request parameters.
+     * A list of URL bindings that map a path to a Deviate rule set that further
+     * winnows the matches based on request parameters.
+     * <p>
+     * FIXME Maybe deviate should be called Winnow. Deviate will probably make
+     * people think about statistics.
      */
-    private final List<GlobTree<RuleMap<Pair<Integer, Class<?>>>>> controllerBindings;
+    private final List<GlobTree<RuleMap<Cassette.ControllerCandidate>>> connections;
 
     /**
      * The rule map used to select a renderer for a given controller or thrown
      * exception.
      */
-    private final RuleMap<Pair<Integer, List<InjectorBuilder>>> viewRuleMap;
+    private final RuleMap<Cassette.RenderCandidate> renderers;
 
     /** The list of janitors to run when the filter is shutdown. */
     private final LinkedBlockingQueue<Janitor> janitors = new LinkedBlockingQueue<Janitor>();
@@ -105,9 +112,12 @@ class Responder implements Reactor {
              return new LinkedList<Injector>();
          }
     };
+
+    // TODO Document.
+    private final IlkAssociation<Class<?>> interceptors;
     
     /**
-     * Create a Paste guicer from using the given filter servlet context and the
+     * Create a responder from using the given filter servlet context and the
      * given Paste filter initialization parameters.
      * 
      * @param servletContext
@@ -166,7 +176,15 @@ class Responder implements Reactor {
         for (Router router : routers) {
             router.connect(connector);
         }
-        
+
+        connector
+            .render()
+                .exception(Redirection.class)
+                .priority(Integer.MIN_VALUE)
+                .with(Redirect.class)
+                .end()
+            .end();
+
         InjectorBuilder newInjector = new InjectorBuilder();
         newInjector.module(new InjectorBuilder() {
             protected void build() {
@@ -184,9 +202,10 @@ class Responder implements Reactor {
         }
 
         this.injector = newInjector.newInjector();
-        this.controllerBindings = cassette.getBindingTrees();
-        this.viewRuleMap = cassette.getViewRules();
+        this.connections = cassette.getConnections();
+        this.renderers = cassette.getRenderers();
         this.reactions = cassette.reactions;
+        this.interceptors =  cassette.interceptors;
     }
 
     // TODO Document.
@@ -233,35 +252,38 @@ class Responder implements Reactor {
      */
     public void filter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
     throws IOException, ServletException {
+        Headers responseHeaders = new Headers();
         Interception interception = new Interception();
         filter(new InterceptingRequest(interception, request),
-               new InterceptingResponse(interception, response), interception,
+               new InterceptingResponse(interception, response), interception, responseHeaders,
                chain);
     }
     
-    // TODO Document.
-    private final static String SESSION_SCOPE_ATTRIBUTE_NAME = "com.goodworkalan.paste.Responder.session";
-
     // TODO Document.
     private InjectorBuilder getRequestInjectorBuilder(final HttpServletRequest request, final InterceptingResponse response, final List<Janitor> janitors) {
         InjectorBuilder newInjector = injector.newInjector();
         newInjector.module(new InjectorBuilder(){
             protected void build() {
+                reflector(new Reflector());
                 HttpSession session = request.getSession();
                 scope(SessionScoped.class, (Ilk.Box) session.getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME));
                 scope(RequestScoped.class);
                 scope(ReactionScoped.class);
                 instance(request, ilk(HttpServletRequest.class), Request.class);
                 instance(request, ilk(ServletRequest.class), Request.class);
-                instance(response, ilk(HttpServletResponse.class), Request.class);
-                instance(response, ilk(ServletResponse.class), Request.class);
-                instance(response, ilk(Response.class), Request.class);
+                instance(response, ilk(HttpServletResponse.class), Response.class);
+                instance(response, ilk(HttpServletResponse.class), null);
+                instance(response, ilk(ServletResponse.class), Response.class);
+                instance(response, ilk(ServletResponse.class), null);
+                provider(new ReponseHeadersProvider(response), ilk(Headers.class), Response.class, null);
+                provider(new ResponseStatusProvider(response), ilk(Integer.class), Response.class, null);
                 instance(session, ilk(HttpSession.class), Request.class);
                 provider(ilk(EnumeratedParametersProvider.class), ilk(Parameters.class), Request.class, RequestScoped.class);
                 provider(ilk(RequestParametersProvider.class), ilk(Parameters.class), Filter.class, RequestScoped.class);
                 provider(ilk(RequestParametersProvider.class), ilk(Parameters.class), null, RequestScoped.class);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Request.class);
                 instance(new Criteria(request), ilk(Criteria.class), Request.class);
+                provider(ilk(ControllerParametersProvider.class), ilk(Parameters.class), Controller.class, ControllerScoped.class);
             }
         });
         return newInjector;
@@ -289,20 +311,19 @@ class Responder implements Reactor {
         if (query == null) {
             query = "";
         }
-        return Parameters.fromQueryString(query);
+        return new Parameters(new NamedValueList(query));
     }
     
     // TODO Document.
-    private Injector getFilterInjector(LinkedList<Injector> injectors, final HttpServletRequest request, final InterceptingResponse response, final List<Janitor> janitors) {
+    private Injector getFilterInjector(LinkedList<Injector> injectors, final HttpServletRequest request, final InterceptingResponse response, final List<Janitor> janitors, Headers responseHeaders) {
         InjectorBuilder newInjector = getFilterInjectorBuilder(injectors, request, response, janitors);
         newInjector.module(new InjectorBuilder(){
             protected void build() {
                 scope(FilterScoped.class);
                 instance(request, ilk(HttpServletRequest.class), Filter.class);
+                instance(request, ilk(HttpServletRequest.class), null);
                 instance(request, ilk(ServletRequest.class), Filter.class);
-                instance(response, ilk(HttpServletResponse.class), Filter.class);
-                instance(response, ilk(ServletResponse.class), Filter.class);
-                instance(response, ilk(Response.class), Filter.class);
+                instance(request, ilk(ServletRequest.class), null);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Filter.class);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), null);
                 instance(new Criteria(request), ilk(Criteria.class), Filter.class);
@@ -319,7 +340,7 @@ class Responder implements Reactor {
         Injector injector = injectors.removeLast();
         if (injectors.isEmpty()) {
             request.getSession().setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, injector.scope(SessionScoped.class));
-            injectors.remove();
+            INJECTORS.remove();
         }
     }
     
@@ -345,17 +366,165 @@ class Responder implements Reactor {
     private void filter(InterceptingRequest request,
                         InterceptingResponse response,
                         Interception interception,
+                        Headers responseHeaders,
                         FilterChain chain)
     throws IOException, ServletException {
         List<Janitor> janitors = new ArrayList<Janitor>();
         LinkedList<Injector> injectors = INJECTORS.get();
-        Injector injector = getFilterInjector(injectors, request, response, janitors);
+        Injector injector = getFilterInjector(injectors, request, response, janitors, responseHeaders);
         try {
             filter(injector, interception, chain);
         } finally {
             cleanUp(janitors);
             popFilter(injectors, request);
         }
+    }
+    
+    private Injector controllerInstanceInjecor(Injector controllerScopeInjector, final Object controller) {
+        InjectorBuilder newControllerInjector = controllerScopeInjector.newInjector();
+        newControllerInjector.module(new InjectorBuilder() {
+            protected void build() {
+                // XXX Use a real Ilk.
+                implementation(ilk(controller.getClass()), ilk(Object.class), Controller.class, ControllerScoped.class);
+            }
+        });
+        return newControllerInjector.newInjector();
+    }
+    
+    private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings) {
+        for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(controllerClass))) {
+            controller(injector, interceptorClass, mappings);
+        }
+
+        // Clear the controller scope, null the controller.
+        InjectorBuilder newControllerScopeInjector = injector.newInjector();
+        
+        newControllerScopeInjector.module(new InjectorBuilder() {
+            protected void build() {
+                scope(ControllerScoped.class);
+                instance(mappings, new Ilk<Map<String, String>>(){ }, Controller.class);
+            }
+        });
+
+        Injector controllerScopeInjector = newControllerScopeInjector.newInjector();
+
+        before(controllerScopeInjector, controllerClass);
+        
+        Ilk.Box controller;
+        try {
+            controller = controllerScopeInjector.getVendor(new Ilk<Object>(Object.class).key, Controller.class).get(controllerScopeInjector);
+        } catch (InvocationTargetException e) {
+            throw new ControllerException(e);
+        } catch (Throwable e) {
+            throw new PasteException(Reflective.encode(e), e);
+        }
+        
+        after(controllerScopeInjector, controller.object);
+        
+        return controllerScopeInjector;
+    }
+    
+    private void before(Injector controllerScopeInjector, final Class<?> controllerClass) {
+        if (controllerClass.isMemberClass()) {
+            before(controllerScopeInjector, controllerClass.getDeclaringClass());
+        }
+
+        InjectorBuilder newInterceptorInjector = controllerScopeInjector.newInjector();
+        newInterceptorInjector.module(new InjectorBuilder() {
+            protected void build() {
+                instance(controllerClass, InjectorBuilder.ilk(Class.class), Controller.class);
+            }
+        });
+
+        Injector interceptorInjector = newInterceptorInjector.newInjector();
+
+        Actors actors = controllerClass.getAnnotation(Actors.class);
+        
+        if (actors != null) {
+            for (Class<? extends Runnable> actor : actors.before()) {
+                interceptorInjector.instance(actor, null).run();
+            }
+        }
+    }
+
+    private void after(Injector controllerScopeInjector, final Object controller) {
+        if (controller.getClass().isMemberClass()) {
+            after(controllerScopeInjector, controllerScopeInjector.getOwnerInstance(controller).object);
+        }
+
+        Injector controllerInjector = controllerInstanceInjecor(controllerScopeInjector, controller);
+
+        after(controllerInjector, controller.getClass().getAnnotation(Actors.class));
+    }
+
+    private void after(Injector injector, Actors actors) {
+        if (actors != null) {
+            for (Class<? extends Runnable> actor : actors.value()) {
+                injector.instance(actor, null).run();
+            }
+            for (Class<? extends Runnable> actor : actors.after()) {
+                injector.instance(actor, null).run();
+            }
+        }
+    }
+
+    private Injector controller(Injector injector, Interception interception, Criteria criteria) {
+        Injector controllerInjector = null;
+        // We try each series of binding definitions in order. There can be
+        // multiple bindings that match, applying multiple controllers.
+        for (GlobTree<RuleMap<Cassette.ControllerCandidate>> tree : connections) {
+            // If a controller has written a response, we're done.
+            if (interception.isIntercepted()) {
+                break;
+            }
+            
+            // Create a globber that will apply tests created by the Guice
+            // injector or this Paste filter.
+            Globber<RuleMap<Cassette.ControllerCandidate>>globber = tree.newGlobber(new InjectedMatchTestFactory(injector));
+
+            // Attempt to match the path.
+            List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = globber.map(criteria.getPath());
+
+            // We can have multiple matches, so we winnow them down by futher
+            // matching request parameters, then futher winnowing them by
+            // choosing a controller based on priority.
+            if (!matches.isEmpty()) {
+                int found = 0;
+                int highestPriority = Integer.MIN_VALUE;
+                Class<?> controllerClass = null;
+                Map<String, String> mappings = null;
+
+                HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
+                // Apply the rule set associated with each matched glob.
+                for (Match<RuleMap<Cassette.ControllerCandidate>> mapping : matches) {
+                    List<Cassette.ControllerCandidate> candidates = mapping.getObject()
+                        .test()
+                            .put(BindKey.METHOD, request.getMethod())
+                            .put(BindKey.PATH, criteria.getPath())
+                            .get();
+                    for (Cassette.ControllerCandidate candidate : candidates) {
+                        int priority = candidate.priority;
+                        if (priority > highestPriority) {
+                            found = 1;
+                            highestPriority = priority;
+                            controllerClass = candidate.controllerClass;
+                            mappings = mapping.getParameters();
+                        } else if (priority == highestPriority) {
+                            found++;
+                        }
+                    }
+                }
+
+                if (found > 1) {
+                    // If we've found multiple controllers that have the same
+                    // priority, then we raise an exception.
+                    throw new PasteException(0);
+                } if (found == 1) {
+                    controllerInjector = controller(injector, controllerClass, mappings);
+                }
+            }
+        }
+        return controllerInjector;
     }
 
     /**
@@ -380,156 +549,74 @@ class Responder implements Reactor {
         // in turn provide us with a path we can match.
         Criteria criteria = injector.instance(Criteria.class, Filter.class);
 
-        PasteControllerException caught = null;
+        ControllerException caught = null;
         Injector controllerInjector = null;
-        Object controller = null;
 
-        // We try each series of binding definitions in order. There can be
-        // multiple bindings that match, applying multiple controllers.
-        CONTROLLERS: for (GlobTree<RuleMap<Pair<Integer, Class<?>>>> tree : controllerBindings) {
-            // If a controller has written a response, we're done.
-            if (interception.isIntercepted()) {
+        try {
+            controllerInjector = controller(injector, interception, criteria);
+        } catch (ControllerException e) {
+            caught = e;
+
+            System.out.println(caught.getCause().getCause());
+
+            // Exceptions are also used for those things in HTTP that feel like
+            // an abrupt change of course.
+            if (caught.getCause().getCause() instanceof Abnormality) {
+                // Set the response status.
+                injector.instance(HttpServletResponse.class, null).setStatus(((Abnormality) caught.getCause().getCause()).getStatus());
+            }
+        }
+
+        Object controller = null;
+        if (controllerInjector != null) { 
+            controller = controllerInjector.instance((Class<?>) controllerInjector.instance(Class.class, Controller.class), Controller.class);
+        }
+        
+        List<InjectorBuilder> modules = null;
+        for (;;) {
+            if (modules != null) {
                 break;
             }
-            
-            // Create a globber that will apply tests created by the Guice
-            // injector or this Paste filter.
-            Globber<RuleMap<Pair<Integer,Class<?>>>>globber = tree.newGlobber(new InjectedMatchTestFactory(injector));
 
-            // Attempt to match the path.
-            List<Match<RuleMap<Pair<Integer, Class<?>>>>> matches = globber.map(criteria.getPath());
-
-            // We can have multiple matches, so we winnow them down by futher
-            // matching request parameters, then futher winnowing them by
-            // choosing a controller based on priority.
-            if (!matches.isEmpty()) {
-                int found = 0;
-                int highestPriority = Integer.MIN_VALUE;
-                Class<?> controllerClass = null;
-                Map<String, String> mappings = null;
-
-                HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
-                // Apply the rule set associated with each matched glob.
-                for (Match<RuleMap<Pair<Integer, Class<?>>>> mapping : matches) {
-                    List<Pair<Integer, Class<?>>> bindings = mapping.getObject()
-                        .test()
-                            .put(BindKey.METHOD, request.getMethod())
-                            .put(BindKey.PATH, criteria.getPath())
-                            .get();
-                    for (Pair<Integer, Class<?>> binding : bindings) {
-                        int priority = Tuple.get1(binding);
-                        if (priority > highestPriority) {
-                            found = 1;
-                            highestPriority = priority;
-                            controllerClass = Tuple.get2(binding);
-                            mappings = mapping.getParameters();
-                        } else if (priority == highestPriority) {
-                            found++;
-                        }
-                    }
-                }
-
-                if (found > 1) {
-                    // If we've found multiple controllers that have the same
-                    // priority, then we raise an exception.
-                    throw new PasteException(0);
-                } if (found == 1) {
-                    controllerInjector = null;
-                    controller = null;
-
-                    // Clear the controller scope, null the controller.
-                    InjectorBuilder newControllerInjector = injector.newInjector();
-                    
-                    // We cheat a little; instead of creating a provider, we're
-                    // going to just tuck the mappings into the controller scope.
-                    newControllerInjector.instance(mappings, new Ilk<Map<String, String>>(){ }, Controller.class);
-                    newControllerInjector.instance(controllerClass, new Ilk<Class<?>>() {}, Controller.class);
-                    newControllerInjector.provider(new Ilk<ControllerProvider>() {}, new Ilk<Object>(Object.class), Controller.class, ControllerScoped.class);
-
-                    controllerInjector = newControllerInjector.newInjector();
-                    
-                    
-                    try {
-                        controller = controllerInjector.instance(controllerClass, Controller.class);
-                    } catch (InjectException e) {
-                        if (e.code == Reflective.INVOCATION_TARGET) {
-                            try {
-                                throw new PasteControllerException(e, 3);
-                            } catch (PasteControllerException pce) {
-                                caught = pce;
-                                break CONTROLLERS;
-                            }
-                        }
-                        // Otherwise, this is a big, bad server error.
-                        throw e;
-                    }
-    
-                    // Invoke any actors upon the controller.
-                    Actors actors = controller.getClass().getAnnotation(Actors.class);
-                    if (actors != null) {
-                        for (Class<? extends Runnable> actor : actors.value()) {
-                            try {
-                                injector.instance(actor, null).run();
-                            } catch (PasteControllerException pce) {
-                                caught = pce;
-                                break CONTROLLERS;
-                            }
-                        }
-                    }
-                }
+            if (controllerInjector == null && caught == null) {
+                break;
             }
-        }
 
-        // Exceptions are also used for those things in HTTP that feel like
-        // an abrupt change of course.
-        if (caught.getControllerException() instanceof Redirection) {
-            // FIXME Who says that this actually gets rendered as a redirect?
-            injector.instance(Redirector.class, null).redirect(((Redirection) caught.getControllerException()).getWhere());
-        } else if (caught.getControllerException() instanceof Abnormality) {
-            // Set the response status.
-            injector.instance(Response.class, null).setStatus(((Abnormality) caught.getControllerException()).getStatus());
-        }
+            // FIXME: Can I use Stash for these bindings?
 
-        if (controllerInjector != null || caught != null) {
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
-            List<Pair<Integer, List<InjectorBuilder>>> views = viewRuleMap
+            List<Cassette.RenderCandidate> candidates = renderers
                 .test()
                     .put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName())
                     .put(BindKey.CONTROLLER_CLASS, controller)
                     .put(BindKey.PATH, criteria.getPath())
-                    .put(BindKey.STATUS, injector.instance(Response.class, null).getStatus())
-                    .put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getControllerException())
+                    .put(BindKey.STATUS, injector.instance(Integer.class, Response.class))
+                    .put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause())
                     .put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod())
                     .get();
 
-            // Find the render module with the highest priority.
-            List<InjectorBuilder> renderModules = null;
-            int hightestPriority = Integer.MIN_VALUE;
-            int found = 0;
-            for (Pair<Integer, List<InjectorBuilder>> view : views) {
-                int priority = Tuple.get1(view);
-                if (priority > hightestPriority) {
-                    found = 1;
-                    hightestPriority = priority;
-                    renderModules = Tuple.get2(view);
-                } else if (priority == hightestPriority) {
-                    found++;
+            SortedMap<Integer, Cassette.RenderCandidate> choose = new TreeMap<Integer, Cassette.RenderCandidate>();
+            if (!candidates.isEmpty()) {
+                // Find the render module with the highest priority.
+                for (Cassette.RenderCandidate candidate : candidates) {
+                    choose.put(candidate.priority, candidate);
                 }
-            }
-
-            if (found > 1) {
-                // Renderer is ambiguous.
-                throw new PasteException(0);
-            } else if (found == 1) {
-                // Render output.
-                InjectorBuilder newInjector = controller == null ? injector.newInjector() : controllerInjector.newInjector();
-                for (InjectorBuilder module : renderModules) {
+                modules = choose.get(choose.firstKey()).modules;
+                InjectorBuilder newInjector = controllerInjector == null ? injector.newInjector() : controllerInjector.newInjector();
+                for (InjectorBuilder module : modules) {
                     newInjector.module(module);
+                }
+                if (caught != null) {
+                    newInjector.instance(caught.getCause().getCause(), new Ilk<Throwable>(Throwable.class), Controller.class);
                 }
                 newInjector.newInjector().instance(Renderer.class, null).render();
             } else if (caught != null) {
                 throw caught;
+            } else if (controller != null && controller.getClass().isMemberClass()) {
+                controller = controllerInjector.getOwnerInstance(controller).object;
+            } else {
+                break;
             }
         }
 

@@ -1,8 +1,6 @@
-package com.goodworkalan.paste.providers;
+package com.goodworkalan.paste.servlet;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -20,14 +18,14 @@ public class EnumeratedParametersProvider implements Provider<Parameters> {
     }
 
     public Parameters get() {
-        List<NamedValue> namedValues = new ArrayList<NamedValue>();
+        Parameters parameters = new Parameters();
         Enumeration<?> names = request.getParameterNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement().toString();
             for (String value : request.getParameterValues(name)) {
-                namedValues.add(new NamedValue(name, value));
+                parameters.add(new NamedValue(name, value));
             }
         }
-        return new Parameters(namedValues);
+        return new Parameters();
     }
 }

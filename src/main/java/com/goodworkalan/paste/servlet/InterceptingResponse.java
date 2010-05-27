@@ -4,18 +4,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import com.goodworkalan.paste.controller.Headers;
 import com.goodworkalan.paste.controller.NamedValue;
-import com.goodworkalan.paste.controller.NamedValueList;
-import com.goodworkalan.paste.controller.Response;
+
 
 /**
  * A wrapper around an HTTP Servlet response that detects if a response has been
@@ -26,12 +24,12 @@ import com.goodworkalan.paste.controller.Response;
  * @author Alan Gutierrez
  * 
  */
-public class InterceptingResponse extends HttpServletResponseWrapper implements Response {
-    /** A thread local date formatter. */
-    private final static ThreadLocal<DateFormat> format = new ThreadLocal<DateFormat>();
-    
+class InterceptingResponse extends HttpServletResponseWrapper { 
+    /** The format for HTTP dates, ISO 8601. */
+    public final static String HTTP_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+
     /** The list of headers. */
-    private final List<NamedValue> headers;
+    private final Headers headers;
 
     /** The intercept flag. */
     private final Interception interception;
@@ -50,7 +48,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
      */
     public InterceptingResponse(Interception interception, HttpServletResponse response) {
         super(response);
-        this.headers = new ArrayList<NamedValue>();
+        this.headers = new Headers();
         this.interception = interception;
     }
 
@@ -86,12 +84,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
      * @return The thread local date formatter.
      */
     private static DateFormat getDateFormat() {
-        DateFormat dateFormat = format.get();
-        if (dateFormat == null) {
-            format.set(new SimpleDateFormat(Response.HTTP_DATE_FORMAT));
-            return getDateFormat();
-        }
-        return dateFormat;
+        return new SimpleDateFormat(HTTP_DATE_FORMAT);
     }
 
     /**
@@ -146,8 +139,7 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
 
     /**
      * Set the response status without flipping the intercept flag. This method
-     * is overridden to record the status code for the {@link Response}
-     * interface.
+     * is overridden to record the status code for the 
      * 
      * @param sc
      *            The status code.
@@ -216,8 +208,8 @@ public class InterceptingResponse extends HttpServletResponseWrapper implements 
      * 
      * @return The list of response headers.
      */
-    public NamedValueList getHeaders() {
-        return new NamedValueList(headers);
+    public Headers getHeaders() {
+        return headers;
     }
 
     /**

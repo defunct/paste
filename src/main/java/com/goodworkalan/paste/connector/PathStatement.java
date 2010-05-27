@@ -9,7 +9,8 @@ import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
 import com.goodworkalan.dovetail.MatchTest;
-import com.mallardsoft.tuple.Pair;
+import com.goodworkalan.paste.servlet.Cassette;
+import com.goodworkalan.paste.servlet.Cassette.ControllerCandidate;
 
 /**
  * A path element in the domain-specific language for
@@ -31,7 +32,7 @@ public class PathStatement<T> implements FilterClause<T> {
      * A list of globs to sets of rule mappings the further test to see if the
      * controller is applicable based on additional request parameters.
      */
-    private final List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections;
+    private final List<Cassette.Connection> connections;
 
     /**
      * The list of parent glob compilers, one or each alternate path specified
@@ -43,7 +44,7 @@ public class PathStatement<T> implements FilterClause<T> {
     private final List<Glob> globs;
 
     /** The rules to apply to a request after a path matches. */
-    private final RuleMapBuilder<Pair<Integer, Class<?>>> rules;
+    private final RuleMapBuilder<ControllerCandidate> rules;
 
     /**
      * The list of paths to compile, multiple paths can be specified using an or
@@ -83,9 +84,9 @@ public class PathStatement<T> implements FilterClause<T> {
     PathStatement(
             T connector,
             Map<Class<?>, Glob> controllerToGlob,
-            List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections,
+            List<Cassette.Connection> connections,
             List<GlobCompiler> compilers,
-            RuleMapBuilder<Pair<Integer, Class<?>>> rules,
+            RuleMapBuilder<Cassette.ControllerCandidate> rules,
             List<String> patterns) {
         this.controllerToGlob = controllerToGlob;
         this.connector = connector;
@@ -167,8 +168,8 @@ public class PathStatement<T> implements FilterClause<T> {
             subCompilers.add(new GlobCompiler(glob));
         }
         List<Glob> globs = new ArrayList<Glob>();
-        RuleMapBuilder<Pair<Integer, Class<?>>> rules = new RuleMapBuilder<Pair<Integer, Class<?>>>();
-        connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>(globs, rules));
+        RuleMapBuilder<Cassette.ControllerCandidate> rules = new RuleMapBuilder<Cassette.ControllerCandidate>();
+        connections.add(new Cassette.Connection(globs, rules));
         return new PathStatement<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));
     }
 
@@ -194,7 +195,7 @@ public class PathStatement<T> implements FilterClause<T> {
      */
     public WhenStatement<T> when() {
         compile();
-        connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>(globs, rules));
+        connections.add(new Cassette.Connection(globs, rules));
         return new WhenStatement<T>(this, globs.get(0), controllerToGlob, rules);
     }
 
@@ -207,9 +208,9 @@ public class PathStatement<T> implements FilterClause<T> {
      */
     public End<T> to(Class<?> controller) {
         compile();
-        rules.rule().put(new Pair<Integer, Class<?>>(priority, controller));
+        rules.rule().put(new Cassette.ControllerCandidate(priority, controller));
         controllerToGlob.put(controller, globs.get(0));
-        connections.add(new Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>(globs, rules));
+        connections.add(new Cassette.Connection(globs, rules));
         return new End<T>(connector);
     }
 

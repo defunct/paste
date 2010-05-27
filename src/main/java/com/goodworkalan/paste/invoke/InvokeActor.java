@@ -1,12 +1,14 @@
 package com.goodworkalan.paste.invoke;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.inject.Inject;
 
+import com.goodworkalan.ilk.IlkReflect;
 import com.goodworkalan.ilk.inject.Boxed;
-import com.goodworkalan.ilk.inject.InjectException;
 import com.goodworkalan.ilk.inject.Injector;
+import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.controller.Annotations;
 import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
@@ -37,12 +39,11 @@ public class InvokeActor implements Runnable {
             Invoke invoke = method.getAnnotation(Invoke.class);
             if (invoke != null && annotations.invoke(invoke.on(), invoke.param(), invoke.methods())) {
                 try {
-                    injector.inject(controller.box, method);
-                } catch (InjectException e) {
-                    if (e.code == Reflective.INVOCATION_TARGET) {
-                        throw new PasteException(PasteException.ACTOR_EXCEPTION, e);
-                    }
-                    throw e;
+                    injector.inject(IlkReflect.REFLECTOR, controller.box, method);
+                } catch (InvocationTargetException e) {
+                    throw new ControllerException(e);
+                } catch (Throwable e) {
+                    throw new PasteException(Reflective.encode(e), e);
                 }
             }
         }

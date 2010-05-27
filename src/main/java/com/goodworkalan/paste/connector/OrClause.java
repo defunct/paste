@@ -7,7 +7,7 @@ import java.util.Map;
 import com.goodworkalan.deviate.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
-import com.mallardsoft.tuple.Pair;
+import com.goodworkalan.paste.servlet.Cassette;
 
 /**
  * An or clause in the path statement used to specify multiple paths for a path
@@ -30,7 +30,7 @@ public class OrClause<T> {
      * A list of globs to sets of rule mappings the further test to see if the
      * controller is applicable based on additional request parameters.
      */
-    private final List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections;
+    private final List<Cassette.Connection> connections;
 
     /**
      * The list of parent glob compilers, one or each alternate path specified
@@ -39,7 +39,7 @@ public class OrClause<T> {
     private final List<GlobCompiler> compilers;
 
     /** The rules to apply to a request after a path matches. */
-    private final RuleMapBuilder<Pair<Integer, Class<?>>> rules;
+    private final RuleMapBuilder<Cassette.ControllerCandidate> rules;
     
     /**
      * The list of paths to compile, multiple paths can be specified using an or
@@ -70,9 +70,9 @@ public class OrClause<T> {
      */
     OrClause(T connector,
              Map<Class<?>, Glob> controllerToGlob,
-             List<Pair<List<Glob>, RuleMapBuilder<Pair<Integer, Class<?>>>>> connections,
+             List<Cassette.Connection> connections,
              List<GlobCompiler> compilers,
-             RuleMapBuilder<Pair<Integer, Class<?>>> rules,
+             RuleMapBuilder<Cassette.ControllerCandidate> rules,
              List<String> patterns) {
         this.parent = connector;
         this.controllerToGlob = controllerToGlob;

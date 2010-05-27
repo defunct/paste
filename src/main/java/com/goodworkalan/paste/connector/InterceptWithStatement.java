@@ -58,7 +58,7 @@ public class InterceptWithStatement {
      * @return The connector to conintue building the application.
      */
     public Connector with(Class<?> interceptor) {
-        if (key == null) {
+        if (key != null) {
             interceptors.assignable(key, interceptor);
         } else {
             interceptors.annotated(annotation, interceptor);

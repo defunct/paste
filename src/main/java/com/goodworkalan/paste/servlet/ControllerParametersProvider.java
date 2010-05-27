@@ -1,13 +1,11 @@
-package com.goodworkalan.paste.providers;
+package com.goodworkalan.paste.servlet;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import com.goodworkalan.paste.controller.NamedValue;
+import com.goodworkalan.paste.controller.NamedValueList;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.paste.controller.qualifiers.Filter;
@@ -45,13 +43,6 @@ public class ControllerParametersProvider implements Provider<Parameters> {
      * @return The parameters specific to the current controller.
      */
     public Parameters get() {
-        List<NamedValue> parameters = new ArrayList<NamedValue>();
-        for (Map.Entry<String, String> entry : controllerMappings.entrySet()) {
-            parameters.add(new NamedValue(entry.getKey(), entry.getValue()));
-        }
-        for (NamedValue namedValue : filterParameters) {
-            parameters.add(namedValue);
-        }
-        return new Parameters(parameters);
+        return new Parameters(new NamedValueList(controllerMappings), filterParameters);
     }
 }

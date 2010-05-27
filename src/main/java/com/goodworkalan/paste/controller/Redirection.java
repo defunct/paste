@@ -11,7 +11,12 @@ public class Redirection extends Stop {
     private static final long serialVersionUID = 1L;
 
     /** The redirection URL. */
-    private final String where;
+    public final String format;
+    
+    /** The status code. */
+    public final int status;
+    
+    public final Class<?>[] formatArguments;
 
     /**
      * Create an exception to throw to trigger an HTTP redirection.
@@ -19,16 +24,17 @@ public class Redirection extends Stop {
      * @param where
      *            The redirection URL.
      */
-    public Redirection(String where) {
-        this.where = where;
+    public Redirection(String where, Class<?>... formatArguments) {
+        this(where, 303);
+    }
+    
+    public Redirection(Class<?>... formatArguments) {
+        this(null, 303, formatArguments);
     }
 
-    /**
-     * Get the redirection URL.
-     * 
-     * @return The redirection URL.
-     */
-    public String getWhere() {
-        return where;
+    public Redirection(String where, int status, Class<?>... formatArguments) {
+        this.format = where;
+        this.status = status;
+        this.formatArguments = formatArguments;
     }
 }

@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.providers;
+package com.goodworkalan.paste.servlet;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

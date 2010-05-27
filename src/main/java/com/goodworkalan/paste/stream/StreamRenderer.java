@@ -1,6 +1,7 @@
 package com.goodworkalan.paste.stream;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 
@@ -11,8 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.ilk.Ilk;
+import com.goodworkalan.ilk.IlkReflect;
+import static com.goodworkalan.ilk.Types.*;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
+import com.goodworkalan.paste.actor.ControllerException;
+import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
@@ -34,7 +39,7 @@ import com.goodworkalan.paste.controller.scopes.ControllerScoped;
  * @author Alan Gutierrez
  */
 @ControllerScoped
-public class StreamRenderer implements Renderer {
+class StreamRenderer implements Renderer {
     /**
      * The properties set by the domain-specific renderer connection language.
      */
@@ -49,7 +54,7 @@ public class StreamRenderer implements Renderer {
     /**
      * Create a stream renderer that will stream the output from a method from
      * the given controller. The renderer will write the given response headers
-     * to the given HTTP response before streaming the contorller output to the
+     * to the given HTTP response before streaming the controller output to the
      * given HTTP response.
      * 
      * @param configuration
@@ -90,17 +95,24 @@ public class StreamRenderer implements Renderer {
             }
         }
         
-        Ilk.Box box = injector.inject(controller.box, outputMethod);
+        Ilk.Box box;
+        try {
+            box = injector.inject(IlkReflect.REFLECTOR, controller.box, outputMethod);
+        } catch (InvocationTargetException e) {
+            throw new ControllerException(e);
+        } catch (IllegalAccessException e) {
+            throw new PasteException(0, e);
+        } 
 
         HttpServletResponse response = injector.instance(HttpServletResponse.class, null);
         response.setContentType(configuration.contentType);
         
-        if (URI.class.isAssignableFrom(box.key.rawClass)) {
+        if (URI.class.isAssignableFrom(getRawClass(box.key.type))) {
             URI uri = box.cast(new Ilk<URI>(URI.class));
             HttpServletRequest request = injector.instance(HttpServletRequest.class, null);
             RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
             dispatcher.forward(request, response);
-        } else  if (CharSequence.class.isAssignableFrom(box.key.rawClass)) {
+        } else  if (CharSequence.class.isAssignableFrom(getRawClass(box.key.type))) {
             response.getWriter().write(box.cast(new Ilk<CharSequence>(CharSequence.class)).toString());
             response.getWriter().flush();
         }

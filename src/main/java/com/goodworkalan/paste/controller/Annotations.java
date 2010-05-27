@@ -69,7 +69,7 @@ public class Annotations {
         boolean audit = on.length == 0;
         if (!audit) {
             if (!"".equals(param)) {
-                String value = parameters.getFirst(param);
+                String value = parameters.get(param).getName();
                 if (value != null) {
                     for (int i = 0; !audit && i < on.length; i++) {
                         audit = on[i].equals(value);
@@ -77,7 +77,7 @@ public class Annotations {
                 }
             } else {
                 for (int i = 0; !audit && i < on.length; i++) {
-                    audit = parameters.hasName(on[i]);
+                    audit = parameters.contains(on[i]);
                 }
             }
         }

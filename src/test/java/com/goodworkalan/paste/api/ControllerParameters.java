@@ -12,8 +12,8 @@ public class ControllerParameters {
     @Inject
     public ControllerParameters(@Controller Parameters parameters, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
-        response.getWriter().println(parameters.getFirst("a"));
-        response.getWriter().println(parameters.getFirst("b"));
-        response.getWriter().println(parameters.getFirst("c"));
+        response.getWriter().println(parameters.get("a").getName());
+        response.getWriter().println(parameters.get("b").getName());
+        response.getWriter().println(parameters.get("c").getName());
     }
 }
