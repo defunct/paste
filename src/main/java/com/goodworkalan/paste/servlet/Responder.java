@@ -1,5 +1,7 @@
 package com.goodworkalan.paste.servlet;
 
+import static com.goodworkalan.ilk.Types.getRawClass;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -380,17 +382,6 @@ class Responder implements Reactor {
         }
     }
     
-    private Injector controllerInstanceInjecor(Injector controllerScopeInjector, final Object controller) {
-        InjectorBuilder newControllerInjector = controllerScopeInjector.newInjector();
-        newControllerInjector.module(new InjectorBuilder() {
-            protected void build() {
-                // XXX Use a real Ilk.
-                implementation(ilk(controller.getClass()), ilk(Object.class), Controller.class, ControllerScoped.class);
-            }
-        });
-        return newControllerInjector.newInjector();
-    }
-    
     private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings) {
         for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(controllerClass))) {
             controller(injector, interceptorClass, mappings);
@@ -410,18 +401,26 @@ class Responder implements Reactor {
 
         before(controllerScopeInjector, controllerClass);
         
-        Ilk.Box controller;
+        final Ilk.Box controller;
         try {
-            controller = controllerScopeInjector.getVendor(new Ilk<Object>(Object.class).key, Controller.class).get(controllerScopeInjector);
+            controller = controllerScopeInjector.getVendor(new Ilk.Key(controllerClass), Controller.class).get(controllerScopeInjector);
         } catch (InvocationTargetException e) {
             throw new ControllerException(e);
         } catch (Throwable e) {
             throw new PasteException(Reflective.encode(e), e);
         }
-        
-        after(controllerScopeInjector, controller.object);
-        
-        return controllerScopeInjector;
+        after(controllerScopeInjector, controller);
+        return controllerInstanceInjector(controllerScopeInjector, controller);
+    }
+    
+    private Injector controllerInstanceInjector(Injector controllerScopeInjector, final Ilk.Box controller) {
+        InjectorBuilder newControllerInstanceInjector = controllerScopeInjector.newInjector();
+        newControllerInstanceInjector.module(new InjectorBuilder() {
+            protected void build() {
+                instance(controller, ilk(Object.class), Controller.class);
+            }
+        });
+        return newControllerInstanceInjector.newInjector();
     }
     
     private void before(Injector controllerScopeInjector, final Class<?> controllerClass) {
@@ -447,14 +446,12 @@ class Responder implements Reactor {
         }
     }
 
-    private void after(Injector controllerScopeInjector, final Object controller) {
-        if (controller.getClass().isMemberClass()) {
-            after(controllerScopeInjector, controllerScopeInjector.getOwnerInstance(controller).object);
+    private void after(Injector controllerScopeInjector, Ilk.Box controller) {
+        if (getRawClass(controller.key.type).isMemberClass()) {
+            after(controllerScopeInjector, controllerScopeInjector.getOwnerInstance(controller.object));
         }
-
-        Injector controllerInjector = controllerInstanceInjecor(controllerScopeInjector, controller);
-
-        after(controllerInjector, controller.getClass().getAnnotation(Actors.class));
+        Injector controllerInstanceInjector = controllerInstanceInjector(controllerScopeInjector, controller);
+        after(controllerInstanceInjector, getRawClass(controller.key.type).getAnnotation(Actors.class));
     }
 
     private void after(Injector injector, Actors actors) {
@@ -567,13 +564,14 @@ class Responder implements Reactor {
             }
         }
 
-        Object controller = null;
-        if (controllerInjector != null) { 
-            controller = controllerInjector.instance((Class<?>) controllerInjector.instance(Class.class, Controller.class), Controller.class);
-        }
         
         List<InjectorBuilder> modules = null;
         for (;;) {
+            Object controller = null;
+            if (controllerInjector != null) { 
+                controller = controllerInjector.instance(Object.class, Controller.class);
+            }
+
             if (modules != null) {
                 break;
             }
@@ -614,7 +612,7 @@ class Responder implements Reactor {
             } else if (caught != null) {
                 throw caught;
             } else if (controller != null && controller.getClass().isMemberClass()) {
-                controller = controllerInjector.getOwnerInstance(controller).object;
+                controllerInjector = controllerInstanceInjector(controllerInjector, controllerInjector.getOwnerInstance(controller));
             } else {
                 break;
             }

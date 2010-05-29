@@ -26,6 +26,6 @@ public class EnumeratedParametersProvider implements Provider<Parameters> {
                 parameters.add(new NamedValue(name, value));
             }
         }
-        return new Parameters();
+        return parameters;
     }
 }

@@ -15,6 +15,8 @@ package com.goodworkalan.paste.servlet;
     ANNOTATION,
     /** The request method. */
     METHOD,
+    /** Type content type. */
+    CONTENT_TYPE, 
     /** The request path. */
     PATH,
     /** The response status. */

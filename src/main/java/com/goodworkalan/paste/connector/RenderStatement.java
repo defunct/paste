@@ -3,7 +3,9 @@ package com.goodworkalan.paste.connector;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import com.goodworkalan.deviate.Condition;
 import com.goodworkalan.deviate.Equals;
 import com.goodworkalan.deviate.InstanceOf;
 import com.goodworkalan.deviate.RuleMapBuilder;
@@ -87,6 +89,27 @@ public class RenderStatement {
     public RenderStatement method(String... methods) {
         for (String method : methods) {
             from.check(BindKey.METHOD, new Equals(method));
+        }
+        return this;
+    }
+    
+    public RenderStatement path(final String... contentTypes) {
+        from.check(BindKey.PATH, new Condition() {
+            public boolean test(Object object) {
+                for (String contentType : contentTypes) {
+                    if (Pattern.matches(contentType, (String) object)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        return this;
+    }
+    
+    public RenderStatement contentType(String... contentTypes) {
+        for (String contentType : contentTypes) {
+            from.check(BindKey.CONTENT_TYPE, new Equals(contentType));
         }
         return this;
     }

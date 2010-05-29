@@ -24,6 +24,7 @@ public class PasteProject implements ProjectModule {
                     .production("org.slf4j/slf4j-api/1.4.2")
                     .production("com.github.bigeasy.string-beans/string-beans-url/0.+1")
                     .production("com.github.bigeasy.ilk/ilk-inject/0.+1")
+                    .production("com.github.bigeasy.ilk/ilk-association/0.+1")
                     .production("com.github.bigeasy.infuse/infuse/0.+1")
                     .production("com.github.bigeasy.dovetail/dovetail/0.+7/")
                     .production("aopalliance/aopalliance/1.0")
