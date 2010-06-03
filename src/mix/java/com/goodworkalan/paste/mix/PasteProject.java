@@ -27,7 +27,6 @@ public class PasteProject implements ProjectModule {
                     .production("com.github.bigeasy.ilk/ilk-association/0.+1")
                     .production("com.github.bigeasy.infuse/infuse/0.+1")
                     .production("com.github.bigeasy.dovetail/dovetail/0.+7/")
-                    .production("aopalliance/aopalliance/1.0")
                     .production("com.github.bigeasy.deviate/deviate/0.+1")
                     .production("org.hibernate/hibernate-core/3.3.1.GA")
                     .production("org.hibernate/hibernate-annotations/3.4.0.GA")
