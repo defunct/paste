@@ -417,7 +417,7 @@ class Responder implements Reactor {
         InjectorBuilder newControllerInstanceInjector = controllerScopeInjector.newInjector();
         newControllerInstanceInjector.module(new InjectorBuilder() {
             protected void build() {
-                instance(controller, ilk(Object.class), Controller.class);
+                box(controller, ilk(Object.class), Controller.class);
             }
         });
         return newControllerInstanceInjector.newInjector();
