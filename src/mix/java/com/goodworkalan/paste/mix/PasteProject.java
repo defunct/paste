@@ -31,7 +31,6 @@ public class PasteProject implements ProjectModule {
                     .production("com.github.bigeasy.deviate/deviate/0.+1")
                     .production("org.hibernate/hibernate-core/3.3.1.GA")
                     .production("org.hibernate/hibernate-annotations/3.4.0.GA")
-                    .production("com.mallardsoft/tuple/2.0")
                     .production("javax.servlet/servlet-api/2.5")
                     .development("org.slf4j/slf4j-log4j12/1.4.2")
                     .development("org.eclipse.jetty/jetty-xml/7.0.0.RC3")
