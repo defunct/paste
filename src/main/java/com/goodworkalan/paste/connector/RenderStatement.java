@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.goodworkalan.deviate.Condition;
-import com.goodworkalan.deviate.Equals;
-import com.goodworkalan.deviate.InstanceOf;
-import com.goodworkalan.deviate.RuleMapBuilder;
-import com.goodworkalan.deviate.RuleSetBuilder;
+import com.goodworkalan.winnow.Condition;
+import com.goodworkalan.winnow.Equals;
+import com.goodworkalan.winnow.InstanceOf;
+import com.goodworkalan.winnow.RuleMapBuilder;
+import com.goodworkalan.winnow.RuleSetBuilder;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.servlet.BindKey;

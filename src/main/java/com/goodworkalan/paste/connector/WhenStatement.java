@@ -2,9 +2,9 @@ package com.goodworkalan.paste.connector;
 
 import java.util.Map;
 
-import com.goodworkalan.deviate.Equals;
-import com.goodworkalan.deviate.RuleMapBuilder;
-import com.goodworkalan.deviate.RuleSetBuilder;
+import com.goodworkalan.winnow.Equals;
+import com.goodworkalan.winnow.RuleMapBuilder;
+import com.goodworkalan.winnow.RuleSetBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.paste.servlet.BindKey;
 import com.goodworkalan.paste.servlet.Cassette;

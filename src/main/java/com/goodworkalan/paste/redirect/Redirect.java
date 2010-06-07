@@ -22,10 +22,10 @@ public class Redirect {
     /** The parent builder. */
     private final Connector connector;
 
-    // TODO Document.
+    /** The modules used to define the renderer. */
     private final List<InjectorBuilder> modules;
 
-    // TODO Document.
+    /** The structure containing the configuration. */
     private Configuration configuration = new Configuration();
 
     /**

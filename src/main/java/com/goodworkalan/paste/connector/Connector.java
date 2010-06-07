@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.goodworkalan.deviate.RuleMapBuilder;
+import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.paste.servlet.Cassette;

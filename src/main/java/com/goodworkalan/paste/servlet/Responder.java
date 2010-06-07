@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.goodworkalan.deviate.RuleMap;
+import com.goodworkalan.winnow.RuleMap;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Globber;
 import com.goodworkalan.dovetail.Match;
