@@ -1,9 +1,5 @@
 package com.goodworkalan.paste.controller;
 
-import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import com.goodworkalan.danger.CodedDanger;
 
 /**
@@ -15,9 +11,6 @@ public class PasteException extends CodedDanger {
     /** The serial version id. */
     private static final long serialVersionUID = 20080620L;
     
-    /** The cache of exception message resource bundles. */
-    private final static ConcurrentMap<String, ResourceBundle> BUNDLES = new ConcurrentHashMap<String, ResourceBundle>();
-
     /** The paste filter was called out of the context of a servlet engine. */
     public final static int CALLED_OUT_OF_CONTEXT = 201;
 
@@ -32,7 +25,7 @@ public class PasteException extends CodedDanger {
      *            The error code.
      */
     public PasteException(int code, Object...arguments) {
-        super(BUNDLES, code, null, arguments);
+        super(code, null, arguments);
     }
     
     /**
@@ -45,6 +38,6 @@ public class PasteException extends CodedDanger {
      *            The cause exception.
      */
     public PasteException(int code, Throwable cause, Object...arguments) {
-        super(BUNDLES, code, cause, arguments);
+        super(code, cause, arguments);
     }
 }

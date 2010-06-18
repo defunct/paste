@@ -28,8 +28,6 @@ public class PasteProject implements ProjectModule {
                     .production("com.github.bigeasy.infuse/infuse/0.+1")
                     .production("com.github.bigeasy.dovetail/dovetail/0.+7/")
                     .production("com.github.bigeasy.winnow/winnow/0.+1")
-                    .production("org.hibernate/hibernate-core/3.3.1.GA")
-                    .production("org.hibernate/hibernate-annotations/3.4.0.GA")
                     .production("javax.servlet/servlet-api/2.5")
                     .development("org.slf4j/slf4j-log4j12/1.4.2")
                     .development("org.eclipse.jetty/jetty-xml/7.0.0.RC3")
