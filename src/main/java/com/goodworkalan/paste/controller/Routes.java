@@ -12,5 +12,4 @@ public interface Routes {
 
     // TODO Document.
     public String path(Class<?> controllerClass, Object... parameters);
-
 }

@@ -75,6 +75,13 @@ public class Redirect {
         return this;
     }
 
+    /**
+     * Terminate the redirect specification and return the parent
+     * <code>Connector</code> to continue specifying routes and renderers.
+     * 
+     * @return The parent <code>Connector</code> to continue specifying routes
+     *         and renderers.
+     */
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {

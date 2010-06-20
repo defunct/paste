@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -494,11 +495,10 @@ class Responder implements Reactor {
                 HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
                 // Apply the rule set associated with each matched glob.
                 for (Match<RuleMap<Cassette.ControllerCandidate>> mapping : matches) {
-                    List<Cassette.ControllerCandidate> candidates = mapping.getObject()
-                        .test()
-                            .put(BindKey.METHOD, request.getMethod())
-                            .put(BindKey.PATH, criteria.getPath())
-                            .get();
+                    Map<Object, Object> conditions = new HashMap<Object, Object>();
+                    conditions.put(BindKey.METHOD, request.getMethod());
+                    conditions.put(BindKey.PATH, criteria.getPath());
+                    List<Cassette.ControllerCandidate> candidates = mapping.getObject().get(conditions);
                     for (Cassette.ControllerCandidate candidate : candidates) {
                         int priority = candidate.priority;
                         if (priority > highestPriority) {
@@ -584,16 +584,14 @@ class Responder implements Reactor {
 
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
-            List<Cassette.RenderCandidate> candidates = renderers
-                .test()
-                    .put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName())
-                    .put(BindKey.CONTROLLER_CLASS, controller)
-                    .put(BindKey.PATH, criteria.getPath())
-                    .put(BindKey.STATUS, injector.instance(Integer.class, Response.class))
-                    .put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause())
-                    .put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod())
-                    .get();
-
+            Map<Object, Object> conditions = new HashMap<Object, Object>();
+            conditions.put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName());
+            conditions.put(BindKey.CONTROLLER_CLASS, controller);
+            conditions.put(BindKey.PATH, criteria.getPath());
+            conditions.put(BindKey.STATUS, injector.instance(Integer.class, Response.class));
+            conditions.put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause());
+            conditions.put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod());
+            List<Cassette.RenderCandidate> candidates = renderers.get(conditions);
             SortedMap<Integer, Cassette.RenderCandidate> choose = new TreeMap<Integer, Cassette.RenderCandidate>();
             if (!candidates.isEmpty()) {
                 // Find the render module with the highest priority.

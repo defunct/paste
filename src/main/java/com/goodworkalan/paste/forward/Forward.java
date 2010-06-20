@@ -68,7 +68,14 @@ public class Forward  {
         configuration.formatArguments = formatArguments;
         return this;
     }
-    
+
+    /**
+     * Terminate the forward specification and return the parent
+     * <code>Connector</code> to continue specifying routes and renderers.
+     * 
+     * @return The parent <code>Connector</code> to continue specifying routes
+     *         and renderers.
+     */
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {

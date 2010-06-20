@@ -8,7 +8,8 @@ import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.paste.controller.Routes;
 
 // TODO Document.
-public class CoreRoutes implements Routes  {
+// FIXME Just make this a class?
+class CoreRoutes implements Routes  {
     // TODO Document.
     private final Map<Class<?>, Glob> controllerToGlob;
 

@@ -16,10 +16,14 @@ import com.goodworkalan.paste.servlet.Cassette;
  * @author Alan Gutierrez
  */
 public class Connector {
+    /** The connection data structure to populate. */
     private final Cassette cassette;
-    
+
     /**
      * Create a default connector.
+     * 
+     * @param cassette
+     *            The connection data structure to populate.
      */
     public Connector(Cassette cassette) {
         cassette.reactions = new HashMap<Class<?>, List<Class<?>>>();
