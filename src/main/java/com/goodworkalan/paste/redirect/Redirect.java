@@ -26,7 +26,7 @@ public class Redirect {
     private final List<InjectorBuilder> modules;
 
     /** The structure containing the configuration. */
-    private Configuration configuration = new Configuration();
+    private final Configuration configuration = new Configuration();
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -95,7 +95,6 @@ public class Redirect {
                 implementation(ilk(RedirectRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }
         });
-        configuration = null;
         return connector;
     }
 }

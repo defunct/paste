@@ -24,32 +24,39 @@ import com.goodworkalan.paste.paths.PathFormatter;
  * @author Alan Gutierrez
  */
 class RedirectRenderer implements Renderer {
-    // TODO Document.
+    /** The path formatter used to create the redirection path. */
     private final PathFormatter pathFormatter;
-    // TODO Document.
+    
+    /** The HTTP response. */
     private final HttpServletResponse response;
-    // TODO Document.
+
+    /** The thrown redirection exception. */ 
     private final Throwable throwable; 
-    // TODO Document.
+    
+    /** The redirect renderer configuration. */
     private final Configuration configuration;
-    // TODO Document.
+    
+    /** The HTTP request. */
     private final HttpServletRequest request;
+
     /**
      * Create a redirect renderer with the given path formatter, the given
      * response service, the given redirection service and the given redirect
      * renderer configuration.
      * 
-     * @param pathFormatter
-     *            The path formatter used to create the redirection path.
-     * @param response
-     *            The alternative HTTP response service.
-     * @param redirector
-     *            The redirector service.
      * @param configuration
      *            The redirect renderer configuration.
+     * @param pathFormatter
+     *            The path formatter used to create the redirection path.
+     * @param request
+     *            The HTTP request.
+     * @param response
+     *            The HTTP response.
+     * @param throwable
+     *            The thrown redirection exception.
      */
     @Inject
-    public RedirectRenderer(PathFormatter pathFormatter, HttpServletResponse response, @Controller Throwable throwable, Configuration configuration, HttpServletRequest request) {
+    public RedirectRenderer(Configuration configuration, PathFormatter pathFormatter, HttpServletRequest request, HttpServletResponse response, @Controller Throwable throwable) {
         this.pathFormatter = pathFormatter;
         this.request = request;
         this.response = response;
@@ -57,7 +64,7 @@ class RedirectRenderer implements Renderer {
         this.configuration = configuration;
     }
     
-    // TODO Document.
+    /** Generate the dredirect. */
     public void render() throws ServletException, IOException {
         Redirection redirection = (Redirection) throwable;
         int status = redirection.status;
@@ -100,11 +107,11 @@ class RedirectRenderer implements Renderer {
         }
     }
 
-   
-
     /**
      * Read the page format for the redirection page from a resource file.
      * 
+     * @param in
+     *            The resource file input stream.
      * @return The page format for the redirection page.
      * @throws IOException
      *             If an I/O error occurs.

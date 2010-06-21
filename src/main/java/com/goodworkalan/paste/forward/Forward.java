@@ -23,7 +23,7 @@ public class Forward  {
     private final List<InjectorBuilder> modules;
     
     /** The configuration. FIXME Not how this does not favor immutability. */
-    private Configuration configuration = new Configuration();
+    private final Configuration configuration = new Configuration();
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -88,7 +88,6 @@ public class Forward  {
         // enough. It doesn't build a lot extra into the code to make the
         // configuration
         // separate.
-        configuration = null;
         return connector;
     }
 }

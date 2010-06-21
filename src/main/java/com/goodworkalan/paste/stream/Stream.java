@@ -26,7 +26,7 @@ public class Stream {
     private final List<InjectorBuilder> modules;
 
     // TODO Document.
-    private Configuration configuration = new Configuration();
+    private final Configuration configuration = new Configuration();
 
     /**
      * Create an extension to the domain-specific language used to specify the
@@ -80,7 +80,6 @@ public class Stream {
                 implementation(ilk(StreamRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }
         });
-        configuration = null;
         return connector;
     }
 }
