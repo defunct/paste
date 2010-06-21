@@ -8,11 +8,13 @@
 
     <filter>
         <filter-name>PasteFilter</filter-name>
-        <filter-class>com.goodworkalan.paste.PasteFilter</filter-class>
+        <filter-class>com.goodworkalan.paste.servlet.PasteFilter</filter-class>
+        <!--
         <init-param>
             <param-name>Modules</param-name>
             <param-value>com.goodworkalan.paste.api.TestModule</param-value>
         </init-param>
+            -->
         <init-param>
             <param-name>Routers</param-name>
             <param-value>com.goodworkalan.paste.api.TestRouter</param-value>

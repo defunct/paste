@@ -13,7 +13,7 @@ public class Including {
     @Inject
     public Including(Parameters parameters, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = "/included";
-        if ("true".equals(parameters.get("qs").getName())) {
+        if ("true".equals(parameters.get("qs"))) {
             path += "?a=1&b=2";
         }
         request.getRequestDispatcher(path).include(request, response);

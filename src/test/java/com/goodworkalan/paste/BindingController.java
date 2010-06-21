@@ -10,6 +10,6 @@ import com.goodworkalan.paste.controller.qualifiers.Controller;
 public class BindingController {
     @Inject
     public BindingController(@Controller Parameters parameters) {
-        assertEquals(parameters.get("user").getName(), "alan");
+        assertEquals(parameters.get("user"), "alan");
     }
 }

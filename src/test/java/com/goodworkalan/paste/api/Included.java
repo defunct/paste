@@ -18,9 +18,9 @@ public class Included {
         response.getWriter().println(criteria.getRequestURI());
         response.getWriter().println(criteria.getQueryString());
         response.getWriter().println(criteria.getPathInfo());
-        if ("true".equals(original.get("qs").getName())) {
-            response.getWriter().println(parameters.get("a").getName());
-            response.getWriter().println(parameters.get("b").getName());
+        if ("true".equals(original.get("qs"))) {
+            response.getWriter().println(parameters.get("a"));
+            response.getWriter().println(parameters.get("b"));
         }
     }
 }

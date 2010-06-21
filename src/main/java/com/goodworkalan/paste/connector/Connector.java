@@ -34,10 +34,12 @@ public class Connector {
         this.cassette = cassette;
     }
 
+    // TODO Document.
     public ReactStatement react() {
         return new ReactStatement(this, cassette.reactions);
     }
     
+    // TODO Document.
     public InterceptStatement intercept() {
         return new InterceptStatement(this, cassette.interceptors);
     }
@@ -71,6 +73,7 @@ public class Connector {
         return new RenderStatement(this, cassette.renderers);
     }
     
+    // TODO Document.
     public void end() {
         
     }

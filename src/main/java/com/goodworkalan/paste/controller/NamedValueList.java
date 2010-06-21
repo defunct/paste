@@ -128,14 +128,18 @@ public class NamedValueList extends ArrayList<NamedValue> {
      *            The value name.
      * @return The first value found or null.
      */
-    public NamedValue get(String name) {
+    public String get(String name) {
         for (NamedValue namedValue : this) {
             if (namedValue.getName().equals(name)) {
-                return namedValue;
+                return namedValue.getValue();
             }
         }
         return null;
     }
+    
+    /**
+     * Return the value of the first named value
+     */
 
     /**
      * Return true if a named value with the given name exists in the named

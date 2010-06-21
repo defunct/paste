@@ -34,7 +34,7 @@ public class NamedValueListTest {
         List<NamedValue> list = new ArrayList<NamedValue>();
         list.add(new NamedValue("hello", "world"));
         NamedValueList map = new NamedValueList(list);
-        assertEquals(map.get("hello").getName(), "world");
+        assertEquals(map.get("hello"), "world");
         assertNull(map.get("world"));
         list.clear();
         assertNull(map.get("hello"));
