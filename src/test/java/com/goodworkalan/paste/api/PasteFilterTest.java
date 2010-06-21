@@ -19,10 +19,12 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+// TODO Document.
 public class PasteFilterTest {
     /** The Jetty server containing the <code>PasteFilter</code>. */
     private Server server;
     
+    // TODO Document.
     @BeforeTest
     public void start() throws Exception {
         server = new Server();
@@ -53,6 +55,7 @@ public class PasteFilterTest {
         server.start();
     }
     
+    // TODO Document.
     public List<String> slurp(InputStream in) throws IOException {
         List<String> lines = new ArrayList<String>();
         BufferedReader buffer = new BufferedReader(new InputStreamReader(in));
@@ -63,6 +66,7 @@ public class PasteFilterTest {
         return lines;
     }
 
+    // TODO Document.
     @Test
     public void testConnection() throws Exception {
         URL url = new URL("http://localhost:8086/");
@@ -70,8 +74,8 @@ public class PasteFilterTest {
         assertEquals(lines.size(), 1);
         assertEquals(lines.get(0), "Hello, World!");
     }
-    
-    
+
+    // TODO Document.
     @Test
     public void testForward() throws Exception {
         URL url = new URL("http://localhost:8086/forwarding");
@@ -82,6 +86,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(2), "true");
     }
     
+    // TODO Document.
     @Test
     public void testControllerParameters() throws Exception {
         URL url = new URL("http://localhost:8086/controller/parameters/3?a=1&b=2");
@@ -92,7 +97,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(2), "3");
     }
     
-    
+    // TODO Document.
     @Test
     public void testInclude() throws Exception {
         URL url = new URL("http://localhost:8086/including?qs=true");
@@ -115,6 +120,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(4), "");
     }
     
+    // TODO Document.
     @Test
     public void testJanitorSession() throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8086/janitor/filter").openConnection();
@@ -135,6 +141,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(0), "request");
     }
     
+    // TODO Document.
     @AfterTest
     public void stop() throws Exception {
         server.stop();

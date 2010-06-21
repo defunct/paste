@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.qualifiers.Request;
 
+// TODO Document.
 public class Forwarded {
+    // TODO Document.
     @Inject
     public Forwarded(@Request Criteria original, Criteria filter, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");

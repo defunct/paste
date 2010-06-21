@@ -4,7 +4,9 @@ import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.connector.Router;
 import com.goodworkalan.paste.forward.Forward;
 
+// TODO Document.
 public class TestRouter implements Router {
+    // TODO Document.
     public void connect(Connector connector) {
         connector
             .connect()

@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 
+// TODO Document.
 public class ControllerParameters {
+    // TODO Document.
     @Inject
     public ControllerParameters(@Controller Parameters parameters, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");

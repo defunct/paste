@@ -11,7 +11,9 @@ import org.testng.annotations.Test;
 import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 
+// TODO Document.
 public class JanitorQueueTest {
+    // TODO Document.
     @Test
     public void add() {
         List<Janitor> janitors = new ArrayList<Janitor>();

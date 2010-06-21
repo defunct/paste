@@ -426,6 +426,7 @@ class Responder implements Reactor {
         return newControllerInstanceInjector.newInjector();
     }
     
+    // TODO Document.
     private void before(Injector controllerScopeInjector, final Class<?> controllerClass) {
         if (controllerClass.isMemberClass()) {
             before(controllerScopeInjector, controllerClass.getDeclaringClass());
@@ -449,6 +450,7 @@ class Responder implements Reactor {
         }
     }
 
+    // TODO Document.
     private void after(Injector controllerScopeInjector, Ilk.Box controller) {
         if (getRawClass(controller.key.type).isMemberClass()) {
             after(controllerScopeInjector, controllerScopeInjector.getOwnerInstance(controller.object));
@@ -457,6 +459,7 @@ class Responder implements Reactor {
         after(controllerInstanceInjector, getRawClass(controller.key.type).getAnnotation(Actors.class));
     }
 
+    // TODO Document.
     private void after(Injector injector, Actors actors) {
         if (actors != null) {
             for (Class<? extends Runnable> actor : actors.value()) {
@@ -468,6 +471,7 @@ class Responder implements Reactor {
         }
     }
 
+    // TODO Document.
     private Injector controller(Injector injector, Interception interception, Criteria criteria) {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be

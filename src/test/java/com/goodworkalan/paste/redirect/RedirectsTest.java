@@ -7,7 +7,9 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.redirect.Redirects;
 
+// TODO Document.
 public class RedirectsTest {
+    // TODO Document.
     @Test
     public void isRedirectStatus() {
         new Redirects();

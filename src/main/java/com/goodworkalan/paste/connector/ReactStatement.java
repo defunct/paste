@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+// TODO Document.
 public class ReactStatement {
     /** The parent connector language element. */
     private final Connector connector;
@@ -12,11 +12,13 @@ public class ReactStatement {
     /** The map of annotations to controllers. */
     private final Map<Class<?>, List<Class<?>>> reactions;
     
+    // TODO Document.
     ReactStatement(Connector connector, Map<Class<?>, List<Class<?>>> reactions) {
         this.connector = connector;
         this.reactions = reactions;
     }
     
+    // TODO Document.
     public ReactWithStatement to(Class<?>...triggers) {
         List<List<Class<?>>> assignments = new ArrayList<List<Class<?>>>();
         for (Class<?> trigger : triggers) {

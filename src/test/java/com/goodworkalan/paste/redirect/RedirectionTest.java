@@ -2,7 +2,9 @@ package com.goodworkalan.paste.redirect;
 
 import org.testng.annotations.Test;
 
+// TODO Document.
 public class RedirectionTest {
+    // TODO Document.
     @Test
     public void constructor() {
 //        MockHttpServletRequest request = new MockHttpServletRequest();

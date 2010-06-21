@@ -9,7 +9,9 @@ import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.qualifiers.Request;
 
+// TODO Document.
 public class Included {
+    // TODO Document.
     @Inject
     public Included(@Request Parameters original, Parameters parameters, Criteria criteria, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");

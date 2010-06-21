@@ -4,12 +4,15 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.servlet.Cassette;
 
+// TODO Document.
 public class BinderTest {
+    // TODO Document.
     @Test
     public void constructor() {
         new Connector(new Cassette());
     }
 
+    // TODO Document.
     @Test
     public void anyController() {
 //        CoreConnector connector = new CoreConnector();
@@ -21,10 +24,12 @@ public class BinderTest {
 //        assertTrue(Tuple.get2(found.get(0)) instanceof Forward);
     }
     
+    // TODO Document.
     public Object[] path(Object... objects) {
         return objects;
     }
 
+    // TODO Document.
     @Test
     public void controllers() {
         // CoreConnector connector = new CoreConnector();

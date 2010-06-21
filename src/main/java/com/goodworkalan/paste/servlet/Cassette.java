@@ -46,33 +46,45 @@ import com.goodworkalan.paste.controller.qualifiers.Controller;
  * @author Alan Gutierrez
  */
 public final class Cassette {
+    // TODO Document.
     public static final class Connection {
+        // TODO Document.
         public List<Glob> globs;
         
+        // TODO Document.
         public RuleMapBuilder<ControllerCandidate> rules;
         
+        // TODO Document.
         public Connection(List<Glob> globs, RuleMapBuilder<ControllerCandidate> rules) {
             this.globs = globs;
             this.rules = rules;
         }
     }
     
+    // TODO Document.
     public static final class ControllerCandidate {
+        // TODO Document.
         public int priority;
         
+        // TODO Document.
         public Class<?> controllerClass;
         
+        // TODO Document.
         public ControllerCandidate(int priority, Class<?> controllerClass) {
             this.priority = priority;
             this.controllerClass = controllerClass;
         }
     }
     
+    // TODO Document.
     public static final class RenderCandidate {
+        // TODO Document.
         public int priority;
         
+        // TODO Document.
         public List<InjectorBuilder> modules;
 
+        // TODO Document.
         public RenderCandidate(int priority, List<InjectorBuilder> modules) {
             this.priority = priority;
             this.modules = modules;

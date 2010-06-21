@@ -29,6 +29,7 @@ public class NamedValueList extends ArrayList<NamedValue> {
         super(namedValues);
     }
     
+    // TODO Document.
     public NamedValueList(Map<String, String> map) {
         this(fromMap(map));
     }
@@ -43,6 +44,7 @@ public class NamedValueList extends ArrayList<NamedValue> {
         this(fromQueryString(queryString, "UTF-8"));
     }
     
+    // TODO Document.
     protected static List<NamedValue> fromMap(Map<String, String> map) {
         List<NamedValue> namedValues = new ArrayList<NamedValue>();
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -51,6 +53,7 @@ public class NamedValueList extends ArrayList<NamedValue> {
         return namedValues;
     }
     
+    // TODO Document.
     protected static List<NamedValue> catenate(NamedValueList...namedValueLists) {
         List<NamedValue> namedValues = new ArrayList<NamedValue>();
         for (NamedValueList namedValueList : namedValueLists) {
@@ -108,6 +111,7 @@ public class NamedValueList extends ArrayList<NamedValue> {
         return map;
     }
     
+    // TODO Document.
     public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull) {
         LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
         for (NamedValue namedValue : this) {

@@ -16,6 +16,7 @@ public class Redirection extends Stop {
     /** The status code. */
     public final int status;
     
+    // TODO Document.
     public final Class<?>[] formatArguments;
 
     /**
@@ -28,10 +29,12 @@ public class Redirection extends Stop {
         this(where, 303);
     }
     
+    // TODO Document.
     public Redirection(Class<?>... formatArguments) {
         this(null, 303, formatArguments);
     }
 
+    // TODO Document.
     public Redirection(String where, int status, Class<?>... formatArguments) {
         this.format = where;
         this.status = status;

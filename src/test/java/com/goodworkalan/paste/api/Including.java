@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.controller.Parameters;
 
+// TODO Document.
 public class Including {
+    // TODO Document.
     @Inject
     public Including(Parameters parameters, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = "/included";

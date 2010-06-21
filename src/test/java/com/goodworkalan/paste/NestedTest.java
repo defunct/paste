@@ -7,7 +7,9 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.invoke.Invoke;
 
+// TODO Document.
 public class NestedTest {
+    // TODO Document.
     @Test
     public void nested() {
         Class<?> nestedClass = Nested.class;
@@ -20,9 +22,12 @@ public class NestedTest {
         }
     }
     
+    // TODO Document.
     public class Nested {
+        // TODO Document.
         public int i;
         
+        // TODO Document.
         @Invoke
         public void action() {
         }

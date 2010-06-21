@@ -9,14 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 import com.goodworkalan.paste.controller.NamedValue;
 import com.goodworkalan.paste.controller.Parameters;
 
+// TODO Document.
 public class EnumeratedParametersProvider implements Provider<Parameters> {
+    // TODO Document.
     private final HttpServletRequest request;
     
+    // TODO Document.
     @Inject
     public EnumeratedParametersProvider(HttpServletRequest request) {
         this.request = request;
     }
 
+    // TODO Document.
     public Parameters get() {
         Parameters parameters = new Parameters();
         Enumeration<?> names = request.getParameterNames();

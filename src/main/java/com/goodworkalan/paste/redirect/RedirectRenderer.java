@@ -24,10 +24,15 @@ import com.goodworkalan.paste.paths.PathFormatter;
  * @author Alan Gutierrez
  */
 class RedirectRenderer implements Renderer {
+    // TODO Document.
     private final PathFormatter pathFormatter;
+    // TODO Document.
     private final HttpServletResponse response;
+    // TODO Document.
     private final Throwable throwable; 
+    // TODO Document.
     private final Configuration configuration;
+    // TODO Document.
     private final HttpServletRequest request;
     /**
      * Create a redirect renderer with the given path formatter, the given

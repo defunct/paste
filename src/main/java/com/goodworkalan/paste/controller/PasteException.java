@@ -14,8 +14,10 @@ public class PasteException extends CodedDanger {
     /** The paste filter was called out of the context of a servlet engine. */
     public final static int CALLED_OUT_OF_CONTEXT = 201;
 
+    // TODO Document.
     public final static int CONTROLLER_CONSTRUCTION_EXCEPTION = 201;
 
+    // TODO Document.
     public final static int ACTOR_EXCEPTION = 202;
     
     /**

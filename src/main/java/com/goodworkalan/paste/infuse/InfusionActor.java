@@ -20,10 +20,15 @@ import com.goodworkalan.stringbeans.url.UrlParser;
  * @author Alan Gutierrez
  */
 public class InfusionActor implements Runnable {
+    // TODO Document.
     private final Parameters parameters;
+    // TODO Document.
     private final Converter converter;
+    // TODO Document.
     private final Injector injector;
+    // TODO Document.
     private final List<StashAssignment<?>> assignments;
+    // TODO Document.
     private final Object controller;
     
     /**
@@ -41,6 +46,7 @@ public class InfusionActor implements Runnable {
         this.controller = controller;
     }
 
+    // TODO Document.
     public void run() {
         UrlParser parser = new UrlParser(converter);
         for (StashAssignment<?> assignment : assignments) {

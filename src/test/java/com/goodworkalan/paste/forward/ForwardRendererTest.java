@@ -6,7 +6,9 @@ import javax.servlet.ServletException;
 
 import org.testng.annotations.Test;
 
+// TODO Document.
 public class ForwardRendererTest {
+    // TODO Document.
     @Test
     public void forward() throws ServletException, IOException {
 //        final Object controller = new Object();

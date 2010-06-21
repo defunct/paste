@@ -13,13 +13,16 @@ public class ReactWithStatement {
     /** The parent connector language element. */
     private final Connector connector;
     
+    // TODO Document.
     private final List<List<Class<?>>> assignments;
 
+    // TODO Document.
     ReactWithStatement(Connector connector, List<List<Class<?>>> assignments, Class<?>...triggers) {
         this.connector = connector;
         this.assignments = assignments;
     }
     
+    // TODO Document.
     public Connector with(Class<?>...controllers) {
         for (List<Class<?>> assign : assignments) {
             for (Class<?> controller : controllers) {

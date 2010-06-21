@@ -13,6 +13,7 @@ import com.goodworkalan.paste.controller.Annotations;
 import com.goodworkalan.paste.controller.NamedValue;
 import com.goodworkalan.paste.controller.Parameters;
 
+// TODO Document.
 public class AnnotationsTest {
     @Test
     public void any() {
@@ -21,6 +22,7 @@ public class AnnotationsTest {
         assertTrue(annotations.invoke(new String[] {}, "", new String[0]));
     }
 
+    // TODO Document.
     @Test
     public void on() {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -31,6 +33,7 @@ public class AnnotationsTest {
         assertFalse(annotations.invoke(new String[] { "cancel" }, "", new String[0]));
     }
 
+    // TODO Document.
     @Test
     public void param() {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -42,6 +45,7 @@ public class AnnotationsTest {
         assertFalse(annotations.invoke(new String[] { "save" }, "off", new String[0]));
     }
 
+    // TODO Document.
     @Test
     public void method() {
         HttpServletRequest request = mock(HttpServletRequest.class);
