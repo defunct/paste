@@ -484,7 +484,7 @@ class Responder implements Reactor {
             
             // Create a globber that will apply tests created by the Guice
             // injector or this Paste filter.
-            Globber<RuleMap<Cassette.ControllerCandidate>>globber = tree.newGlobber(new InjectedMatchTestFactory(injector));
+            Globber<RuleMap<Cassette.ControllerCandidate>>globber = tree.newGlobber();
 
             // Attempt to match the path.
             List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = globber.map(criteria.getPath());

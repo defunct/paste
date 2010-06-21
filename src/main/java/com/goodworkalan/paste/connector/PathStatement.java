@@ -5,12 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobCompiler;
-import com.goodworkalan.dovetail.MatchTest;
 import com.goodworkalan.paste.servlet.Cassette;
 import com.goodworkalan.paste.servlet.Cassette.ControllerCandidate;
+import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
  * A path element in the domain-specific language for
@@ -21,7 +20,7 @@ import com.goodworkalan.paste.servlet.Cassette.ControllerCandidate;
  *            The type of parent element to return when the statement is
  *            terminated.
  */
-public class PathStatement<T> implements FilterClause<T> {
+public class PathStatement<T> implements SubPathClause<T> {
     /** The parent element to return when the path statement is terminated. */
     private final T connector;
 
@@ -104,40 +103,6 @@ public class PathStatement<T> implements FilterClause<T> {
      */
     public OrClause<T> or() {
         return new OrClause<T>(connector, controllerToGlob, connections, compilers, rules, patterns);
-    }
-
-    /**
-     * Specify a Dovetail match filter instance to apply against any matched
-     * paths.
-     * 
-     * @param matchTest
-     *            A match filter instance.
-     * @return A filter clause to continue to specify match filters or to
-     *         specify rules.
-     */
-    public FilterClause<T> filter(MatchTest matchTest) {
-        for (GlobCompiler compiler : compilers) {
-            compiler.test(matchTest);
-        }
-        return this;
-    }
-
-    /**
-     * Specify a Dovetail match filter class to apply against any matched paths.
-     * The match filter class will be constructed by the same Guice injector
-     * used to construct controllers. The match filter can take advantage of the
-     * servlet, request and filter scopes.
-     * 
-     * @param matchTestClass
-     *            A match filter class.
-     * @return A filter clause to continue to specify match filters or to
-     *         specify rules.
-     */
-    public FilterClause<T> filter(Class<? extends MatchTest> matchTestClass) {
-        for (GlobCompiler compiler : compilers) {
-            compiler.test(matchTestClass);
-        }
-        return this;
     }
 
     /**
