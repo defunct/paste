@@ -20,25 +20,47 @@ import com.goodworkalan.stringbeans.url.UrlParser;
  * @author Alan Gutierrez
  */
 public class InfusionActor implements Runnable {
-    // TODO Document.
+    /** The controller parameters. */
     private final Parameters parameters;
-    // TODO Document.
+
+    /**
+     * The String Beans <code>Converter</code> that defines conversion
+     * strategies from strings to specific Java types.
+     */
     private final Converter converter;
-    // TODO Document.
+
+    /** The dependency injector. */
     private final Injector injector;
-    // TODO Document.
+
+    /**
+     * The list of objects to obtain from the <code>Injector</code> and assign
+     * to the <code>Stash</code> of the StringBeans <code>UrlParser</code>.
+     */
     private final List<StashAssignment<?>> assignments;
-    // TODO Document.
+
+    /** The controller. */
     private final Object controller;
-    
+
     /**
      * Construct an infusion actor with the given controller parameters.
      * 
+     * @param injector The dependency injector.
+     * @param converter
+     *            The String Beans <code>Converter</code> that defines
+     *            conversion strategies from strings to specific Java types.
+     * @param assignments
+     *            The list of objects to obtain from the <code>Injector</code>
+     *            and assign to the <code>Stash</code> of the StringBeans
+     *            <code>UrlParser</code>.
+     * @param controller
+     *            The controller.
      * @param parameters
      *            Parameters with the controller parameters.
      */
     @Inject
-    public InfusionActor(@Controller Parameters parameters, Converter converter, Injector injector, List<StashAssignment<?>> assignments, @Controller Object controller) {
+    public InfusionActor(Injector injector, Converter converter,
+            List<StashAssignment<?>> assignments,
+            @Controller Object controller, @Controller Parameters parameters) {
         this.parameters = parameters;
         this.converter = converter;
         this.injector = injector;

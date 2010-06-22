@@ -7,7 +7,12 @@ import java.lang.annotation.Target;
 
 import javax.inject.Scope;
 
-// TODO Document.
+/**
+ * Indicates that an object should be created in the session scope, so that it
+ * exists for the lifetime of the Java Servlet session.
+ * 
+ * @author Alan Gutierrez
+ */
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Scope

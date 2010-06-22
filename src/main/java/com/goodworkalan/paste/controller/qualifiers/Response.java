@@ -8,7 +8,15 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-// TODO Document.
+import com.goodworkalan.paste.controller.Headers;
+
+/**
+ * Indicates that an object is associated with the HTTP response. Used to
+ * disambiguate the request and response instances of {@link Headers}, for
+ * example.
+ * 
+ * @author Alan Gutierrez
+ */
 @Documented
 @Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
