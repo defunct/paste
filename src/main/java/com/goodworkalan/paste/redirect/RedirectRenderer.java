@@ -75,11 +75,11 @@ class RedirectRenderer implements Renderer {
 
         response.setStatus(status);
 
-        String format = redirection.format;
+        String format = redirection.whereFormat;
         if (format == null) {
             format = configuration.format;
         }
-        Class<?>[] formatArguments = redirection.formatArguments;
+        Class<?>[] formatArguments = redirection.whereFormatArguments;
         if (formatArguments == null) {
             formatArguments = configuration.formatArguments;
         }

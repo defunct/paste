@@ -62,8 +62,15 @@ public class NamedValueList extends ArrayList<NamedValue> {
         }
         return namedValues;
     }
-    
-    // TODO Document.
+
+    /**
+     * Create a list of named values by catenating the lists of named values
+     * into a single list.
+     * 
+     * @param namedValueLists
+     *            The lists of named values to cantenate.
+     * @return A new list containing the catenated lists of named values.
+     */
     protected static List<NamedValue> catenate(NamedValueList...namedValueLists) {
         List<NamedValue> namedValues = new ArrayList<NamedValue>();
         for (NamedValueList namedValueList : namedValueLists) {

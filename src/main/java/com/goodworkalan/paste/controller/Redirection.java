@@ -10,34 +10,44 @@ public class Redirection extends Stop {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The redirection URL. */
-    public final String format;
+    /** The redirection URL format. */
+    public final String whereFormat;
     
     /** The status code. */
     public final int status;
     
-    // TODO Document.
-    public final Class<?>[] formatArguments;
+    /** The redirection URL format arguments. */
+    public final Class<?>[] whereFormatArguments;
 
     /**
-     * Create an exception to throw to trigger an HTTP redirection.
+     * Create an exception to throw to trigger an HTTP redirection that
+     * redirects to the URL generated from the given string format using the
+     * given format arguments.
      * 
-     * @param where
-     *            The redirection URL.
+     * @param whereFormat
+     *            The redirection URL format.
+     * @param whereFormatArguments
+     *            The format arguments for the URL form.
      */
-    public Redirection(String where, Class<?>... formatArguments) {
-        this(where, 303);
-    }
-    
-    // TODO Document.
-    public Redirection(Class<?>... formatArguments) {
-        this(null, 303, formatArguments);
+    public Redirection(String whereFormat, Class<?>... whereFormatArguments) {
+        this(303, whereFormat, whereFormatArguments);
     }
 
-    // TODO Document.
-    public Redirection(String where, int status, Class<?>... formatArguments) {
-        this.format = where;
+    /**
+     * Create an exception to throw to trigger an HTTP redirection with the
+     * given redirection code that redirects to the URL generated from the given
+     * string format using the given format arguments.
+     * 
+     * @param status
+     *            The HTTP result status.
+     * @param whereFormat
+     *            The redirection URL format.
+     * @param whereFormatArguments
+     *            The format arguments for the URL form.
+     */
+    public Redirection(int status, String whereFormat, Class<?>... whereFormatArguments) {
         this.status = status;
-        this.formatArguments = formatArguments;
+        this.whereFormat = whereFormat;
+        this.whereFormatArguments = whereFormatArguments;
     }
 }
