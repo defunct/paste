@@ -44,7 +44,8 @@ public class InfusionActor implements Runnable {
     /**
      * Construct an infusion actor with the given controller parameters.
      * 
-     * @param injector The dependency injector.
+     * @param injector
+     *            The dependency injector.
      * @param converter
      *            The String Beans <code>Converter</code> that defines
      *            conversion strategies from strings to specific Java types.

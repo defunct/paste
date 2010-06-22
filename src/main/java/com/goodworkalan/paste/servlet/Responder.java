@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.winnow.RuleMap;
+import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Globber;
 import com.goodworkalan.dovetail.Match;
@@ -196,7 +197,7 @@ class Responder implements Reactor {
                 instance(initialization, new Ilk<Map<String, String>>() { }, InitializationParameters.class);
                 instance(servletContext, ilk(ServletContext.class), null);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Application.class);
-                instance(cassette.getRoutes(), ilk(Routes.class), null);
+                instance(cassette.getRoutes(), new Ilk<Map<Class<?>, Glob>>() {}, Application.class);
             }
         });
 

@@ -115,16 +115,15 @@ public final class Cassette {
      */
     public Cassette() {
     }
-    
 
     /**
-     * Create a routes object that will return the controller mapped to a given
-     * URL.
+     * Get the map of controller classes to Dovetail <code>Path</code>
+     * instances.
      * 
      * @return A controller lookup.
      */
-    Routes getRoutes() {
-        return new CoreRoutes(routes);
+    Map<Class<?>, Glob> getRoutes() {
+        return routes;
     }
 
     /**
