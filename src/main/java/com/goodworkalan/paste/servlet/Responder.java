@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.goodworkalan.winnow.RuleMap;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.dovetail.Globber;
@@ -48,7 +47,6 @@ import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.Reactor;
 import com.goodworkalan.paste.controller.Redirection;
 import com.goodworkalan.paste.controller.Renderer;
-import com.goodworkalan.paste.controller.Routes;
 import com.goodworkalan.paste.controller.Startup;
 import com.goodworkalan.paste.controller.qualifiers.Application;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
@@ -65,6 +63,7 @@ import com.goodworkalan.paste.controller.scopes.SessionScoped;
 import com.goodworkalan.paste.redirect.Redirect;
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
+import com.goodworkalan.winnow.RuleMap;
 
 /**
  * An object internal to the Paste filter that implements the filtration. The

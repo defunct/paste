@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.winnow.RuleMap;
-import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Glob;
 import com.goodworkalan.dovetail.GlobTree;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.controller.Routes;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
+import com.goodworkalan.winnow.RuleMap;
+import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
  * This cassette is given to the {@link Controller} and acts as the interface
