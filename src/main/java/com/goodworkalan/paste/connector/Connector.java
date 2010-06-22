@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.goodworkalan.winnow.RuleMapBuilder;
-import com.goodworkalan.dovetail.Glob;
+import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.paste.servlet.Cassette;
 
@@ -27,7 +27,7 @@ public class Connector {
      */
     public Connector(Cassette cassette) {
         cassette.reactions = new HashMap<Class<?>, List<Class<?>>>();
-        cassette.routes = new HashMap<Class<?>, Glob>();
+        cassette.routes = new HashMap<Class<?>, Path>();
         cassette.connections = new ArrayList<List<Cassette.Connection>>();
         cassette.renderers = new RuleMapBuilder<Cassette.RenderCandidate>();
         cassette.interceptors = new IlkAssociation<Class<?>>(true);

@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.goodworkalan.dovetail.Glob;
-import com.goodworkalan.dovetail.GlobTree;
+import com.goodworkalan.dovetail.Path;
+import com.goodworkalan.dovetail.PathTree;
 import com.goodworkalan.dovetail.Globber;
 import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.ilk.Ilk;
@@ -95,7 +95,7 @@ class Responder implements Reactor {
      * FIXME Maybe deviate should be called Winnow. Deviate will probably make
      * people think about statistics.
      */
-    private final List<GlobTree<RuleMap<Cassette.ControllerCandidate>>> connections;
+    private final List<PathTree<RuleMap<Cassette.ControllerCandidate>>> connections;
 
     /**
      * The rule map used to select a renderer for a given controller or thrown
@@ -196,7 +196,7 @@ class Responder implements Reactor {
                 instance(initialization, new Ilk<Map<String, String>>() { }, InitializationParameters.class);
                 instance(servletContext, ilk(ServletContext.class), null);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Application.class);
-                instance(cassette.getRoutes(), new Ilk<Map<Class<?>, Glob>>() {}, Application.class);
+                instance(cassette.getRoutes(), new Ilk<Map<Class<?>, Path>>() {}, Application.class);
             }
         });
 
@@ -476,7 +476,7 @@ class Responder implements Reactor {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
-        for (GlobTree<RuleMap<Cassette.ControllerCandidate>> tree : connections) {
+        for (PathTree<RuleMap<Cassette.ControllerCandidate>> tree : connections) {
             // If a controller has written a response, we're done.
             if (interception.isIntercepted()) {
                 break;

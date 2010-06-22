@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.goodworkalan.dovetail.Glob;
+import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.paste.controller.qualifiers.Application;
 
 /**
@@ -17,7 +17,7 @@ import com.goodworkalan.paste.controller.qualifiers.Application;
  */
 public class Routes {
     /** Map of controller classes to Dovetail paths. */
-    private final Map<Class<?>, Glob> controllerPaths;
+    private final Map<Class<?>, Path> controllerPaths;
 
     /**
      * Create a set of routes using the map of controllers to Dovetail paths.
@@ -29,7 +29,7 @@ public class Routes {
      *            The map of controllers to Dovetail paths.
      */
     @Inject
-    public Routes(@Application Map<Class<?>, Glob> controllerPaths) {
+    public Routes(@Application Map<Class<?>, Path> controllerPaths) {
         this.controllerPaths = controllerPaths;
     }
 

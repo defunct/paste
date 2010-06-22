@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.goodworkalan.winnow.RuleMapBuilder;
-import com.goodworkalan.dovetail.Glob;
-import com.goodworkalan.dovetail.GlobCompiler;
+import com.goodworkalan.dovetail.Path;
+import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.servlet.Cassette;
 
 /**
@@ -23,7 +23,7 @@ public class ConnectStatement {
     private final Connector end;
     
     /** A map of controller classes to globs that match them. */
-    private final Map<Class<?>, Glob> controllerToGlob;
+    private final Map<Class<?>, Path> controllerToGlob;
     
     /**
      * A list of globs to sets of rule mappings the further test to see if the
@@ -45,7 +45,7 @@ public class ConnectStatement {
      *            see if the controller is applicable based on additional
      *            request parameters.
      */
-    ConnectStatement(Connector end, Map<Class<?>, Glob> controllerToGlob, List<Cassette.Connection> connections)  {
+    ConnectStatement(Connector end, Map<Class<?>, Path> controllerToGlob, List<Cassette.Connection> connections)  {
         this.end = end;
         this.controllerToGlob = controllerToGlob;
         this.connections = connections;
@@ -60,7 +60,7 @@ public class ConnectStatement {
      * @return A path specification element to define the path.
      */
     public PathStatement<ConnectStatement> path(String path) {
-        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new GlobCompiler()), new RuleMapBuilder<Cassette.ControllerCandidate>(), Collections.singletonList(path));
+        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new PathCompiler()), new RuleMapBuilder<Cassette.ControllerCandidate>(), Collections.singletonList(path));
     }
 
     /**

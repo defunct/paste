@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.goodworkalan.winnow.RuleMapBuilder;
-import com.goodworkalan.dovetail.Glob;
-import com.goodworkalan.dovetail.GlobCompiler;
+import com.goodworkalan.dovetail.Path;
+import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.servlet.Cassette;
 
 /**
@@ -24,7 +24,7 @@ public class OrClause<T> {
     private final T parent;
 
     /** A map of controller classes to globs that match them. */
-    private final Map<Class<?>, Glob> controllerToGlob;
+    private final Map<Class<?>, Path> controllerToGlob;
 
     /**
      * A list of globs to sets of rule mappings the further test to see if the
@@ -36,7 +36,7 @@ public class OrClause<T> {
      * The list of parent glob compilers, one or each alternate path specified
      * by an or clause.
      */
-    private final List<GlobCompiler> compilers;
+    private final List<PathCompiler> compilers;
 
     /** The rules to apply to a request after a path matches. */
     private final RuleMapBuilder<Cassette.ControllerCandidate> rules;
@@ -69,9 +69,9 @@ public class OrClause<T> {
      *            using an or clause. private final List<String> pattern;
      */
     OrClause(T connector,
-             Map<Class<?>, Glob> controllerToGlob,
+             Map<Class<?>, Path> controllerToGlob,
              List<Cassette.Connection> connections,
-             List<GlobCompiler> compilers,
+             List<PathCompiler> compilers,
              RuleMapBuilder<Cassette.ControllerCandidate> rules,
              List<String> patterns) {
         this.parent = connector;

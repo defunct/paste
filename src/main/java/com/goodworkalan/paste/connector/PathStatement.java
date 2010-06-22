@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.dovetail.Glob;
-import com.goodworkalan.dovetail.GlobCompiler;
+import com.goodworkalan.dovetail.Path;
+import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.servlet.Cassette;
 import com.goodworkalan.paste.servlet.Cassette.ControllerCandidate;
 import com.goodworkalan.winnow.RuleMapBuilder;
@@ -25,7 +25,7 @@ public class PathStatement<T> implements SubPathClause<T> {
     private final T connector;
 
     /** A map of controller classes to globs that match them. */
-    private final Map<Class<?>, Glob> controllerToGlob;
+    private final Map<Class<?>, Path> controllerToGlob;
 
     /**
      * A list of globs to sets of rule mappings the further test to see if the
@@ -37,10 +37,10 @@ public class PathStatement<T> implements SubPathClause<T> {
      * The list of parent glob compilers, one or each alternate path specified
      * by an or clause.
      */
-    private final List<GlobCompiler> compilers;
+    private final List<PathCompiler> compilers;
 
     /** The list of globs for this path element, one for each path specified. */
-    private final List<Glob> globs;
+    private final List<Path> globs;
 
     /** The rules to apply to a request after a path matches. */
     private final RuleMapBuilder<ControllerCandidate> rules;
@@ -82,16 +82,16 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     PathStatement(
             T connector,
-            Map<Class<?>, Glob> controllerToGlob,
+            Map<Class<?>, Path> controllerToGlob,
             List<Cassette.Connection> connections,
-            List<GlobCompiler> compilers,
+            List<PathCompiler> compilers,
             RuleMapBuilder<Cassette.ControllerCandidate> rules,
             List<String> patterns) {
         this.controllerToGlob = controllerToGlob;
         this.connector = connector;
         this.connections = connections;
         this.compilers = compilers;
-        this.globs = new ArrayList<Glob>();
+        this.globs = new ArrayList<Path>();
         this.rules = rules;
         this.patterns = patterns;
     }
@@ -111,7 +111,7 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     private void compile() {
         if (!compiled) {
-            for (GlobCompiler compiler : compilers) {
+            for (PathCompiler compiler : compilers) {
                 for (String pattern : patterns) {
                     globs.add(compiler.compile(pattern));
                 }
@@ -128,11 +128,11 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     public PathStatement<SubPathClause<T>> path(String path) {
         compile();
-        List<GlobCompiler> subCompilers = new ArrayList<GlobCompiler>();
-        for (Glob glob : globs) {
-            subCompilers.add(new GlobCompiler(glob));
+        List<PathCompiler> subCompilers = new ArrayList<PathCompiler>();
+        for (Path glob : globs) {
+            subCompilers.add(new PathCompiler(glob));
         }
-        List<Glob> globs = new ArrayList<Glob>();
+        List<Path> globs = new ArrayList<Path>();
         RuleMapBuilder<Cassette.ControllerCandidate> rules = new RuleMapBuilder<Cassette.ControllerCandidate>();
         connections.add(new Cassette.Connection(globs, rules));
         return new PathStatement<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));

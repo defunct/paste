@@ -5,7 +5,7 @@ import java.util.Map;
 import com.goodworkalan.winnow.Equals;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.winnow.RuleSetBuilder;
-import com.goodworkalan.dovetail.Glob;
+import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.paste.servlet.BindKey;
 import com.goodworkalan.paste.servlet.Cassette;
 
@@ -30,10 +30,10 @@ public class WhenStatement<T> {
      * The glob to return when the glob for the controller for this when clause
      * is requested.
      */
-    private final Glob glob;
+    private final Path glob;
 
     /** A map of controller classes to globs that match them. */
-    private final Map<Class<?>, Glob> controllerToGlob;
+    private final Map<Class<?>, Path> controllerToGlob;
 
     /** The rule set builder for this rule statement. */
     private final RuleSetBuilder<Cassette.ControllerCandidate> rule;
@@ -56,7 +56,7 @@ public class WhenStatement<T> {
      *            The builder of map of rule sets to priority and controller
      *            class pairs.
      */
-    WhenStatement(PathStatement<T> when, Glob glob, Map<Class<?>, Glob> controllerToGlob, RuleMapBuilder<Cassette.ControllerCandidate> rules) {
+    WhenStatement(PathStatement<T> when, Path glob, Map<Class<?>, Path> controllerToGlob, RuleMapBuilder<Cassette.ControllerCandidate> rules) {
         this.when = when;
         this.glob = glob;
         this.controllerToGlob = controllerToGlob;

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.dovetail.Glob;
-import com.goodworkalan.dovetail.GlobTree;
+import com.goodworkalan.dovetail.Path;
+import com.goodworkalan.dovetail.PathTree;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
@@ -48,13 +48,13 @@ public final class Cassette {
     // TODO Document.
     public static final class Connection {
         // TODO Document.
-        public List<Glob> globs;
+        public List<Path> globs;
         
         // TODO Document.
         public RuleMapBuilder<ControllerCandidate> rules;
         
         // TODO Document.
-        public Connection(List<Glob> globs, RuleMapBuilder<ControllerCandidate> rules) {
+        public Connection(List<Path> globs, RuleMapBuilder<ControllerCandidate> rules) {
             this.globs = globs;
             this.rules = rules;
         }
@@ -91,7 +91,7 @@ public final class Cassette {
     }
 
     /** A map of controller classes to the globs that define their URL bindings. */
-    public Map<Class<?>, Glob> routes;
+    public Map<Class<?>, Path> routes;
 
     /**
      * A list of connection groups, a connection group consisting of URL
@@ -121,7 +121,7 @@ public final class Cassette {
      * 
      * @return A controller lookup.
      */
-    Map<Class<?>, Glob> getRoutes() {
+    Map<Class<?>, Path> getRoutes() {
         return routes;
     }
 
@@ -133,13 +133,13 @@ public final class Cassette {
      * 
      * @return The list of connection groups.
      */
-    List<GlobTree<RuleMap<ControllerCandidate>>> getConnections() {
-        List<GlobTree<RuleMap<ControllerCandidate>>> trees = new ArrayList<GlobTree<RuleMap<ControllerCandidate>>>();
+    List<PathTree<RuleMap<ControllerCandidate>>> getConnections() {
+        List<PathTree<RuleMap<ControllerCandidate>>> trees = new ArrayList<PathTree<RuleMap<ControllerCandidate>>>();
         for (List<Connection> listOfControllerPathMappings : connections) {
-            GlobTree<RuleMap<ControllerCandidate>> tree = new GlobTree<RuleMap<ControllerCandidate>>();
+            PathTree<RuleMap<ControllerCandidate>> tree = new PathTree<RuleMap<ControllerCandidate>>();
             for (Connection mapping : listOfControllerPathMappings) {
                 RuleMap<ControllerCandidate> rules = mapping.rules.newRuleMap();
-                for (Glob glob : mapping.globs) {
+                for (Path glob : mapping.globs) {
                     tree.add(glob, rules);
                 }
             }
