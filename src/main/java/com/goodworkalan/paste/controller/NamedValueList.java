@@ -28,8 +28,13 @@ public class NamedValueList extends ArrayList<NamedValue> {
     public NamedValueList(List<NamedValue> namedValues) {
         super(namedValues);
     }
-    
-    // TODO Document.
+
+    /**
+     * Create a named value list from the entries in the given map.
+     * 
+     * @param map
+     *            The map to copy.
+     */
     public NamedValueList(Map<String, String> map) {
         this(fromMap(map));
     }
@@ -44,7 +49,12 @@ public class NamedValueList extends ArrayList<NamedValue> {
         this(fromQueryString(queryString, "UTF-8"));
     }
     
-    // TODO Document.
+    /**
+     * Create a list of named value list the entries in the given map.
+     * 
+     * @param map
+     *            The map to copy.
+     */
     protected static List<NamedValue> fromMap(Map<String, String> map) {
         List<NamedValue> namedValues = new ArrayList<NamedValue>();
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -110,8 +120,17 @@ public class NamedValueList extends ArrayList<NamedValue> {
         }
         return map;
     }
-    
-    // TODO Document.
+
+    /**
+     * Convert the named value list into a map of string name value pairs. When
+     * a name occurs more than once in the named value list, the value of the
+     * first occurrence is used as th where
+     * the value is the value of the first occurrence of each name in the this
+     * named value list.
+     * 
+     * @param spaceIsNull
+     * @return
+     */
     public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull) {
         LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
         for (NamedValue namedValue : this) {

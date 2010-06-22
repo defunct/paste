@@ -1,11 +1,24 @@
 package com.goodworkalan.paste.controller;
 
-
 /**
- * A list of name value pairs interpreted as a list of request parameters. The
- * type exists for the the sake of Guice bindings, to give a more meaningful
- * type name to the request parameters object.
+ * A named value list that contains request parameters.
+ * <p>
+ * This subclass exists for the sake of disambiguation between the
+ * parameters map available through dependency injection. We could
+ * create a special qualifier for the headers and parameters.
  * 
+ * <pre><code>
+ * public void doSomething(@RequestHeaders NamedValue, @RequestParameters NamedValue) { 
+ * }
+ * </code></pre>
+ * 
+ * However, that is not as succinct as the following.
+ * 
+ * <pre><code>
+ * public void doSomething(@Request Headers, @Request Parameters) { 
+ * }
+ * </code></pre>
+ *
  * @author Alan Gutierrez
  */
 public class Parameters extends NamedValueList {
@@ -13,12 +26,13 @@ public class Parameters extends NamedValueList {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Create a list of parameters as wrapper around the given list of named
+     * Create a list of request parameters by combining the given lists of named
      * values.
      * 
-     * @param namedValues
-     *            The list of name values to copy.
+     * @param namedValueLists
+     *            The list of named value lists.
      */
     public Parameters(NamedValueList... namedValueLists) {
         super(catenate(namedValueLists));
-    }}
+    }
+}
