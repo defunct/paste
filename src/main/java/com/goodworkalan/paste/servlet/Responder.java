@@ -23,10 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathTree;
-import com.goodworkalan.dovetail.Globber;
-import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.Injector;
@@ -482,12 +481,8 @@ class Responder implements Reactor {
                 break;
             }
             
-            // Create a globber that will apply tests created by the Guice
-            // injector or this Paste filter.
-            Globber<RuleMap<Cassette.ControllerCandidate>>globber = tree.newGlobber();
-
             // Attempt to match the path.
-            List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = globber.map(criteria.getPath());
+            List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = tree.match(criteria.getPath());
 
             // We can have multiple matches, so we winnow them down by futher
             // matching request parameters, then futher winnowing them by
