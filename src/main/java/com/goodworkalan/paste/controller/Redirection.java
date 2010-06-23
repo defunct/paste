@@ -6,7 +6,7 @@ package com.goodworkalan.paste.controller;
  * 
  * @author Alan Gutierrez
  */
-public class Redirection extends Stop {
+public class Redirection extends RuntimeException {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
