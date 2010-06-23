@@ -295,6 +295,7 @@ class Responder implements Reactor {
                 provider(new ReponseHeadersProvider(response), ilk(Headers.class), Response.class, null);
                 provider(new ResponseStatusProvider(response), ilk(Integer.class), Response.class, null);
                 instance(session, ilk(HttpSession.class), Request.class);
+                instance(session, ilk(HttpSession.class), null);
                 provider(ilk(EnumeratedParametersProvider.class), ilk(Parameters.class), Request.class, RequestScoped.class);
                 provider(ilk(RequestParametersProvider.class), ilk(Parameters.class), Filter.class, RequestScoped.class);
                 provider(ilk(RequestParametersProvider.class), ilk(Parameters.class), null, RequestScoped.class);
@@ -528,7 +529,6 @@ class Responder implements Reactor {
             // matching request parameters, then futher winnowing them by
             // choosing a controller based on priority.
             if (!matches.isEmpty()) {
-                int found = 0;
                 Class<?> controllerClass = null;
                 Map<String, String> mappings = null;
 
@@ -547,11 +547,7 @@ class Responder implements Reactor {
                     }
                 }
 
-                if (found > 1) {
-                    // If we've found multiple controllers that have the same
-                    // priority, then we raise an exception.
-                    throw new PasteException(0);
-                } if (found == 1) {
+                if (controllerClass != null) {
                     controllerInjector = controller(injector, controllerClass, mappings);
                 }
             }

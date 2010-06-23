@@ -19,12 +19,16 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link PasteFilter} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class PasteFilterTest {
     /** The Jetty server containing the <code>PasteFilter</code>. */
     private Server server;
     
-    // TODO Document.
+    /** Start the web application in a Jetty server. */
     @BeforeTest
     public void start() throws Exception {
         server = new Server();
@@ -54,8 +58,16 @@ public class PasteFilterTest {
         
         server.start();
     }
-    
-    // TODO Document.
+
+    /**
+     * Slurp the input stream into a list of lines.
+     * 
+     * @param in
+     *            The input stream.
+     * @return A list of lines.
+     * @throws IOException
+     *             For any I/O error.
+     */
     public List<String> slurp(InputStream in) throws IOException {
         List<String> lines = new ArrayList<String>();
         BufferedReader buffer = new BufferedReader(new InputStreamReader(in));
@@ -66,7 +78,7 @@ public class PasteFilterTest {
         return lines;
     }
 
-    // TODO Document.
+    /** Test a basic connection that is not processed by Paste. */
     @Test
     public void testConnection() throws Exception {
         URL url = new URL("http://localhost:8086/");
@@ -75,7 +87,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(0), "Hello, World!");
     }
 
-    // TODO Document.
+    /** Test forwarding within the servlet engine. */
     @Test
     public void testForward() throws Exception {
         URL url = new URL("http://localhost:8086/forwarding");
@@ -86,7 +98,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(2), "true");
     }
     
-    // TODO Document.
+    /** Test controller URL parameter capturing. */ 
     @Test
     public void testControllerParameters() throws Exception {
         URL url = new URL("http://localhost:8086/controller/parameters/3?a=1&b=2");
@@ -97,7 +109,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(2), "3");
     }
     
-    // TODO Document.
+    /** Test includes. */
     @Test
     public void testInclude() throws Exception {
         URL url = new URL("http://localhost:8086/including?qs=true");
@@ -141,7 +153,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(0), "request");
     }
     
-    // TODO Document.
+    /** Shutdown the server. */
     @AfterTest
     public void stop() throws Exception {
         server.stop();

@@ -8,9 +8,22 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 
-// TODO Document.
+/**
+ * A controller to test controller parameters, URL parameter capturing.
+ *
+ * @author Alan Gutierrez
+ */
 public class ControllerParameters {
-    // TODO Document.
+    /**
+     * Check that the parameters are captured.
+     * 
+     * @param parameters
+     *            The controller parameters.
+     * @param response
+     *            The response.
+     * @throws IOException
+     *             For any I/O error.
+     */
     @Inject
     public ControllerParameters(@Controller Parameters parameters, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");

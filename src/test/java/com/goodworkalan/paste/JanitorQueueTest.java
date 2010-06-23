@@ -11,9 +11,13 @@ import org.testng.annotations.Test;
 import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link JanitorQueue} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class JanitorQueueTest {
-    // TODO Document.
+    /** Test add. */
     @Test
     public void add() {
         List<Janitor> janitors = new ArrayList<Janitor>();

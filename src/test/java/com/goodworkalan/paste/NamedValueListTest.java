@@ -14,9 +14,13 @@ import org.testng.annotations.Test;
 import com.goodworkalan.paste.controller.NamedValue;
 import com.goodworkalan.paste.controller.NamedValueList;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link NamedValueList} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class NamedValueListTest {
-    // TODO Document.
+    /** Test add. */
     @Test
     public void add() {
         List<NamedValue> list = new ArrayList<NamedValue>();
@@ -32,7 +36,7 @@ public class NamedValueListTest {
         }
     }
 
-    // TODO Document.
+    /** Test get first. */
     @Test
     public void getFirst() {
         List<NamedValue> list = new ArrayList<NamedValue>();
@@ -40,11 +44,11 @@ public class NamedValueListTest {
         NamedValueList map = new NamedValueList(list);
         assertEquals(map.get("hello"), "world");
         assertNull(map.get("world"));
-        list.clear();
+        map.clear();
         assertNull(map.get("hello"));
     }
 
-    // TODO Document.
+    /** Test has name. */
     @Test
     public void hasName() {
         List<NamedValue> list = new ArrayList<NamedValue>();
@@ -54,7 +58,7 @@ public class NamedValueListTest {
         assertFalse(namedValue.contains("world"));
     }
 
-    // TODO Document.
+    /** Test iterable. */
     @Test
     public void iterable() {
         List<NamedValue> list = new ArrayList<NamedValue>();
@@ -66,7 +70,7 @@ public class NamedValueListTest {
         }
     }
 
-    // TODO Document.
+    /** Test get names. */
     @Test
     public void getNames() {
         List<NamedValue> list = new ArrayList<NamedValue>();
@@ -77,7 +81,7 @@ public class NamedValueListTest {
         }
     }
 
-    // TODO Document.
+    /** Test size. */
     @Test
     public void size() {
         List<NamedValue> list = new ArrayList<NamedValue>();
@@ -87,7 +91,7 @@ public class NamedValueListTest {
         assertEquals(namedValues.size(), 2);
     }
 
-    // TODO Document.
+    /** Test equals. */
     @Test
     public void equals() {
         List<NamedValue> listOne = new ArrayList<NamedValue>();
@@ -101,7 +105,7 @@ public class NamedValueListTest {
         assertFalse(one.equals(null));
     }
 
-    // TODO Document.
+    /** Test hash. */
     @Test
     public void hash() {
         new NamedValueList(new ArrayList<NamedValue>()).hashCode();
