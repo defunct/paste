@@ -6,7 +6,7 @@ package com.goodworkalan.paste.controller;
  * 
  * @author Alan Gutierrez
  */
-public class Stop extends RuntimeException {
+public class HttpError extends RuntimeException {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
@@ -19,7 +19,7 @@ public class Stop extends RuntimeException {
      * @param statusCode
      *            The HTTP response status.
      */
-    public Stop(int statusCode) {
+    public HttpError(int statusCode) {
         this.status = statusCode;
     }
 
@@ -32,7 +32,7 @@ public class Stop extends RuntimeException {
      * @param cause
      *            The cause of the abnormality.
      */
-    public Stop(int status, Throwable cause) {
+    public HttpError(int status, Throwable cause) {
         super(cause);
         this.status = status;
     }
