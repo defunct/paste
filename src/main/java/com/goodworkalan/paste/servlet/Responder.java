@@ -33,7 +33,7 @@ import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.connector.Router;
-import com.goodworkalan.paste.controller.Abnormality;
+import com.goodworkalan.paste.controller.Stop;
 import com.goodworkalan.paste.controller.Actors;
 import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.Headers;
@@ -559,9 +559,9 @@ class Responder implements Reactor {
 
             // Exceptions are also used for those things in HTTP that feel like
             // an abrupt change of course.
-            if (caught.getCause().getCause() instanceof Abnormality) {
+            if (caught.getCause().getCause() instanceof Stop) {
                 // Set the response status.
-                injector.instance(HttpServletResponse.class, null).setStatus(((Abnormality) caught.getCause().getCause()).getStatus());
+                injector.instance(HttpServletResponse.class, null).setStatus(((Stop) caught.getCause().getCause()).getStatus());
             }
         }
 
