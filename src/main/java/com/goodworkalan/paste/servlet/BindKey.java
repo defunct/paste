@@ -19,6 +19,8 @@ package com.goodworkalan.paste.servlet;
     CONTENT_TYPE, 
     /** The request path. */
     PATH,
+    /** The file suffix. */
+    SUFFIX,
     /** The response status. */
     STATUS,
     /** The type of exception thrown. */

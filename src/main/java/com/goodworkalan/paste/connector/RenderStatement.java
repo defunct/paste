@@ -125,6 +125,20 @@ public class RenderStatement {
         from.check(BindKey.EXCEPTION_CLASS, new InstanceOf(exceptionClass));
         return this;
     }
+    
+    /**
+     * Specify the suffixes that this rule matches.
+     * 
+     * @param suffixes
+     *            The suffixes.
+     * @return This when statement to continue specifying rules.
+     */
+    public RenderStatement suffix(String...suffixes) {
+        for (String suffix : suffixes) {
+            from.check(BindKey.SUFFIX, new Equals(suffix));
+        }
+        return this;
+    }
 
     /**
      * Assign a priority for this render statement to resolve ambiguties if two

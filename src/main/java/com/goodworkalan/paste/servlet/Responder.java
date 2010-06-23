@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
@@ -33,11 +35,10 @@ import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.connector.Router;
-import com.goodworkalan.paste.controller.HttpError;
 import com.goodworkalan.paste.controller.Actors;
 import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.Headers;
-import com.goodworkalan.paste.controller.InitializationParameters;
+import com.goodworkalan.paste.controller.HttpError;
 import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 import com.goodworkalan.paste.controller.NamedValueList;
@@ -192,7 +193,7 @@ class Responder implements Reactor {
             protected void build() {
                 scope(ApplicationScoped.class);
                 instance(Responder.this, ilk(Reactor.class), null);
-                instance(initialization, new Ilk<Map<String, String>>() { }, InitializationParameters.class);
+                instance(initialization, new Ilk<Map<String, String>>() { }, Application.class);
                 instance(servletContext, ilk(ServletContext.class), null);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Application.class);
                 instance(cassette.getRoutes(), new Ilk<Map<Class<?>, Path>>() {}, Application.class);
@@ -469,9 +470,28 @@ class Responder implements Reactor {
             }
         }
     }
+    
+    /** The pattern to match a file suffix. */
+    final static Pattern SUFFIX = Pattern.compile("^(.*?)\\.([^/]+)$");
 
-    // TODO Document.
-    private Injector controller(Injector injector, Interception interception, Criteria criteria) {
+    /**
+     * Find the controller for the given path and suffix, run the controller and
+     * return the injector created to create the controller.
+     * 
+     * @param injector
+     *            The injector.
+     * @param interception
+     *            The intercepted flag.
+     * @param criteria
+     *            The filter criteria.
+     * @param path
+     *            The path without the file suffix.
+     * @param suffix
+     *            The file suffix.
+     * @return The injector used to create the controller or null if no
+     *         controller was found.
+     */
+    private Injector controller(Injector injector, Interception interception, Criteria criteria, String path, String suffix) {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
@@ -482,7 +502,7 @@ class Responder implements Reactor {
             }
             
             // Attempt to match the path.
-            List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = tree.match(criteria.getPath());
+            List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = tree.match(path);
 
             // We can have multiple matches, so we winnow them down by futher
             // matching request parameters, then futher winnowing them by
@@ -499,6 +519,7 @@ class Responder implements Reactor {
                     Map<Object, Object> conditions = new HashMap<Object, Object>();
                     conditions.put(BindKey.METHOD, request.getMethod());
                     conditions.put(BindKey.PATH, criteria.getPath());
+                    conditions.put(BindKey.SUFFIX, suffix);
                     List<Cassette.ControllerCandidate> candidates = mapping.getObject().get(conditions);
                     for (Cassette.ControllerCandidate candidate : candidates) {
                         int priority = candidate.priority;
@@ -550,13 +571,18 @@ class Responder implements Reactor {
         ControllerException caught = null;
         Injector controllerInjector = null;
 
+        String path = criteria.getPath();
+        String suffix = null;
+        Matcher matcher = SUFFIX.matcher(path);
+        if (matcher.matches()) {
+            path = matcher.group(1);
+            suffix = matcher.group(2);
+        }
+        
         try {
-            controllerInjector = controller(injector, interception, criteria);
+            controllerInjector = controller(injector, interception, criteria, path, suffix);
         } catch (ControllerException e) {
             caught = e;
-
-            System.out.println(caught.getCause().getCause());
-
             // Exceptions are also used for those things in HTTP that feel like
             // an abrupt change of course.
             if (caught.getCause().getCause() instanceof HttpError) {
@@ -581,8 +607,6 @@ class Responder implements Reactor {
                 break;
             }
 
-            // FIXME: Can I use Stash for these bindings?
-
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
             Map<Object, Object> conditions = new HashMap<Object, Object>();
@@ -592,6 +616,7 @@ class Responder implements Reactor {
             conditions.put(BindKey.STATUS, injector.instance(Integer.class, Response.class));
             conditions.put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause());
             conditions.put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod());
+            conditions.put(BindKey.SUFFIX, suffix);
             List<Cassette.RenderCandidate> candidates = renderers.get(conditions);
             SortedMap<Integer, Cassette.RenderCandidate> choose = new TreeMap<Integer, Cassette.RenderCandidate>();
             if (!candidates.isEmpty()) {

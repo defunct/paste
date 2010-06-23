@@ -79,6 +79,9 @@ public class WhenStatement<T> {
 
     /**
      * Set the priority of this set of rules.
+     * <p>
+     * FIXME Outgoing? Too bad it kind of overshadows the priorities
+     * set by the PathAssociation, but still needed for Winnow.
      * 
      * @param priority
      *            The priority.
@@ -86,6 +89,20 @@ public class WhenStatement<T> {
      */
     public WhenStatement<T> priority(int priority) {
         this.priority = priority;
+        return this;
+    }
+
+    /**
+     * Specify the suffixes that this rule matches.
+     * 
+     * @param suffixes
+     *            The suffixes.
+     * @return This when statement to continue specifying rules.
+     */
+    public WhenStatement<T> suffix(String...suffixes) {
+        for (String suffix : suffixes) {
+            rule.check(BindKey.SUFFIX, new Equals(suffix));
+        }
         return this;
     }
 
