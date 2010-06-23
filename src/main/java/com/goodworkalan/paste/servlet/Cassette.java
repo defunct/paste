@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.goodworkalan.dovetail.Path;
-import com.goodworkalan.dovetail.PathTree;
+import com.goodworkalan.dovetail.PathAssociation;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
@@ -133,14 +133,14 @@ public final class Cassette {
      * 
      * @return The list of connection groups.
      */
-    List<PathTree<RuleMap<ControllerCandidate>>> getConnections() {
-        List<PathTree<RuleMap<ControllerCandidate>>> trees = new ArrayList<PathTree<RuleMap<ControllerCandidate>>>();
+    List<PathAssociation<RuleMap<ControllerCandidate>>> getConnections() {
+        List<PathAssociation<RuleMap<ControllerCandidate>>> trees = new ArrayList<PathAssociation<RuleMap<ControllerCandidate>>>();
         for (List<Connection> listOfControllerPathMappings : connections) {
-            PathTree<RuleMap<ControllerCandidate>> tree = new PathTree<RuleMap<ControllerCandidate>>();
+            PathAssociation<RuleMap<ControllerCandidate>> tree = new PathAssociation<RuleMap<ControllerCandidate>>();
             for (Connection mapping : listOfControllerPathMappings) {
                 RuleMap<ControllerCandidate> rules = mapping.rules.newRuleMap();
                 for (Path glob : mapping.globs) {
-                    tree.add(glob, rules);
+                    tree.put(glob, rules);
                 }
             }
             trees.add(tree);

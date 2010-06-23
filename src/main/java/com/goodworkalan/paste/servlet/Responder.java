@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 
 import com.goodworkalan.dovetail.Match;
 import com.goodworkalan.dovetail.Path;
-import com.goodworkalan.dovetail.PathTree;
+import com.goodworkalan.dovetail.PathAssociation;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.Injector;
@@ -94,7 +94,7 @@ class Responder implements Reactor {
      * FIXME Maybe deviate should be called Winnow. Deviate will probably make
      * people think about statistics.
      */
-    private final List<PathTree<RuleMap<Cassette.ControllerCandidate>>> connections;
+    private final List<PathAssociation<RuleMap<Cassette.ControllerCandidate>>> connections;
 
     /**
      * The rule map used to select a renderer for a given controller or thrown
@@ -475,7 +475,7 @@ class Responder implements Reactor {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
-        for (PathTree<RuleMap<Cassette.ControllerCandidate>> tree : connections) {
+        for (PathAssociation<RuleMap<Cassette.ControllerCandidate>> tree : connections) {
             // If a controller has written a response, we're done.
             if (interception.isIntercepted()) {
                 break;

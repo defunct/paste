@@ -23,7 +23,7 @@ public class Redirector {
 
     // TODO Document.
     @Inject
-    public Redirector(HttpServletRequest request, HttpServletResponse response) {
+    public Redirector(int i, HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
     }
