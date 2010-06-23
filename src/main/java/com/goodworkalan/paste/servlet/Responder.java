@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +43,6 @@ import com.goodworkalan.paste.controller.NamedValueList;
 import com.goodworkalan.paste.controller.Parameters;
 import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.Reactor;
-import com.goodworkalan.paste.controller.Redirection;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.Startup;
 import com.goodworkalan.paste.controller.qualifiers.Application;
@@ -60,7 +57,6 @@ import com.goodworkalan.paste.controller.scopes.FilterScoped;
 import com.goodworkalan.paste.controller.scopes.ReactionScoped;
 import com.goodworkalan.paste.controller.scopes.RequestScoped;
 import com.goodworkalan.paste.controller.scopes.SessionScoped;
-import com.goodworkalan.paste.redirect.Redirect;
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 import com.goodworkalan.winnow.RuleMap;
@@ -82,7 +78,7 @@ import com.goodworkalan.winnow.RuleMap;
  * @author Alan Gutierrez
  */
 class Responder implements Reactor {
-    // TODO Document.
+    /** The session attribute name for the session scope storage object. */
     private final static String SESSION_SCOPE_ATTRIBUTE_NAME = "com.goodworkalan.paste.Responder.session";
 
     /** The dependency injector. */
@@ -95,28 +91,32 @@ class Responder implements Reactor {
      * FIXME Maybe deviate should be called Winnow. Deviate will probably make
      * people think about statistics.
      */
-    private final List<PathAssociation<RuleMap<Cassette.ControllerCandidate>>> connections;
+    private final List<PathAssociation<RuleMap<Class<?>>>> connections;
 
     /**
      * The rule map used to select a renderer for a given controller or thrown
      * exception.
      */
-    private final RuleMap<Cassette.RenderCandidate> renderers;
+    private final RuleMap<List<InjectorBuilder>> renderers;
 
     /** The list of janitors to run when the filter is shutdown. */
     private final LinkedBlockingQueue<Janitor> janitors = new LinkedBlockingQueue<Janitor>();
 
     /** The map of annotations to controllers. */
     private final Map<Class<?>, List<Class<?>>> reactions;
-    
-    // TODO Document.
+
+    /**
+     * The thread local stack of injectors, one injector for the first
+     * invocation of the filter, and one injector for each subsequent forwarded
+     * or included call to the filter.
+     */
     private final ThreadLocal<LinkedList<Injector>> INJECTORS = new ThreadLocal<LinkedList<Injector>>() {
          protected java.util.LinkedList<Injector> initialValue() {
              return new LinkedList<Injector>();
          }
     };
 
-    // TODO Document.
+    /** The controller type or annotation to interceptor association. */
     private final IlkAssociation<Class<?>> interceptors;
     
     /**
@@ -176,17 +176,10 @@ class Responder implements Reactor {
         
         final Cassette cassette = new Cassette();
         Connector connector = new Connector(cassette);
+
         for (Router router : routers) {
             router.connect(connector);
         }
-
-        connector
-            .render()
-                .exception(Redirection.class)
-                .priority(Integer.MIN_VALUE)
-                .with(Redirect.class)
-                .end()
-            .end();
 
         InjectorBuilder newInjector = new InjectorBuilder();
         newInjector.module(new InjectorBuilder() {
@@ -211,12 +204,26 @@ class Responder implements Reactor {
         this.interceptors =  cassette.interceptors;
     }
 
-    // TODO Document.
+    /**
+     * Start the application by generating a {@link Startup} event and
+     * triggering and startup reactions.
+     */
     public void start() {
         react(new Ilk<Startup>(Startup.class), new Startup());
     }
     
-    // TODO Document.
+    /**
+     * Trigger a reaction of the type specified by the given type token with the
+     * given object instance. Reactions are bound to types so that information
+     * can be provided via an instance of the type.
+     * 
+     * @param <T>
+     *            The event type.
+     * @param lik
+     *            The super type token of the event type.
+     * @param object
+     *            The event.
+     */
     public <T> void react(Ilk<T> ilk, T object) {
         if (reactions.containsKey(object.getClass())) {
             List<Janitor> janitors = new ArrayList<Janitor>();
@@ -261,8 +268,21 @@ class Responder implements Reactor {
                new InterceptingResponse(interception, response), interception, responseHeaders,
                chain);
     }
-    
-    // TODO Document.
+
+    /**
+     * Construct the first injector, the root injector that will contain any
+     * child injectors created by subsequent forwarded or included calls that
+     * invoke the filter.
+     * <p>
+     * This will resurrect the sesssion scope, initail 
+     * 
+     * @param request
+     *            The HTTP request.
+     * @param response
+     *            The HTTP response.
+     * @param janitors
+     *            The set of request janitors.
+     */
     private InjectorBuilder getRequestInjectorBuilder(final HttpServletRequest request, final InterceptingResponse response, final List<Janitor> janitors) {
         InjectorBuilder newInjector = injector.newInjector();
         newInjector.module(new InjectorBuilder(){
@@ -495,42 +515,35 @@ class Responder implements Reactor {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
-        for (PathAssociation<RuleMap<Cassette.ControllerCandidate>> tree : connections) {
+        for (PathAssociation<RuleMap<Class<?>>> tree : connections) {
             // If a controller has written a response, we're done.
             if (interception.isIntercepted()) {
                 break;
             }
             
             // Attempt to match the path.
-            List<Match<RuleMap<Cassette.ControllerCandidate>>> matches = tree.match(path);
+            List<Match<RuleMap<Class<?>>>> matches = tree.match(path);
 
             // We can have multiple matches, so we winnow them down by futher
             // matching request parameters, then futher winnowing them by
             // choosing a controller based on priority.
             if (!matches.isEmpty()) {
                 int found = 0;
-                int highestPriority = Integer.MIN_VALUE;
                 Class<?> controllerClass = null;
                 Map<String, String> mappings = null;
 
                 HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
                 // Apply the rule set associated with each matched glob.
-                for (Match<RuleMap<Cassette.ControllerCandidate>> mapping : matches) {
+                for (Match<RuleMap<Class<?>>> mapping : matches) {
                     Map<Object, Object> conditions = new HashMap<Object, Object>();
                     conditions.put(BindKey.METHOD, request.getMethod());
                     conditions.put(BindKey.PATH, criteria.getPath());
                     conditions.put(BindKey.SUFFIX, suffix);
-                    List<Cassette.ControllerCandidate> candidates = mapping.getObject().get(conditions);
-                    for (Cassette.ControllerCandidate candidate : candidates) {
-                        int priority = candidate.priority;
-                        if (priority > highestPriority) {
-                            found = 1;
-                            highestPriority = priority;
-                            controllerClass = candidate.controllerClass;
-                            mappings = mapping.getParameters();
-                        } else if (priority == highestPriority) {
-                            found++;
-                        }
+                    List<Class<?>> candidates = mapping.getObject().get(conditions);
+                    if (!candidates.isEmpty()) {
+                        controllerClass = candidates.get(0);
+                        mappings = mapping.getParameters();
+                        break;
                     }
                 }
 
@@ -617,14 +630,10 @@ class Responder implements Reactor {
             conditions.put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause());
             conditions.put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod());
             conditions.put(BindKey.SUFFIX, suffix);
-            List<Cassette.RenderCandidate> candidates = renderers.get(conditions);
-            SortedMap<Integer, Cassette.RenderCandidate> choose = new TreeMap<Integer, Cassette.RenderCandidate>();
+            List<List<InjectorBuilder>> candidates = renderers.get(conditions);
             if (!candidates.isEmpty()) {
-                // Find the render module with the highest priority.
-                for (Cassette.RenderCandidate candidate : candidates) {
-                    choose.put(candidate.priority, candidate);
-                }
-                modules = choose.get(choose.firstKey()).modules;
+                // Use the render module with the highest priority.
+                modules = candidates.get(0);
                 InjectorBuilder newInjector = controllerInjector == null ? injector.newInjector() : controllerInjector.newInjector();
                 for (InjectorBuilder module : modules) {
                     newInjector.module(module);

@@ -2,12 +2,11 @@ package com.goodworkalan.paste.connector;
 
 import java.util.Map;
 
+import com.goodworkalan.dovetail.Path;
+import com.goodworkalan.paste.servlet.BindKey;
 import com.goodworkalan.winnow.Equals;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.winnow.RuleSetBuilder;
-import com.goodworkalan.dovetail.Path;
-import com.goodworkalan.paste.servlet.BindKey;
-import com.goodworkalan.paste.servlet.Cassette;
 
 /**
  * A statement that specifies the rules to apply after a path has matched to
@@ -36,10 +35,7 @@ public class WhenStatement<T> {
     private final Map<Class<?>, Path> controllerToGlob;
 
     /** The rule set builder for this rule statement. */
-    private final RuleSetBuilder<Cassette.ControllerCandidate> rule;
-
-    /** The priority of the rule set to resolve ambiguities. */
-    private int priority;
+    private final RuleSetBuilder<Class<?>> rule;
 
     /**
      * 
@@ -56,7 +52,7 @@ public class WhenStatement<T> {
      *            The builder of map of rule sets to priority and controller
      *            class pairs.
      */
-    WhenStatement(PathStatement<T> when, Path glob, Map<Class<?>, Path> controllerToGlob, RuleMapBuilder<Cassette.ControllerCandidate> rules) {
+    WhenStatement(PathStatement<T> when, Path glob, Map<Class<?>, Path> controllerToGlob, RuleMapBuilder<Class<?>> rules) {
         this.when = when;
         this.glob = glob;
         this.controllerToGlob = controllerToGlob;
@@ -76,22 +72,7 @@ public class WhenStatement<T> {
         }
         return this;
     }
-
-    /**
-     * Set the priority of this set of rules.
-     * <p>
-     * FIXME Outgoing? Too bad it kind of overshadows the priorities
-     * set by the PathAssociation, but still needed for Winnow.
-     * 
-     * @param priority
-     *            The priority.
-     * @return This rule element to continue specifying rules.
-     */
-    public WhenStatement<T> priority(int priority) {
-        this.priority = priority;
-        return this;
-    }
-
+    
     /**
      * Specify the suffixes that this rule matches.
      * 
@@ -120,7 +101,7 @@ public class WhenStatement<T> {
         if (!controllerToGlob.containsKey(controller)) {
             controllerToGlob.put(controller, glob);
         }
-        rule.put(new Cassette.ControllerCandidate(priority, controller));
+        rule.put(controller);
         return new End<WhenClause<T>>(when);
     }
 }

@@ -45,48 +45,35 @@ import com.goodworkalan.winnow.RuleMapBuilder;
  * @author Alan Gutierrez
  */
 public final class Cassette {
-    // TODO Document.
+    /**
+     * Associates a set of paths with with a rule map that associates request
+     * properties to controllers.
+     * 
+     * @author Alan Gutierrez
+     */
     public static final class Connection {
-        // TODO Document.
-        public List<Path> globs;
+        /** The paths that match this connection. */
+        public List<Path> paths;
         
-        // TODO Document.
-        public RuleMapBuilder<ControllerCandidate> rules;
+        /**
+         * The set of rules to further qualify a connection based on request
+         * properties.
+         */
+        public RuleMapBuilder<Class<?>> rules;
         
-        // TODO Document.
-        public Connection(List<Path> globs, RuleMapBuilder<ControllerCandidate> rules) {
-            this.globs = globs;
+        /**
+         * Create a connection with the given set of paths and the given rule
+         * map.
+         * 
+         * @param paths
+         *            The paths that match this connection.
+         * @param rules
+         *            The set of rules to further qualify a connection based on
+         *            request properties.
+         */
+        public Connection(List<Path> paths, RuleMapBuilder<Class<?>> rules) {
+            this.paths = paths;
             this.rules = rules;
-        }
-    }
-    
-    // TODO Document.
-    public static final class ControllerCandidate {
-        // TODO Document.
-        public int priority;
-        
-        // TODO Document.
-        public Class<?> controllerClass;
-        
-        // TODO Document.
-        public ControllerCandidate(int priority, Class<?> controllerClass) {
-            this.priority = priority;
-            this.controllerClass = controllerClass;
-        }
-    }
-    
-    // TODO Document.
-    public static final class RenderCandidate {
-        // TODO Document.
-        public int priority;
-        
-        // TODO Document.
-        public List<InjectorBuilder> modules;
-
-        // TODO Document.
-        public RenderCandidate(int priority, List<InjectorBuilder> modules) {
-            this.priority = priority;
-            this.modules = modules;
         }
     }
 
@@ -101,7 +88,7 @@ public final class Cassette {
     public List<List<Connection>> connections;
     
     /** A rule map to match a controller or exception to a renderer. */
-    public RuleMapBuilder<RenderCandidate> renderers;
+    public RuleMapBuilder<List<InjectorBuilder>> renderers;
     
     /** The map of annotations to controllers. */
     public Map<Class<?>, List<Class<?>>> reactions;
@@ -126,20 +113,21 @@ public final class Cassette {
     }
 
     /**
-     * Builds a list of connection groups, where a connection group is a glob
-     * tree that maps to a rule map of tests to further winnow the match based
-     * on request parameters. This method builds the glob trees from their
-     * intermediate state, which is the list of globs to add to the glob tree. 
+     * Builds a list of connection groups, where a connection group is a
+     * Dovetail path association tree that maps to a rule map of tests to
+     * further winnow the match based on request parameters. This method builds
+     * the path associations from their intermediate state, which is the list of
+     * paths to add to the path association.
      * 
      * @return The list of connection groups.
      */
-    List<PathAssociation<RuleMap<ControllerCandidate>>> getConnections() {
-        List<PathAssociation<RuleMap<ControllerCandidate>>> trees = new ArrayList<PathAssociation<RuleMap<ControllerCandidate>>>();
+    List<PathAssociation<RuleMap<Class<?>>>> getConnections() {
+        List<PathAssociation<RuleMap<Class<?>>>> trees = new ArrayList<PathAssociation<RuleMap<Class<?>>>>();
         for (List<Connection> listOfControllerPathMappings : connections) {
-            PathAssociation<RuleMap<ControllerCandidate>> tree = new PathAssociation<RuleMap<ControllerCandidate>>();
+            PathAssociation<RuleMap<Class<?>>> tree = new PathAssociation<RuleMap<Class<?>>>();
             for (Connection mapping : listOfControllerPathMappings) {
-                RuleMap<ControllerCandidate> rules = mapping.rules.newRuleMap();
-                for (Path glob : mapping.globs) {
+                RuleMap<Class<?>> rules = mapping.rules.newRuleMap();
+                for (Path glob : mapping.paths) {
                     tree.put(glob, rules);
                 }
             }
@@ -153,7 +141,7 @@ public final class Cassette {
      * 
      * @return The rule map to match a controller or exception to a renderer.
      */
-    RuleMap<RenderCandidate> getRenderers() {
+    RuleMap<List<InjectorBuilder>> getRenderers() {
         return renderers.newRuleMap();
     }
 }

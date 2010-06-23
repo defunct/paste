@@ -5,17 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.goodworkalan.ilk.inject.InjectorBuilder;
+import com.goodworkalan.paste.controller.PasteException;
+import com.goodworkalan.paste.servlet.BindKey;
+import com.goodworkalan.reflective.Reflective;
+import com.goodworkalan.reflective.ReflectiveException;
 import com.goodworkalan.winnow.Condition;
 import com.goodworkalan.winnow.Equals;
 import com.goodworkalan.winnow.InstanceOf;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.winnow.RuleSetBuilder;
-import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.controller.PasteException;
-import com.goodworkalan.paste.servlet.BindKey;
-import com.goodworkalan.paste.servlet.Cassette;
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * An element in the controller connection domain-specific language that
@@ -29,16 +28,10 @@ public class RenderStatement {
     private final Connector end;
     
     /** A builder for a map of rule sets to priority and render modules pairs. */
-    protected final RuleMapBuilder<Cassette.RenderCandidate> mappings;
+    protected final RuleMapBuilder<List<InjectorBuilder>> mappings;
 
     /** A builder for a set of rules for this render statement. */
-    protected final RuleSetBuilder<Cassette.RenderCandidate> from;
-
-    /**
-     * The priority for this render statement to resolve ambiguties if two or
-     * more rule sets match a response.
-     */
-    private int priority;
+    protected final RuleSetBuilder<List<InjectorBuilder>> from;
 
     /**
      * Create a render statement.
@@ -46,10 +39,9 @@ public class RenderStatement {
      * @param end
      *            The connector to return when the statement terminates.
      * @param mappings
-     *            A builder for a map of rule sets to priority and render
-     *            modules pairs.
+     *            A builder for a map of rule sets render modules.
      */
-    RenderStatement(Connector end, RuleMapBuilder<Cassette.RenderCandidate> mappings) {
+    RenderStatement(Connector end, RuleMapBuilder<List<InjectorBuilder>> mappings) {
         this.end = end;
         this.mappings = mappings;
         this.from = mappings.rule();
@@ -141,19 +133,6 @@ public class RenderStatement {
     }
 
     /**
-     * Assign a priority for this render statement to resolve ambiguties if two
-     * or more rule sets match a response.
-     * 
-     * @param priority
-     *            The priority.
-     * @return This render statement to continue to specify match criteria.
-     */
-    public RenderStatement priority(int priority) {
-        this.priority = priority;
-        return this;
-    }
-
-    /**
      * Specify the render module that will render a controller or exception when
      * the criteria specified by this render statement is matched.
      * 
@@ -166,7 +145,7 @@ public class RenderStatement {
      */
     public <T> T with(final Class<T> renderClass) {
         final List<InjectorBuilder> modules = new ArrayList<InjectorBuilder>();
-        from.put(new Cassette.RenderCandidate(priority, modules));
+        from.put(modules);
         try {
             try {
                 Constructor<T> constructor = renderClass.getConstructor(Connector.class, List.class);

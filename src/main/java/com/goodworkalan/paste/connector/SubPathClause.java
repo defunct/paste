@@ -10,7 +10,7 @@ package com.goodworkalan.paste.connector;
  *            The type of parent element to return when the statement is
  *            terminated.
  */
-public interface SubPathClause<T> extends WhenClause<T>, PriorityClause<T> {
+public interface SubPathClause<T> extends WhenClause<T> {
     /**
      * Begin a sub-path statement whose path is a sub-path of all the paths
      * specified by this path statement.

@@ -60,7 +60,7 @@ public class ConnectStatement {
      * @return A path specification element to define the path.
      */
     public PathStatement<ConnectStatement> path(String path) {
-        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new PathCompiler()), new RuleMapBuilder<Cassette.ControllerCandidate>(), Collections.singletonList(path));
+        return new PathStatement<ConnectStatement>(this, controllerToGlob, connections, Collections.singletonList(new PathCompiler()), new RuleMapBuilder<Class<?>>(), Collections.singletonList(path));
     }
 
     /**

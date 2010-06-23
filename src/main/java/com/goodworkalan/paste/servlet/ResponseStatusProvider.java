@@ -2,17 +2,30 @@ package com.goodworkalan.paste.servlet;
 
 import javax.inject.Provider;
 
-// TODO Document.
+/**
+ * Returns the current response status.
+ * 
+ * @author Alan Gutierrez
+ */
 public class ResponseStatusProvider implements Provider<Integer> {
-    // TODO Document.
+    /** The intercepting HTTP response. */
     private final InterceptingResponse response;
     
-    // TODO Document.
+    /**
+     * Create response status provider.
+     * 
+     * @param response
+     *            The intercepting HTTP response.
+     */
     public ResponseStatusProvider(InterceptingResponse response) {
         this.response = response;
     }
-    
-    // TODO Document.
+
+    /**
+     * Get the current response status.
+     * 
+     * @return The current response status.
+     */
     public Integer get() {
         return response.getStatus();
     }

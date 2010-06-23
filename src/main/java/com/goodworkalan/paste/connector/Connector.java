@@ -7,6 +7,7 @@ import java.util.List;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.ilk.association.IlkAssociation;
+import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.servlet.Cassette;
 
 /**
@@ -29,9 +30,22 @@ public class Connector {
         cassette.reactions = new HashMap<Class<?>, List<Class<?>>>();
         cassette.routes = new HashMap<Class<?>, Path>();
         cassette.connections = new ArrayList<List<Cassette.Connection>>();
-        cassette.renderers = new RuleMapBuilder<Cassette.RenderCandidate>();
+        cassette.renderers = new RuleMapBuilder<List<InjectorBuilder>>();
         cassette.interceptors = new IlkAssociation<Class<?>>(true);
         this.cassette = cassette;
+    }
+
+    /**
+     * Syntactical sugar for importing existing routers, applies the router to
+     * this connector and returns this connector.
+     * 
+     * @param router
+     *            The router to apply to this connector.
+     * @return This connector to continue specifying routes.
+     */
+    public Connector module(Router router) {
+        router.connect(this);
+        return this;
     }
 
     // TODO Document.

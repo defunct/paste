@@ -39,7 +39,7 @@ public class OrClause<T> {
     private final List<PathCompiler> compilers;
 
     /** The rules to apply to a request after a path matches. */
-    private final RuleMapBuilder<Cassette.ControllerCandidate> rules;
+    private final RuleMapBuilder<Class<?>> rules;
     
     /**
      * The list of paths to compile, multiple paths can be specified using an or
@@ -72,7 +72,7 @@ public class OrClause<T> {
              Map<Class<?>, Path> controllerToGlob,
              List<Cassette.Connection> connections,
              List<PathCompiler> compilers,
-             RuleMapBuilder<Cassette.ControllerCandidate> rules,
+             RuleMapBuilder<Class<?>> rules,
              List<String> patterns) {
         this.parent = connector;
         this.controllerToGlob = controllerToGlob;

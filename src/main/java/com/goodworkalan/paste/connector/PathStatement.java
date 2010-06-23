@@ -8,7 +8,6 @@ import java.util.Map;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.servlet.Cassette;
-import com.goodworkalan.paste.servlet.Cassette.ControllerCandidate;
 import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
@@ -43,16 +42,13 @@ public class PathStatement<T> implements SubPathClause<T> {
     private final List<Path> globs;
 
     /** The rules to apply to a request after a path matches. */
-    private final RuleMapBuilder<ControllerCandidate> rules;
+    private final RuleMapBuilder<Class<?>> rules;
 
     /**
      * The list of paths to compile, multiple paths can be specified using an or
      * clause. private final List<String> pattern;
      */ 
     private final List<String> patterns;
-
-    /** The priority of this path or paths relative to other paths that match. */
-    private int priority;
 
     /** Flag indicating that the path or paths have been compiled. */
     private boolean compiled;
@@ -66,13 +62,13 @@ public class PathStatement<T> implements SubPathClause<T> {
      * @param controllerToGlob
      *            A map of controller classes to globs that match them.
      * @param connections
-     *            A list of globs to sets of rule mappings the further test to
-     *            see if the controller is applicable based on additional
-     *            request parameters.
+     *            A list of path expressions to sets of rule mappings the
+     *            further test to see if the controller is applicable based on
+     *            additional request parameters.
      * @param compilers
      *            The list of parent glob compilers, one or each alternate path
      *            specified by an or clause.
-     * @param globs
+     * @param paths
      *            The list of globs for this path element, one for each path
      *            specified.
      * @param rules
@@ -85,7 +81,7 @@ public class PathStatement<T> implements SubPathClause<T> {
             Map<Class<?>, Path> controllerToGlob,
             List<Cassette.Connection> connections,
             List<PathCompiler> compilers,
-            RuleMapBuilder<Cassette.ControllerCandidate> rules,
+            RuleMapBuilder<Class<?>> rules,
             List<String> patterns) {
         this.controllerToGlob = controllerToGlob;
         this.connector = connector;
@@ -133,22 +129,9 @@ public class PathStatement<T> implements SubPathClause<T> {
             subCompilers.add(new PathCompiler(glob));
         }
         List<Path> globs = new ArrayList<Path>();
-        RuleMapBuilder<Cassette.ControllerCandidate> rules = new RuleMapBuilder<Cassette.ControllerCandidate>();
+        RuleMapBuilder<Class<?>> rules = new RuleMapBuilder<Class<?>>();
         connections.add(new Cassette.Connection(globs, rules));
         return new PathStatement<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));
-    }
-
-    /**
-     * Assign a priority to current path. Followed by a <code>to</code>
-     * connector assignment.
-     * 
-     * @param priority
-     *            The priority for this path.
-     * @return A connector that provides only a <code>to</code> method.
-     */
-    public ToClause<T> priority(int priority) {
-        this.priority = priority;
-        return this;
     }
 
     /**
@@ -173,7 +156,7 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     public End<T> to(Class<?> controller) {
         compile();
-        rules.rule().put(new Cassette.ControllerCandidate(priority, controller));
+        rules.rule().put(controller);
         controllerToGlob.put(controller, globs.get(0));
         connections.add(new Cassette.Connection(globs, rules));
         return new End<T>(connector);
