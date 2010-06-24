@@ -20,6 +20,7 @@ import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.stringbeans.Converter;
 import com.goodworkalan.stringbeans.json.JsonEmitter;
 
+// TODO Document.
 class JsonRenderer implements Renderer {
     /** The final controller for the request. */
     private final Ilk.Box controller;
@@ -27,10 +28,13 @@ class JsonRenderer implements Renderer {
     /** The dependency injector. */
     private final Injector injector;
     
+    // TODO Document.
     private final Converter converter;
     
+    // TODO Document.
     private final HttpServletResponse response;
     
+    // TODO Document.
     @Inject
     public JsonRenderer(Injector injector, @Controller Boxed<Object> controller, Converter converter, HttpServletResponse response) {
         this.injector = injector;
@@ -39,6 +43,7 @@ class JsonRenderer implements Renderer {
         this.response = response;
     }
     
+    // TODO Document.
     public void render() throws ServletException, IOException {
         response.setContentType("application/json");
         Ilk.Box output = null;

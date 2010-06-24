@@ -10,9 +10,12 @@ import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.controller.Renderer;
 
+// TODO Document.
 public class Json { 
+    // TODO Document.
     private final Connector connector;
     
+    // TODO Document.
     private final List<InjectorBuilder> modules;
 
     /**
@@ -27,6 +30,7 @@ public class Json {
         this.modules = modules;
     }
 
+    // TODO Document.
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {
