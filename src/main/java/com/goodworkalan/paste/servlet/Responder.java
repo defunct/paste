@@ -306,8 +306,28 @@ class Responder implements Reactor {
         });
         return newInjector;
     }
-    
-    // TODO Document.
+
+    /**
+     * Construct an injector for an invocation of filter creating either the
+     * root filter request for the first invocation of the filter, or that
+     * extracts the query parameters from the query string tucked into the
+     * request attributes by the servlet engine.
+     * <p>
+     * Note that this filter must first process the client request before
+     * processing any further requests.
+     * 
+     * @param injectors
+     *            The stack of injectors with an element for each invocation of
+     *            this filter.
+     * @param request
+     *            The HTTP request.
+     * @param response
+     *            The HTTP response.
+     * @param janitors
+     *            The list of filter invocation janitors.
+     * @return An injector builder for either the root request or a forward or
+     *         include request.
+     */
     private InjectorBuilder getFilterInjectorBuilder(LinkedList<Injector> injectors, final HttpServletRequest request, InterceptingResponse response, List<Janitor> janitors) {
         if (injectors.isEmpty()) {
             return getRequestInjectorBuilder(request, response, janitors);

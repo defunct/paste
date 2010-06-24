@@ -10,7 +10,7 @@ import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.servlet.Cassette;
 
 /**
- * An element for a group of connections in the domain-specific object to URL
+ * A builder for a group of connections in the domain-specific controller
  * binding language. An router can specify multiple connection groups. Each
  * group is tested against the request path in turn, selecting a single
  * controller for each group, until all groups have been applied or one of the

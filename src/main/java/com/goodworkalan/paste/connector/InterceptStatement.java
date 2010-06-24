@@ -5,9 +5,15 @@ import java.lang.annotation.Annotation;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.association.IlkAssociation;
 
-// TODO Document.
+/**
+ * A builder for specifying intercepting controllers that bind to controller
+ * types and are invoked prior to the invocation bound controller to intercept
+ * the request processing based on controller type.
+ * 
+ * @author Alan Gutierrez
+ */
 public class InterceptStatement {
-    // TODO Document.
+    /** The connector to return when the statement terminates. */
     private final Connector connector;
     
     // TODO Document.
