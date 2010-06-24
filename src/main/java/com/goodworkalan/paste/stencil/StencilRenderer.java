@@ -14,8 +14,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.xml.sax.SAXException;
-
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.paths.PathFormatter;
@@ -101,10 +99,6 @@ public class StencilRenderer implements Renderer {
         TransformerHandler handler = newTransformerHandler((SAXTransformerFactory) TransformerFactory.newInstance());
         handler.setResult(stream);
         URI uri = URI.create(pathFormatter.format(configuration.format, configuration.formatArguments));
-        try {
-            factory.stencil(injector, uri, handler);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
+        factory.stencil(injector, uri, handler);
 	}
 }
