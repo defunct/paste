@@ -22,4 +22,7 @@ class Configuration {
     
     /** The encoding. */
     public String encoding;
+    
+    /** Whether or not to check if the content is dirty. */
+    public boolean checkDirty;
 }

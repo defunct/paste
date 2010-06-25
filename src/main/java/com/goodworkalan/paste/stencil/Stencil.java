@@ -69,7 +69,12 @@ public class Stencil {
         return this;
     }
 
-	/**
+    public Stencil checkDirty(boolean checkDirty) {
+        configuration.checkDirty = checkDirty;
+        return this;
+    }
+
+    /**
 	 * Set a base URI for resolution of Stencil files, or null to indicate the
 	 * URI of the web application.
 	 * 

@@ -93,6 +93,7 @@ public class StencilRenderer implements Renderer {
         if (stencils == null) {
             stencils = new StencilFactory();
             stencils.setBaseURI(baseURI);
+            stencils.setCheckDirty(configuration.checkDirty);
             stencils.addResolver("war", new WarResourceResolver());
             FACTORIES.put(configuration, stencils);
         }
