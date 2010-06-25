@@ -9,10 +9,8 @@ import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
 
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.controller.Renderer;
@@ -83,22 +81,22 @@ public class StencilRenderer implements Renderer {
 
     /** Render the controller. */
     public void render() throws ServletException, IOException {
+        if (configuration.contentType != null) {
+            response.setContentType(configuration.contentType);
+        }
         URI baseURI = configuration.baseURI;
         if (baseURI == null) {
             baseURI = URI.create("war:///");
         }
         baseURI = baseURI.normalize();
-        StencilFactory factory = FACTORIES.get(configuration);
-        if (factory == null) {
-            factory = new StencilFactory();
-            factory.setBaseURI(baseURI);
-            factory.addResolver("war", new WarResourceResolver());
-            FACTORIES.put(configuration, factory);
+        StencilFactory stencils = FACTORIES.get(configuration);
+        if (stencils == null) {
+            stencils = new StencilFactory();
+            stencils.setBaseURI(baseURI);
+            stencils.addResolver("war", new WarResourceResolver());
+            FACTORIES.put(configuration, stencils);
         }
-        StreamResult stream = new StreamResult(response.getOutputStream());
-        TransformerHandler handler = newTransformerHandler((SAXTransformerFactory) TransformerFactory.newInstance());
-        handler.setResult(stream);
         URI uri = URI.create(pathFormatter.format(configuration.format, configuration.formatArguments));
-        factory.stencil(injector, uri, handler);
+        stencils.stencil(injector, uri, response.getWriter());
 	}
 }

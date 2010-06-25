@@ -19,4 +19,7 @@ class Configuration {
     
     /** The mime type to send. */
     public String contentType;
+    
+    /** The encoding. */
+    public String encoding;
 }
