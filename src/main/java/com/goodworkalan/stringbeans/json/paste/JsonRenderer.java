@@ -20,7 +20,11 @@ import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.stringbeans.Converter;
 import com.goodworkalan.stringbeans.json.JsonEmitter;
 
-// TODO Document.
+/**
+ * Render a controller using String Beans JSON serialization.
+ *
+ * @author Alan Gutierrez
+ */
 class JsonRenderer implements Renderer {
     /** The final controller for the request. */
     private final Ilk.Box controller;
@@ -28,13 +32,24 @@ class JsonRenderer implements Renderer {
     /** The dependency injector. */
     private final Injector injector;
     
-    // TODO Document.
+    /** String Beans emitter and parser configuration. */
     private final Converter converter;
     
-    // TODO Document.
+    /** The HTTP response. */
     private final HttpServletResponse response;
-    
-    // TODO Document.
+
+    /**
+     * Create a String Beans JSON renderer.
+     * 
+     * @param injector
+     *            The injector.
+     * @param controller
+     *            The boxed controller instance.
+     * @param converter
+     *            The String Beans emitter and parser configuration.
+     * @param response
+     *            The HTTP response.
+     */
     @Inject
     public JsonRenderer(Injector injector, @Controller Boxed<Object> controller, Converter converter, HttpServletResponse response) {
         this.injector = injector;
@@ -42,8 +57,17 @@ class JsonRenderer implements Renderer {
         this.converter = converter;
         this.response = response;
     }
-    
-    // TODO Document.
+
+    /**
+     * Serialize to the HTTP response output stream the return value of the
+     * first method or the value of the first field encountered that is
+     * annotated with {@link Output}.
+     * 
+     * @throws ServletException
+     *             For any Servlet engine error.
+     * @throws IOException
+     *             For any I/O error.
+     */
     public void render() throws ServletException, IOException {
         response.setContentType("application/json");
         Ilk.Box output = null;

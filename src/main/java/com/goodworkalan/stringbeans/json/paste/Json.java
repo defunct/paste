@@ -10,12 +10,17 @@ import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.controller.Renderer;
 
-// TODO Document.
+/**
+ * A renderer extension that specifies rendering using String Beans JSON
+ * serialization.
+ * 
+ * @author Alan Gutierrez
+ */
 public class Json { 
-    // TODO Document.
+    /** The parent builder. */
     private final Connector connector;
     
-    // TODO Document.
+    /** The modules used to define the renderer. */
     private final List<InjectorBuilder> modules;
 
     /**
@@ -30,7 +35,13 @@ public class Json {
         this.modules = modules;
     }
 
-    // TODO Document.
+    /**
+     * Terminate the JSON specification and return the parent
+     * <code>Connector</code> to continue specifying routes and renderers.
+     * 
+     * @return The parent <code>Connector</code> to continue specifying routes
+     *         and renderers.
+     */
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {
