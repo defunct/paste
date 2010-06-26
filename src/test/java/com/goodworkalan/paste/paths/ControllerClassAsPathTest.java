@@ -4,12 +4,16 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link ControllerClassAsPath} class.
+ * 
+ * @author Alan Gutierrez
+ */
 public class ControllerClassAsPathTest extends FormatTest {
-    // TODO Document.
+    /** Test injector construction. */
     @Test
     public void format() {
         PathFormatter formatter = new PathFormatter(getControllerInjector());
-        assertEquals(formatter.format("/%s.ftl", args(ControllerClassAsPath.class)), "/java/lang/Object.ftl");
+        assertEquals(formatter.format("/%s.ftl", ControllerClassAsPath.class), "/java/lang/Object.ftl");
     }
 }

@@ -132,7 +132,7 @@ public class PasteFilterTest {
         assertEquals(lines.get(4), "");
     }
     
-    // TODO Document.
+    /** Test <code>Janitor</code> invocation. */
     @Test
     public void testJanitorSession() throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:8086/janitor/filter").openConnection();

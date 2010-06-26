@@ -6,9 +6,21 @@ import javax.servlet.http.HttpSession;
 import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 
-// TODO Document.
+/**
+ * A controller to test <code>Janitor</code> cleanup during a forward or include
+ * filtration.
+ * 
+ * @author Alan Gutierrez
+ */
 public class JanitorFilter {
-    // TODO Document.
+    /**
+     * Set a session parameter during filter <code>Janitor.cleanUp</code>.
+     * 
+     * @param janitors
+     *            The filter queue of janitors.
+     * @param session
+     *            The HTTP session.
+     */
     @Inject
     public JanitorFilter(JanitorQueue janitors, final HttpSession session) {
         janitors.add(new Janitor() {

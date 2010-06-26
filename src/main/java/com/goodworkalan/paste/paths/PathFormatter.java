@@ -36,7 +36,7 @@ public class PathFormatter {
      *            The type of objects to crate.
      * @return A formatted string.
      */
-    public String format(String format, Class<?>[] formatArguments) {
+    public String format(String format, Class<?>...formatArguments) {
         Object[] arguments = new Object[formatArguments.length];
         for (int i = 0; i < arguments.length; i++) {
             arguments[i] = injector.instance(formatArguments[i], null);

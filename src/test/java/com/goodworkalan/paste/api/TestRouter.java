@@ -4,9 +4,18 @@ import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.connector.Router;
 import com.goodworkalan.paste.forward.Forward;
 
-// TODO Document.
+/**
+ * A router to define the test web application.
+ *
+ * @author Alan Gutierrez
+ */
 public class TestRouter implements Router {
-    // TODO Document.
+    /**
+     * Define the test web application using the given connector.
+     * 
+     * @param connector
+     *            The connector.
+     */
     public void connect(Connector connector) {
         connector
             .connect()

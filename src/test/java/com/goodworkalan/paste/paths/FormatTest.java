@@ -8,14 +8,18 @@ import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 
-// TODO Document.
+/**
+ * A base class with common methods to test format arguments.
+ *
+ * @author Alan Gutierrez
+ */
 public class FormatTest {
-    // TODO Document.
-    protected Class<?>[] args(Class<?>... formatArguments) {
-        return formatArguments;
-    }
-    
-    // TODO Document.
+    /**
+     * Construct an injector with an object bound to <code>Object</code> and
+     * qualified by <code>Controller</code>.
+     * 
+     * @return An injector for testing injecting the controller.
+     */
     protected Injector getControllerInjector() {
         InjectorBuilder newInjector = new InjectorBuilder();
         newInjector.module(new InjectorBuilder() {
@@ -26,12 +30,28 @@ public class FormatTest {
         return newInjector.newInjector();
     }
     
-    // TODO Document.
+    /**
+     * Create an injector for testing format arguments that operate on the
+     * request path.
+     * 
+     * @param path
+     *            The test path.
+     * @return An injector for testing request path based format arguments.
+     */
     protected Injector getPathInjector(String path) {
         return getPathInjector(path, null);
     }
 
-    // TODO Document.
+    /**
+     * Create an injector for testing format arguments that operate on the
+     * request path that also require a welcome file.
+     * 
+     * @param path
+     *            The test path.
+     * @param welcomeFile
+     *            The test welcome file.
+     * @return An injector for testing request path based format arguments.
+     */
     protected Injector getPathInjector(String path, final String welcomeFile) {
         final Criteria criteria = mock(Criteria.class);
         when(criteria.getPath()).thenReturn(path);

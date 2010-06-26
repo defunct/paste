@@ -9,9 +9,27 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.paste.controller.Parameters;
 
-// TODO Document.
+/**
+ * A controller to test including other requests from within the Servlet engine
+ * using the <code>RequestDispatcher</code>.
+ * 
+ * @author Alan Gutierrez
+ */
 public class Including {
-    // TODO Document.
+    /**
+     * Use the <code>RequestDispatcher</code> to request an included controller.
+     * 
+     * @param parameters
+     *            The request parameters.
+     * @param request
+     *            The HTTP request.
+     * @param response
+     *            The HTTP response.
+     * @throws ServletException
+     *             For any Servlet engine errors.
+     * @throws IOException
+     *             For any I/O errors.
+     */
     @Inject
     public Including(Parameters parameters, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = "/included";

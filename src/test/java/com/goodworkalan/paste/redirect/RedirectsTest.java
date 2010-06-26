@@ -7,9 +7,13 @@ import org.testng.annotations.Test;
 
 import com.goodworkalan.paste.redirect.Redirects;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link Redirects} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class RedirectsTest {
-    // TODO Document.
+    /** Test redirect status detection. */
     @Test
     public void isRedirectStatus() {
         new Redirects();

@@ -7,9 +7,20 @@ import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 import com.goodworkalan.paste.controller.qualifiers.Request;
 
-// TODO Document.
+/**
+ * A controller to test <code>Janitor</code> cleanup during a request.
+ * 
+ * @author Alan Gutierrez
+ */
 public class JanitorRequest {
-    // TODO Document.
+    /**
+     * Set a session parameter during request <code>Janitor.cleanUp</code>.
+     * 
+     * @param janitors
+     *            The request queue of janitors.
+     * @param session
+     *            The HTTP session.
+     */
     @Inject
     public JanitorRequest(@Request JanitorQueue janitors, final HttpSession session) {
         janitors.add(new Janitor() {
