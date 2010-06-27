@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
+import com.goodworkalan.paste.servlet.BindKey;
 import com.goodworkalan.paste.servlet.Cassette;
 import com.goodworkalan.winnow.RuleMapBuilder;
 
@@ -42,7 +43,7 @@ public class PathStatement<T> implements SubPathClause<T> {
     private final List<Path> globs;
 
     /** The rules to apply to a request after a path matches. */
-    private final RuleMapBuilder<Class<?>> rules;
+    private final RuleMapBuilder<BindKey, Class<?>> rules;
 
     /**
      * The list of paths to compile, multiple paths can be specified using an or
@@ -81,7 +82,7 @@ public class PathStatement<T> implements SubPathClause<T> {
             Map<Class<?>, Path> controllerToGlob,
             List<Cassette.Connection> connections,
             List<PathCompiler> compilers,
-            RuleMapBuilder<Class<?>> rules,
+            RuleMapBuilder<BindKey, Class<?>> rules,
             List<String> patterns) {
         this.controllerToGlob = controllerToGlob;
         this.connector = connector;
@@ -129,7 +130,7 @@ public class PathStatement<T> implements SubPathClause<T> {
             subCompilers.add(new PathCompiler(glob));
         }
         List<Path> globs = new ArrayList<Path>();
-        RuleMapBuilder<Class<?>> rules = new RuleMapBuilder<Class<?>>();
+        RuleMapBuilder<BindKey, Class<?>> rules = new RuleMapBuilder<BindKey, Class<?>>();
         connections.add(new Cassette.Connection(globs, rules));
         return new PathStatement<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));
     }

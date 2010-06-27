@@ -21,7 +21,12 @@ public class ControllerException extends RuntimeException {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
-    // TODO Document.
+    /**
+     * Create a controller exception that wraps the given cause.
+     * 
+     * @param cause
+     *            The cause.
+     */
     public ControllerException(Throwable cause) {
         super("Controller threw an exception.", cause);
     }

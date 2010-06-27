@@ -59,7 +59,7 @@ public final class Cassette {
          * The set of rules to further qualify a connection based on request
          * properties.
          */
-        public RuleMapBuilder<Class<?>> rules;
+        public RuleMapBuilder<BindKey, Class<?>> rules;
         
         /**
          * Create a connection with the given set of paths and the given rule
@@ -71,7 +71,7 @@ public final class Cassette {
          *            The set of rules to further qualify a connection based on
          *            request properties.
          */
-        public Connection(List<Path> paths, RuleMapBuilder<Class<?>> rules) {
+        public Connection(List<Path> paths, RuleMapBuilder<BindKey, Class<?>> rules) {
             this.paths = paths;
             this.rules = rules;
         }
@@ -88,7 +88,7 @@ public final class Cassette {
     public List<List<Connection>> connections;
     
     /** A rule map to match a controller or exception to a renderer. */
-    public RuleMapBuilder<List<InjectorBuilder>> renderers;
+    public RuleMapBuilder<BindKey, List<InjectorBuilder>> renderers;
     
     /** The map of annotations to controllers. */
     public Map<Class<?>, List<Class<?>>> reactions;
@@ -121,12 +121,12 @@ public final class Cassette {
      * 
      * @return The list of connection groups.
      */
-    List<PathAssociation<RuleMap<Class<?>>>> getConnections() {
-        List<PathAssociation<RuleMap<Class<?>>>> trees = new ArrayList<PathAssociation<RuleMap<Class<?>>>>();
+    List<PathAssociation<RuleMap<BindKey, Class<?>>>> getConnections() {
+        List<PathAssociation<RuleMap<BindKey, Class<?>>>> trees = new ArrayList<PathAssociation<RuleMap<BindKey, Class<?>>>>();
         for (List<Connection> listOfControllerPathMappings : connections) {
-            PathAssociation<RuleMap<Class<?>>> tree = new PathAssociation<RuleMap<Class<?>>>();
+            PathAssociation<RuleMap<BindKey, Class<?>>> tree = new PathAssociation<RuleMap<BindKey, Class<?>>>();
             for (Connection mapping : listOfControllerPathMappings) {
-                RuleMap<Class<?>> rules = mapping.rules.newRuleMap();
+                RuleMap<BindKey, Class<?>> rules = mapping.rules.newRuleMap();
                 for (Path glob : mapping.paths) {
                     tree.put(glob, rules);
                 }
@@ -141,7 +141,7 @@ public final class Cassette {
      * 
      * @return The rule map to match a controller or exception to a renderer.
      */
-    RuleMap<List<InjectorBuilder>> getRenderers() {
+    RuleMap<BindKey, List<InjectorBuilder>> getRenderers() {
         return renderers.newRuleMap();
     }
 }

@@ -14,7 +14,11 @@ import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.reflective.Reflective;
 
-// TODO Document.
+/**
+ * Invokes a methods on a controller that have been annotated for invocation.
+ * 
+ * @author Alan Gutierrez
+ */
 public class InvokeActor implements Runnable {
     // TODO Document.
     private final Annotations annotations;

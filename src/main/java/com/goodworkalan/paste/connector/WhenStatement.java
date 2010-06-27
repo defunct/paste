@@ -35,7 +35,7 @@ public class WhenStatement<T> {
     private final Map<Class<?>, Path> controllerToGlob;
 
     /** The rule set builder for this rule statement. */
-    private final RuleSetBuilder<Class<?>> rule;
+    private final RuleSetBuilder<BindKey, Class<?>> rule;
 
     /**
      * 
@@ -52,7 +52,7 @@ public class WhenStatement<T> {
      *            The builder of map of rule sets to priority and controller
      *            class pairs.
      */
-    WhenStatement(PathStatement<T> when, Path glob, Map<Class<?>, Path> controllerToGlob, RuleMapBuilder<Class<?>> rules) {
+    WhenStatement(PathStatement<T> when, Path glob, Map<Class<?>, Path> controllerToGlob, RuleMapBuilder<BindKey, Class<?>> rules) {
         this.when = when;
         this.glob = glob;
         this.controllerToGlob = controllerToGlob;

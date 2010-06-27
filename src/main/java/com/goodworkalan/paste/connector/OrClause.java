@@ -7,6 +7,7 @@ import java.util.Map;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
+import com.goodworkalan.paste.servlet.BindKey;
 import com.goodworkalan.paste.servlet.Cassette;
 
 /**
@@ -39,7 +40,7 @@ public class OrClause<T> {
     private final List<PathCompiler> compilers;
 
     /** The rules to apply to a request after a path matches. */
-    private final RuleMapBuilder<Class<?>> rules;
+    private final RuleMapBuilder<BindKey, Class<?>> rules;
     
     /**
      * The list of paths to compile, multiple paths can be specified using an or
@@ -72,7 +73,7 @@ public class OrClause<T> {
              Map<Class<?>, Path> controllerToGlob,
              List<Cassette.Connection> connections,
              List<PathCompiler> compilers,
-             RuleMapBuilder<Class<?>> rules,
+             RuleMapBuilder<BindKey, Class<?>> rules,
              List<String> patterns) {
         this.parent = connector;
         this.controllerToGlob = controllerToGlob;

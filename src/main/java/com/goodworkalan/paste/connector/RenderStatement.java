@@ -28,10 +28,10 @@ public class RenderStatement {
     private final Connector end;
     
     /** A builder for a map of rule sets to priority and render modules pairs. */
-    protected final RuleMapBuilder<List<InjectorBuilder>> mappings;
+    protected final RuleMapBuilder<BindKey, List<InjectorBuilder>> mappings;
 
     /** A builder for a set of rules for this render statement. */
-    protected final RuleSetBuilder<List<InjectorBuilder>> from;
+    protected final RuleSetBuilder<BindKey, List<InjectorBuilder>> from;
 
     /**
      * Create a render statement.
@@ -41,7 +41,7 @@ public class RenderStatement {
      * @param mappings
      *            A builder for a map of rule sets render modules.
      */
-    RenderStatement(Connector end, RuleMapBuilder<List<InjectorBuilder>> mappings) {
+    RenderStatement(Connector end, RuleMapBuilder<BindKey, List<InjectorBuilder>> mappings) {
         this.end = end;
         this.mappings = mappings;
         this.from = mappings.rule();

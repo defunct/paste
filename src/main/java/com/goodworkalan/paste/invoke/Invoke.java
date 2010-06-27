@@ -16,7 +16,9 @@ public @interface Invoke {
     // TODO Document.
     String param() default "";
 
-    // TODO Document.
+    /**
+     * The HTTP method verbs that will cause the annotated method to be invoked.
+     */
     String[] methods() default {};
 
     // TODO Document.

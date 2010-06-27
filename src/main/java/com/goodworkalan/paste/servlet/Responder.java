@@ -91,13 +91,13 @@ class Responder implements Reactor {
      * FIXME Maybe deviate should be called Winnow. Deviate will probably make
      * people think about statistics.
      */
-    private final List<PathAssociation<RuleMap<Class<?>>>> connections;
+    private final List<PathAssociation<RuleMap<BindKey, Class<?>>>> connections;
 
     /**
      * The rule map used to select a renderer for a given controller or thrown
      * exception.
      */
-    private final RuleMap<List<InjectorBuilder>> renderers;
+    private final RuleMap<BindKey, List<InjectorBuilder>> renderers;
 
     /** The list of janitors to run when the filter is shutdown. */
     private final LinkedBlockingQueue<Janitor> janitors = new LinkedBlockingQueue<Janitor>();
@@ -536,14 +536,14 @@ class Responder implements Reactor {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
-        for (PathAssociation<RuleMap<Class<?>>> tree : connections) {
+        for (PathAssociation<RuleMap<BindKey, Class<?>>> tree : connections) {
             // If a controller has written a response, we're done.
             if (interception.isIntercepted()) {
                 break;
             }
             
             // Attempt to match the path.
-            List<Match<RuleMap<Class<?>>>> matches = tree.match(path);
+            List<Match<RuleMap<BindKey, Class<?>>>> matches = tree.match(path);
 
             // We can have multiple matches, so we winnow them down by futher
             // matching request parameters, then futher winnowing them by
@@ -554,8 +554,8 @@ class Responder implements Reactor {
 
                 HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
                 // Apply the rule set associated with each matched glob.
-                for (Match<RuleMap<Class<?>>> mapping : matches) {
-                    Map<Object, Object> conditions = new HashMap<Object, Object>();
+                for (Match<RuleMap<BindKey, Class<?>>> mapping : matches) {
+                    Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
                     conditions.put(BindKey.METHOD, request.getMethod());
                     conditions.put(BindKey.PATH, criteria.getPath());
                     conditions.put(BindKey.SUFFIX, suffix);
@@ -638,7 +638,7 @@ class Responder implements Reactor {
 
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
-            Map<Object, Object> conditions = new HashMap<Object, Object>();
+            Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
             conditions.put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName());
             conditions.put(BindKey.CONTROLLER_CLASS, controller);
             conditions.put(BindKey.PATH, criteria.getPath());
