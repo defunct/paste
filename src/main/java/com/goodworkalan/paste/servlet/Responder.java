@@ -86,9 +86,6 @@ class Responder implements Reactor {
     /**
      * A list of URL bindings that map a path to a Deviate rule set that further
      * winnows the matches based on request parameters.
-     * <p>
-     * FIXME Maybe deviate should be called Winnow. Deviate will probably make
-     * people think about statistics.
      */
     private final List<PathAssociation<RuleMap<BindKey, Class<?>>>> connections;
 
@@ -218,7 +215,7 @@ class Responder implements Reactor {
      * 
      * @param <T>
      *            The event type.
-     * @param lik
+     * @param ilk
      *            The super type token of the event type.
      * @param object
      *            The event.
@@ -341,8 +338,14 @@ class Responder implements Reactor {
         });
         return newInjector;
     }
-    
-    // TODO Document.
+
+    /**
+     * Get the query parameters for a subsequent forward or include query.
+     * 
+     * @param request
+     *            The HTTP request.
+     * @return The query parameters.
+     */
     private static Parameters getParameters(HttpServletRequest request) { 
         String query = (String) request.getAttribute("javax.servlet.include.query_string");
         if (query == null) {
@@ -350,8 +353,23 @@ class Responder implements Reactor {
         }
         return new Parameters(new NamedValueList(query));
     }
-    
-    // TODO Document.
+
+    /**
+     * Create an injector for an invocation of the filter, add the injector to
+     * the injector stack, and return the newly created injector.
+     * 
+     * @param injectors
+     *            The injector stack.
+     * @param request
+     *            The HTTP request.
+     * @param response
+     *            The HTTP response.
+     * @param janitors
+     *            The filtration janitor queue.
+     * @param responseHeaders
+     *            The response headers.
+     * @return The filter injector.
+     */
     private Injector getFilterInjector(LinkedList<Injector> injectors, final HttpServletRequest request, final InterceptingResponse response, final List<Runnable> janitors, Headers responseHeaders) {
         InjectorBuilder newInjector = getFilterInjectorBuilder(injectors, request, response, janitors);
         newInjector.module(new InjectorBuilder(){
@@ -377,8 +395,19 @@ class Responder implements Reactor {
         injectors.addLast(injector);
         return injector;
     }
-    
-    // TODO Document.
+
+    /**
+     * Pop an injector from the thread local stack of injectors that maintain an
+     * injector for each invocation of the filter during a request.
+     * <p>
+     * If popping the injector causes the stack to become empty, store the
+     * session scope in a session attribute, and clear the thread local storage.
+     * 
+     * @param injectors
+     *            The thread local injector stack.
+     * @param request
+     *            The HTTP request.
+     */
     private void popFilter(LinkedList<Injector> injectors, HttpServletRequest request) {
         Injector injector = injectors.removeLast();
         if (injectors.isEmpty()) {
@@ -422,8 +451,32 @@ class Responder implements Reactor {
             popFilter(injectors, request);
         }
     }
-    
-    // TODO Document.
+
+    /**
+     * Invoke a controller of the given controller class.
+     * <p>
+     * Prior to running the controller, an interceptors are run as controllers
+     * using this method. Then a controller instnace is created that defines the
+     * controller scope an binds the given mappings to a <code>Map</code>
+     * interface qualified by <code>Controller</code>. Then the before actors
+     * are invoked.
+     * <p>
+     * Then a controller is constructed using the controller scope injector, but
+     * externally, so that we call the vendor directly. Then the after actors
+     * are invoked, but prior to invoking them a controller injector is created.
+     * This is disassembled in this way so that we can create a controller
+     * injector for any owning types if the controller is a nested type.
+     * Finally, a controller injector is created to return to the caller to sort
+     * out rendering.
+     * 
+     * @param injector
+     *            The filter injector.
+     * @param controllerClass
+     *            The controller class.
+     * @param mappings
+     *            The mappings obtained by the Dovetail URL pattern match.
+     * @return The controller instance injector.
+     */
     private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings) {
         for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(controllerClass))) {
             controller(injector, interceptorClass, mappings);
@@ -443,6 +496,9 @@ class Responder implements Reactor {
 
         before(controllerScopeInjector, controllerClass);
         
+        // We do it this way so we can build a controller injector explicitly
+        // for the owner instances of a nested controller class when we run the
+        // after actions.
         final Ilk.Box controller;
         try {
             controller = controllerScopeInjector.getVendor(new Ilk.Key(controllerClass), Controller.class).get(controllerScopeInjector);
@@ -454,8 +510,17 @@ class Responder implements Reactor {
         after(controllerScopeInjector, controller);
         return controllerInstanceInjector(controllerScopeInjector, controller);
     }
-    
-    // TODO Document.
+
+    /**
+     * Create a child injector of a controller scope injector that binds a
+     * controller to <code>Object</code> qualified by <code>Controller</code>.
+     * 
+     * @param controllerScopeInjector
+     *            The injector that defined the controller scope.
+     * @param controller
+     *            The controller.
+     * @return A controller instance injector.
+     */
     private Injector controllerInstanceInjector(Injector controllerScopeInjector, final Ilk.Box controller) {
         InjectorBuilder newControllerInstanceInjector = controllerScopeInjector.newInjector();
         newControllerInstanceInjector.module(new InjectorBuilder() {
@@ -465,32 +530,52 @@ class Responder implements Reactor {
         });
         return newControllerInstanceInjector.newInjector();
     }
-    
-    // TODO Document.
+
+    /**
+     * Run any before actors specified by an {@link Actors} annotation on the
+     * controller. A child injector will be created that will define the
+     * controller class.
+     * 
+     * @param controllerScopeInjector
+     *            The injector that defines the controller scope.
+     * @param controllerClass
+     *            The controller class.
+     */
     private void before(Injector controllerScopeInjector, final Class<?> controllerClass) {
         if (controllerClass.isMemberClass()) {
             before(controllerScopeInjector, controllerClass.getDeclaringClass());
         }
 
-        InjectorBuilder newInterceptorInjector = controllerScopeInjector.newInjector();
-        newInterceptorInjector.module(new InjectorBuilder() {
+        InjectorBuilder newBeforeInjector = controllerScopeInjector.newInjector();
+        newBeforeInjector.module(new InjectorBuilder() {
             protected void build() {
                 instance(controllerClass, InjectorBuilder.ilk(Class.class), Controller.class);
             }
         });
 
-        Injector interceptorInjector = newInterceptorInjector.newInjector();
+        Injector beforeInjector = newBeforeInjector.newInjector();
 
         Actors actors = controllerClass.getAnnotation(Actors.class);
         
         if (actors != null) {
             for (Class<? extends Runnable> actor : actors.before()) {
-                interceptorInjector.instance(actor, null).run();
+                beforeInjector.instance(actor, null).run();
             }
         }
     }
 
-    // TODO Document.
+    /**
+     * Run the after actors on the given controller instance, first calling the
+     * after actors of the owner instance if the controller is a nested class.
+     * The after actors are called using a controller instance injector that
+     * binds the controller to <code>Object</code> qualified by
+     * <code>Controller</code>.
+     * 
+     * @param controllerScopeInjector
+     *            The injector that defines the controller scope.
+     * @param controller
+     *            The controller.
+     */
     private void after(Injector controllerScopeInjector, Ilk.Box controller) {
         if (getRawClass(controller.key.type).isMemberClass()) {
             after(controllerScopeInjector, controllerScopeInjector.getOwnerInstance(controller.object));
@@ -499,7 +584,17 @@ class Responder implements Reactor {
         after(controllerInstanceInjector, getRawClass(controller.key.type).getAnnotation(Actors.class));
     }
 
-    // TODO Document.
+    /**
+     * If the given <code>Actors</code> annotation is not null, loop over the
+     * after actors, creating the actors using the given injector and running
+     * them. The default value actors are executed before the explicitly after
+     * actors.
+     * 
+     * @param injector
+     *            The controller injector.
+     * @param actors
+     *            The controller actors annotation.
+     */
     private void after(Injector injector, Actors actors) {
         if (actors != null) {
             for (Class<? extends Runnable> actor : actors.value()) {
@@ -577,9 +672,8 @@ class Responder implements Reactor {
     /**
      * The heart of the filter.
      * 
-     * @param filtration
-     *            The filtration structure for the current invocation of the
-     *            filter.
+     * @param injector
+     *            The filtration injector.
      * @param interception
      *            A flag to indicate if any of controllers have short-circuited
      *            the filter chain by sending a response.

@@ -13,8 +13,13 @@ import com.goodworkalan.paste.controller.Annotations;
 import com.goodworkalan.paste.controller.NamedValue;
 import com.goodworkalan.paste.controller.Parameters;
 
-// TODO Document.
+/**
+ * Unit tests for the {@link Annotations} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class AnnotationsTest {
+    /** Test universal invocation. */
     @Test
     public void any() {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -22,7 +27,7 @@ public class AnnotationsTest {
         assertTrue(annotations.invoke(new String[] {}, "", new String[0]));
     }
 
-    // TODO Document.
+    /** Test parameter name invocation. */
     @Test
     public void on() {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -33,7 +38,7 @@ public class AnnotationsTest {
         assertFalse(annotations.invoke(new String[] { "cancel" }, "", new String[0]));
     }
 
-    // TODO Document.
+    /** Test parameter invocation. */
     @Test
     public void param() {
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -45,7 +50,7 @@ public class AnnotationsTest {
         assertFalse(annotations.invoke(new String[] { "save" }, "off", new String[0]));
     }
 
-    // TODO Document.
+    /** Test request method invocation. */
     @Test
     public void method() {
         HttpServletRequest request = mock(HttpServletRequest.class);

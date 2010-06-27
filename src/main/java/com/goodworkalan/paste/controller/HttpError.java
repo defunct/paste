@@ -27,7 +27,7 @@ public class HttpError extends RuntimeException {
      * Create a new abnormality with the given HTTP status code caused by the
      * given exception.
      * 
-     * @param statusCode
+     * @param status
      *            The HTTP response status.
      * @param cause
      *            The cause of the abnormality.

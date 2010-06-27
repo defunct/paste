@@ -25,7 +25,7 @@ public class PathStatement<T> implements SubPathClause<T> {
     private final T connector;
 
     /** A map of controller classes to globs that match them. */
-    private final Map<Class<?>, Path> controllerToGlob;
+    private final Map<Class<?>, Path> controllerToPath;
 
     /**
      * A list of globs to sets of rule mappings the further test to see if the
@@ -39,8 +39,11 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     private final List<PathCompiler> compilers;
 
-    /** The list of globs for this path element, one for each path specified. */
-    private final List<Path> globs;
+    /**
+     * The list of path expressions for this path element, one for each path
+     * specified.
+     */
+    private final List<Path> paths;
 
     /** The rules to apply to a request after a path matches. */
     private final RuleMapBuilder<BindKey, Class<?>> rules;
@@ -60,18 +63,15 @@ public class PathStatement<T> implements SubPathClause<T> {
      * @param connector
      *            The parent element to return when the path statement is
      *            terminated.
-     * @param controllerToGlob
-     *            A map of controller classes to globs that match them.
+     * @param controllerToPath
+     *            A map of controller classes to path that match them.
      * @param connections
      *            A list of path expressions to sets of rule mappings the
      *            further test to see if the controller is applicable based on
      *            additional request parameters.
      * @param compilers
-     *            The list of parent glob compilers, one or each alternate path
+     *            The list of parent path compilers, one or each alternate path
      *            specified by an or clause.
-     * @param paths
-     *            The list of globs for this path element, one for each path
-     *            specified.
      * @param rules
      *            The map of rules to apply to a request after a path matches.
      * @param patterns
@@ -79,16 +79,16 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     PathStatement(
             T connector,
-            Map<Class<?>, Path> controllerToGlob,
+            Map<Class<?>, Path> controllerToPath,
             List<Cassette.Connection> connections,
             List<PathCompiler> compilers,
             RuleMapBuilder<BindKey, Class<?>> rules,
             List<String> patterns) {
-        this.controllerToGlob = controllerToGlob;
+        this.controllerToPath = controllerToPath;
         this.connector = connector;
         this.connections = connections;
         this.compilers = compilers;
-        this.globs = new ArrayList<Path>();
+        this.paths = new ArrayList<Path>();
         this.rules = rules;
         this.patterns = patterns;
     }
@@ -99,7 +99,7 @@ public class PathStatement<T> implements SubPathClause<T> {
      * @return An or language element to match an additional path.
      */
     public OrClause<T> or() {
-        return new OrClause<T>(connector, controllerToGlob, connections, compilers, rules, patterns);
+        return new OrClause<T>(connector, controllerToPath, connections, compilers, rules, patterns);
     }
 
     /**
@@ -110,7 +110,7 @@ public class PathStatement<T> implements SubPathClause<T> {
         if (!compiled) {
             for (PathCompiler compiler : compilers) {
                 for (String pattern : patterns) {
-                    globs.add(compiler.compile(pattern));
+                    paths.add(compiler.compile(pattern));
                 }
             }
             compiled = true;
@@ -126,13 +126,13 @@ public class PathStatement<T> implements SubPathClause<T> {
     public PathStatement<SubPathClause<T>> path(String path) {
         compile();
         List<PathCompiler> subCompilers = new ArrayList<PathCompiler>();
-        for (Path glob : globs) {
+        for (Path glob : paths) {
             subCompilers.add(new PathCompiler(glob));
         }
         List<Path> globs = new ArrayList<Path>();
         RuleMapBuilder<BindKey, Class<?>> rules = new RuleMapBuilder<BindKey, Class<?>>();
         connections.add(new Cassette.Connection(globs, rules));
-        return new PathStatement<SubPathClause<T>>(this, controllerToGlob, connections, subCompilers, rules, Collections.singletonList(path));
+        return new PathStatement<SubPathClause<T>>(this, controllerToPath, connections, subCompilers, rules, Collections.singletonList(path));
     }
 
     /**
@@ -144,8 +144,8 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     public WhenStatement<T> when() {
         compile();
-        connections.add(new Cassette.Connection(globs, rules));
-        return new WhenStatement<T>(this, globs.get(0), controllerToGlob, rules);
+        connections.add(new Cassette.Connection(paths, rules));
+        return new WhenStatement<T>(this, paths.get(0), controllerToPath, rules);
     }
 
     /**
@@ -158,8 +158,8 @@ public class PathStatement<T> implements SubPathClause<T> {
     public End<T> to(Class<?> controller) {
         compile();
         rules.rule().put(controller);
-        controllerToGlob.put(controller, globs.get(0));
-        connections.add(new Cassette.Connection(globs, rules));
+        controllerToPath.put(controller, paths.get(0));
+        connections.add(new Cassette.Connection(paths, rules));
         return new End<T>(connector);
     }
 

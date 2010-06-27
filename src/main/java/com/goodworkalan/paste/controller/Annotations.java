@@ -12,8 +12,8 @@ import com.goodworkalan.paste.controller.scopes.ControllerScoped;
  * a method should be invoked given a set of parameters obtained form an actor
  * specific annotation on the controller.
  * <p>
- * The class is created from Guice injection and used as a parameter to the
- * consructor of {@link Actor} implmentations.
+ * The class is created from dependency injection and used as a parameter to the
+ * constructor of actor implementations.
  * 
  * @author Alan Gutierrez
  */

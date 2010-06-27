@@ -22,18 +22,20 @@ public class Stream {
     /** The parent builder. */
     private final Connector connector;
 
-    // TODO Document.
+    /** The modules used to define the renderer. */
     private final List<InjectorBuilder> modules;
 
-    // TODO Document.
+    /** The stream rendering configuration. */
     private final Configuration configuration = new Configuration();
 
     /**
      * Create an extension to the domain-specific language used to specify the
      * details of invoking a stream.
      * 
-     * @param end
-     *            The connector to return when the render statement is complete.
+     * @param connector
+     *            The parent builder.
+     * @param modules
+     *            The modules used to define the renderer.
      */
     public Stream(Connector connector, List<InjectorBuilder> modules) {
         this.connector = connector;
@@ -67,6 +69,13 @@ public class Stream {
         return this;
     }
 
+    /**
+     * Terminate the stream specification and return the parent
+     * <code>Connector</code> to continue specifying routes and renderers.
+     * 
+     * @return The parent <code>Connector</code> to continue specifying routes
+     *         and renderers.
+     */
     public Connector end() {
         modules.add(new InjectorBuilder() {
             protected void build() {

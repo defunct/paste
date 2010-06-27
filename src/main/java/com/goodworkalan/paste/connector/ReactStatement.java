@@ -33,18 +33,22 @@ public class ReactStatement {
         this.connector = connector;
         this.reactions = reactions;
     }
-    
-    // TODO Document.
-    public ReactWithClause to(Class<?>...triggers) {
+
+    /**
+     * Set the types that will trigger a reaction.
+     * 
+     * @param trigger
+     *            The trigger.
+     * @return A react with clause to specify the reactorion controllers.
+     */
+    public ReactWithClause to(Class<?> trigger) {
         List<List<Class<?>>> assignments = new ArrayList<List<Class<?>>>();
-        for (Class<?> trigger : triggers) {
-            List<Class<?>> controllers = reactions.get(trigger);
-            if (controllers == null) {
-                controllers = new ArrayList<Class<?>>();
-                reactions.put(trigger, controllers);
-            }
-            assignments.add(controllers);
+        List<Class<?>> controllers = reactions.get(trigger);
+        if (controllers == null) {
+            controllers = new ArrayList<Class<?>>();
+            reactions.put(trigger, controllers);
         }
+        assignments.add(controllers);
         return new ReactWithClause(connector, assignments);
     }
 }

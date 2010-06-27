@@ -62,12 +62,8 @@ class StreamRenderer implements Renderer {
      *            language.
      * @param controller
      *            The final controller for the request.
-     * @param headers
-     *            The response headers for the request.
-     * @param response
-     *            The HTTP response for the request.
      * @param injector
-     *            The Guice injector.
+     *            The injector.
      */
     @Inject
     public StreamRenderer(Configuration configuration, @Controller Boxed<Object> controller, Injector injector) {

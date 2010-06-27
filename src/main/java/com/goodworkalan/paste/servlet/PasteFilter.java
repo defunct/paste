@@ -62,8 +62,7 @@ public class PasteFilter implements Filter {
     }
 
     /**
-     * Destroy the filter by invoking an web application wide {@link Janitor}
-     * instances.
+     * Destroy the filter by invoking an web application wide janitor instances.
      */
     public void destroy() {
         responder.destroy();

@@ -78,15 +78,15 @@ public class NamedValueList extends ArrayList<NamedValue> {
         }
         return namedValues;
     }
-    
+
     /**
      * Create a parameter list from the given query string placing the named
      * values in the given context.
      * 
      * @param query
      *            The query string to parse.
-     * @param context
-     *            The context in which the parameter was specified.
+     * @param encoding
+     *            The query string encoding.
      * @return A list of parameters contained in the query string.
      */
     static List<NamedValue> fromQueryString(String query, String encoding) {
@@ -131,21 +131,22 @@ public class NamedValueList extends ArrayList<NamedValue> {
     /**
      * Convert the named value list into a map of string name value pairs. When
      * a name occurs more than once in the named value list, the value of the
-     * first occurrence is used as th where
-     * the value is the value of the first occurrence of each name in the this
-     * named value list.
+     * first occurrence is used.
      * 
      * @param spaceIsNull
-     * @return
+     *            Whether or not to tread all whitespace parameters as nulls.
+     * @return The map.
      */
     public LinkedHashMap<String, String> toStringMap(boolean spaceIsNull) {
         LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
         for (NamedValue namedValue : this) {
-            String value = namedValue.getValue();
-            if (spaceIsNull && (namedValue.getValue() == null || namedValue.getValue().trim().length() == 0)) {
-                value = null;
+            if (!map.containsKey(namedValue.getName())) {
+                String value = namedValue.getValue();
+                if (value != null && spaceIsNull && value.trim().length() == 0) {
+                    value = null;
+                }
+                map.put(namedValue.getName(), value);
             }
-            map.put(namedValue.getName(), value);
         }
         return map;
     }

@@ -28,8 +28,10 @@ public class Forward  {
      * Create an extension to the domain-specific language used to specify the
      * details of forwarding a controller to another filter or servlet.
      * 
-     * @param end
-     *            The connector to return when the render statement is complete.
+     * @param connector
+     *            The parent builder.
+     * @param modules
+     *            The modules used to define the renderer.
      */
     public Forward(Connector connector, List<InjectorBuilder> modules) {
         this.connector = connector;
