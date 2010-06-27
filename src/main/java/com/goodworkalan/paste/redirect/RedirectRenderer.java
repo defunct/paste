@@ -1,7 +1,5 @@
 package com.goodworkalan.paste.redirect;
 
-import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,7 +67,7 @@ class RedirectRenderer implements Renderer {
         Redirection redirection = (Redirection) throwable;
         int status = redirection.status;
 
-        if (!isRedirectStatus(status)) {
+        if (!Redirect.isRedirectStatus(status)) {
             throw new IllegalArgumentException();
         }
 

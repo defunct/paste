@@ -66,29 +66,29 @@ public class Annotations {
      * @return True if the method should be invoked.
      */
     public boolean invoke(String[] on, String param, String[] methods) {
-        boolean audit = on.length == 0;
-        if (!audit) {
+        boolean invoke = on.length == 0;
+        if (!invoke) {
             if (!"".equals(param)) {
                 String value = parameters.get(param);
                 if (value != null) {
-                    for (int i = 0; !audit && i < on.length; i++) {
-                        audit = on[i].equals(value);
+                    for (int i = 0; !invoke && i < on.length; i++) {
+                        invoke = on[i].equals(value);
                     }
                 }
             } else {
-                for (int i = 0; !audit && i < on.length; i++) {
-                    audit = parameters.contains(on[i]);
+                for (int i = 0; !invoke && i < on.length; i++) {
+                    invoke = parameters.contains(on[i]);
                 }
             }
         }
-        if (audit) {
+        if (invoke) {
             if (methods.length != 0) {
-                audit = false;
-                for (int i = 0; !audit && i < methods.length; i++) {
-                    audit = methods[i].equals(request.getMethod());
+                invoke = false;
+                for (int i = 0; !invoke && i < methods.length; i++) {
+                    invoke = methods[i].equals(request.getMethod());
                 }
             }
         }
-        return audit;
+        return invoke;
     }
 }

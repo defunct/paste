@@ -49,12 +49,26 @@ public class Connector {
         return this;
     }
 
-    // TODO Document.
+    /**
+     * Specify a controller for an event that is not directly associated with an
+     * HTTP request. This is used by timers to implement delayed jobs or
+     * background tasks. Reaction controllers are built using dependency
+     * injection, so that application scoped resources are available during the
+     * reaction.
+     * 
+     * @return A react statement to specify an event reactor.
+     */
     public ReactStatement react() {
         return new ReactStatement(this, cassette.reactions);
     }
-    
-    // TODO Document.
+
+    /**
+     * Specify intercepting controllers that bind to controller types and are
+     * invoked prior to the invocation bound controller to intercept the request
+     * processing based on controller type.
+     * 
+     * @return An intercept statement to specify controller interceptors.
+     */
     public InterceptStatement intercept() {
         return new InterceptStatement(this, cassette.interceptors);
     }
@@ -88,7 +102,7 @@ public class Connector {
         return new RenderStatement(this, cassette.renderers);
     }
     
-    // TODO Document.
+    /** End a connection statement. */
     public void end() {
     }
 }

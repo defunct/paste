@@ -1,7 +1,5 @@
 package com.goodworkalan.paste.redirect;
 
-import static com.goodworkalan.paste.redirect.Redirects.isRedirectStatus;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -40,6 +38,17 @@ public class Redirect {
         this.modules = modules;
     }
 
+    /**
+     * Determine if the HTTP status is a HTTP redirect status.
+     * 
+     * @param status
+     *            The status.
+     * @return True if the status is a redirect status.
+     */
+    public static boolean isRedirectStatus(int status) {
+        return (status >= 300 && status <= 303) || status == 307;
+    }
+    
     /**
      * Set the status code to set during the redirection.
      * 

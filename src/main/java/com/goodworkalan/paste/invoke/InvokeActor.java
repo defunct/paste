@@ -20,16 +20,29 @@ import com.goodworkalan.reflective.Reflective;
  * @author Alan Gutierrez
  */
 public class InvokeActor implements Runnable {
-    // TODO Document.
+    /**
+     * The helper class that implements the logic used by actors to select a
+     * method in a controller for invocation.
+     */
     private final Annotations annotations;
     
-    // TODO Document.
+    /** The injector. */
     private final Injector injector;
     
-    // TODO Document.
+    /** The boxed controller instance. */
     private final Boxed<Object> controller;
 
-    // TODO Document.
+    /**
+     * Create an invocation actor.
+     * 
+     * @param injector
+     *            The injector.
+     * @param controller
+     *            The boxed controller instance.
+     * @param annotations
+     *            The helper class that implements the logic used by actors to
+     *            select a method in a controller for invocation.
+     */
     @Inject
     public InvokeActor(Injector injector, @Controller Boxed<Object> controller, Annotations annotations) {
         this.injector = injector;
@@ -37,7 +50,7 @@ public class InvokeActor implements Runnable {
         this.controller = controller;
     }
 
-    // TODO Document.
+    /** Invoke method on a controller. */
     public void run() {
         for (Method method : controller.box.object.getClass().getMethods()) {
             Invoke invoke = method.getAnnotation(Invoke.class);
