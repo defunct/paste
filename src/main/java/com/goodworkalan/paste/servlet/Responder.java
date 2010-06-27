@@ -37,7 +37,6 @@ import com.goodworkalan.paste.controller.Actors;
 import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.Headers;
 import com.goodworkalan.paste.controller.HttpError;
-import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 import com.goodworkalan.paste.controller.NamedValueList;
 import com.goodworkalan.paste.controller.Parameters;
@@ -100,7 +99,7 @@ class Responder implements Reactor {
     private final RuleMap<BindKey, List<InjectorBuilder>> renderers;
 
     /** The list of janitors to run when the filter is shutdown. */
-    private final LinkedBlockingQueue<Janitor> janitors = new LinkedBlockingQueue<Janitor>();
+    private final LinkedBlockingQueue<Runnable> janitors = new LinkedBlockingQueue<Runnable>();
 
     /** The map of annotations to controllers. */
     private final Map<Class<?>, List<Class<?>>> reactions;
@@ -226,7 +225,7 @@ class Responder implements Reactor {
      */
     public <T> void react(Ilk<T> ilk, T object) {
         if (reactions.containsKey(object.getClass())) {
-            List<Janitor> janitors = new ArrayList<Janitor>();
+            List<Runnable> janitors = new ArrayList<Runnable>();
             InjectorBuilder newInjector = injector.newInjector();
             newInjector.instance(object, ilk, Reaction.class);
             newInjector.instance(new JanitorQueue(janitors), new Ilk<JanitorQueue>(JanitorQueue.class), Reaction.class);
@@ -283,7 +282,7 @@ class Responder implements Reactor {
      * @param janitors
      *            The set of request janitors.
      */
-    private InjectorBuilder getRequestInjectorBuilder(final HttpServletRequest request, final InterceptingResponse response, final List<Janitor> janitors) {
+    private InjectorBuilder getRequestInjectorBuilder(final HttpServletRequest request, final InterceptingResponse response, final List<Runnable> janitors) {
         InjectorBuilder newInjector = injector.newInjector();
         newInjector.module(new InjectorBuilder(){
             protected void build() {
@@ -328,7 +327,7 @@ class Responder implements Reactor {
      * @return An injector builder for either the root request or a forward or
      *         include request.
      */
-    private InjectorBuilder getFilterInjectorBuilder(LinkedList<Injector> injectors, final HttpServletRequest request, InterceptingResponse response, List<Janitor> janitors) {
+    private InjectorBuilder getFilterInjectorBuilder(LinkedList<Injector> injectors, final HttpServletRequest request, InterceptingResponse response, List<Runnable> janitors) {
         if (injectors.isEmpty()) {
             return getRequestInjectorBuilder(request, response, janitors);
         }
@@ -353,7 +352,7 @@ class Responder implements Reactor {
     }
     
     // TODO Document.
-    private Injector getFilterInjector(LinkedList<Injector> injectors, final HttpServletRequest request, final InterceptingResponse response, final List<Janitor> janitors, Headers responseHeaders) {
+    private Injector getFilterInjector(LinkedList<Injector> injectors, final HttpServletRequest request, final InterceptingResponse response, final List<Runnable> janitors, Headers responseHeaders) {
         InjectorBuilder newInjector = getFilterInjectorBuilder(injectors, request, response, janitors);
         newInjector.module(new InjectorBuilder(){
             protected void build() {
@@ -413,7 +412,7 @@ class Responder implements Reactor {
                         Headers responseHeaders,
                         FilterChain chain)
     throws IOException, ServletException {
-        List<Janitor> janitors = new ArrayList<Janitor>();
+        List<Runnable> janitors = new ArrayList<Runnable>();
         LinkedList<Injector> injectors = INJECTORS.get();
         Injector injector = getFilterInjector(injectors, request, response, janitors, responseHeaders);
         try {
@@ -679,13 +678,12 @@ class Responder implements Reactor {
      * @param janitors
      *            The collection of janitors to clean up.
      */
-    private void cleanUp(Collection<Janitor> janitors) {
-        for (Janitor janitor : janitors) {
+    private void cleanUp(Collection<Runnable> janitors) {
+        for (Runnable janitor : janitors) {
             try {
-                janitor.cleanUp();
-            } catch (ThreadDeath t) {
-                throw t;
+                janitor.run();
             } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }

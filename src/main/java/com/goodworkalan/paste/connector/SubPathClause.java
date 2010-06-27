@@ -4,7 +4,7 @@ package com.goodworkalan.paste.connector;
  * The sub-path clause of a path statement specifies sub-paths to the currently
  * defined path or paths.
  * 
- * @author alan
+ * @author Alan Gutierrez
  * 
  * @param <T>
  *            The type of parent element to return when the statement is

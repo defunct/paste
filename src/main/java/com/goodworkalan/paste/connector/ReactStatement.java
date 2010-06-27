@@ -4,22 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// TODO Document.
+/**
+ * A builder for specifying an event that is not directly associated with an
+ * HTTP request. This is used by timers to implement delayed jobs or background
+ * tasks. Reaction controllers are built using dependency injection, so that
+ * application scoped resources are available during the reaction.
+ * 
+ * @author Alan Gutierrez
+ * 
+ * @see com.goodworkalan.paste.controller.Reactor
+ */
 public class ReactStatement {
-    /** The parent connector language element. */
+    /** The connector to return when the statement terminates. */
     private final Connector connector;
     
-    /** The map of annotations to controllers. */
+    /** The map of types to controllers. */
     private final Map<Class<?>, List<Class<?>>> reactions;
-    
-    // TODO Document.
+
+    /**
+     * Create a reaction statement.
+     * 
+     * @param connector
+     *            The connector to return when the statement terminates.
+     * @param reactions
+     *            The map of types to controllers.
+     */
     ReactStatement(Connector connector, Map<Class<?>, List<Class<?>>> reactions) {
         this.connector = connector;
         this.reactions = reactions;
     }
     
     // TODO Document.
-    public ReactWithStatement to(Class<?>...triggers) {
+    public ReactWithClause to(Class<?>...triggers) {
         List<List<Class<?>>> assignments = new ArrayList<List<Class<?>>>();
         for (Class<?> trigger : triggers) {
             List<Class<?>> controllers = reactions.get(trigger);
@@ -29,6 +45,6 @@ public class ReactStatement {
             }
             assignments.add(controllers);
         }
-        return new ReactWithStatement(connector, assignments);
+        return new ReactWithClause(connector, assignments);
     }
 }

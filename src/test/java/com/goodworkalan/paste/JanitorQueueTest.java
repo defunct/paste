@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.paste.controller.Janitor;
 import com.goodworkalan.paste.controller.JanitorQueue;
 
 /**
@@ -20,10 +19,10 @@ public class JanitorQueueTest {
     /** Test add. */
     @Test
     public void add() {
-        List<Janitor> janitors = new ArrayList<Janitor>();
+        List<Runnable> janitors = new ArrayList<Runnable>();
         JanitorQueue queue = new JanitorQueue(janitors);
-        Janitor janitor = new Janitor() {
-            public void cleanUp() {
+        Runnable janitor = new Runnable() {
+            public void run() {
             }
         };
         queue.add(janitor);
