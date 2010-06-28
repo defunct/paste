@@ -50,8 +50,6 @@ public class StencilRenderer implements Renderer {
 	 *            The path formatter used to create the redirection path.
 	 * @param response
 	 *            The alternative HTTP response service.
-	 * @param redirector
-	 *            The redirector service.
 	 * @param configuration
 	 *            The redirect renderer configuration.
 	 */

@@ -27,11 +27,13 @@ public class Stencil {
     private Configuration configuration = new Configuration();
 
     /**
-	 * Create a new Stencil with the given connector parent builder.
-	 * 
-	 * @param connector
-	 *            The parent builder.
-	 */
+     * Create a new Stencil with the given connector parent builder.
+     * 
+     * @param connector
+     *            The parent builder.
+     * @param modules
+     *            The modules used to define the renderer.
+     */
     public Stencil(Connector connector, List<InjectorBuilder> modules) {
     	this.connector = connector;
     	this.modules = modules;
