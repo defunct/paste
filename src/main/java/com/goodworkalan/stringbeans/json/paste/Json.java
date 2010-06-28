@@ -24,11 +24,13 @@ public class Json {
     private final List<InjectorBuilder> modules;
 
     /**
-     * Create an instance of the builder language extension to specify
-     * JSON conversion of a controller output.
+     * Create an instance of the builder language extension to specify JSON
+     * conversion of a controller output.
      * 
-     * @param end
-     *            The connector to return when the render statement is complete.
+     * @param connector
+     *            The parent builder.
+     * @param modules
+     *            The modules used to define the renderer.
      */
     public Json(Connector connector, List<InjectorBuilder> modules) {
         this.connector = connector;
