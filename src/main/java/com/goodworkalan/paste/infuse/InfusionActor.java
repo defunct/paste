@@ -43,10 +43,9 @@ public class InfusionActor implements Runnable {
      * @param converter
      *            The String Beans <code>Converter</code> that defines
      *            conversion strategies from strings to specific Java types.
-     * @param assignments
-     *            The list of objects to obtain from the <code>Injector</code>
-     *            and assign to the <code>Stash</code> of the StringBeans
-     *            <code>UrlParser</code>.
+     * @param participants
+     *            The heterogeneous container of unforeseen participants in the
+     *            construction of beans in the object graph.
      * @param controller
      *            The controller.
      * @param parameters
