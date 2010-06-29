@@ -1,5 +1,6 @@
 package com.goodworkalan.paste.connector;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,24 @@ public class RenderStatement {
      * @return This render statement to continue to specify match criteria.
      */
     public RenderStatement controller(Class<?> controllerClass) {
-        from.check(BindKey.CONTROLLER_CLASS, new InstanceOf(controllerClass));
+        from.check(BindKey.CONTROLLER, new InstanceOf(controllerClass));
+        return this;
+    }
+
+    /**
+     * Apply the renderer if the final controller class sports the given
+     * annotation.
+     * 
+     * @param annotation
+     *            The controller annotation.
+     * @return This render statement to continue to specify match criteria.
+     */
+    public <T> RenderStatement annotatedWith(final Class<? extends Annotation> annotation) {
+        from.check(BindKey.CONTROLLER, new Condition() {
+            public boolean test(Object object) {
+                return object != null && object.getClass().isAnnotationPresent(annotation);
+            }
+        });
         return this;
     }
 
@@ -84,11 +102,19 @@ public class RenderStatement {
         }
         return this;
     }
-    
-    public RenderStatement path(final String... contentTypes) {
+
+    /**
+     * Apply the renderer for any of the paths match the request path.
+     * 
+     * @param paths
+     *            The paths that match this renderer.
+     * @return This render statement to continue to specify renderer match
+     *         criteria.
+     */
+    public RenderStatement path(final String... paths) {
         from.check(BindKey.PATH, new Condition() {
             public boolean test(Object object) {
-                for (String contentType : contentTypes) {
+                for (String contentType : paths) {
                     if (Pattern.matches(contentType, (String) object)) {
                         return true;
                     }
@@ -98,7 +124,16 @@ public class RenderStatement {
         });
         return this;
     }
-    
+
+    /**
+     * Apply the renderer for any of the content types match the requested
+     * content types.
+     * 
+     * @param contentTypes
+     *            The requested content types that match this renderer.
+     * @return This render statement to continue to specify renderer match
+     *         criteria.
+     */
     public RenderStatement contentType(String... contentTypes) {
         for (String contentType : contentTypes) {
             from.check(BindKey.CONTENT_TYPE, new Equals(contentType));
@@ -107,7 +142,7 @@ public class RenderStatement {
     }
 
     /**
-     * Match the excptions that are an instance of the given class.
+     * Match the exceptions that are an instance of the given class.
      * 
      * @param exceptionClass
      *            The exception class.

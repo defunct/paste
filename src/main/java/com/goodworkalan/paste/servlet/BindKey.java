@@ -8,7 +8,9 @@ package com.goodworkalan.paste.servlet;
  */
  public enum BindKey {
     /** The controller package. */
-    PACKAGE, CONTROLL_ER,
+    PACKAGE,
+    /** The controller. */
+    CONTROLLER,
     /** The controller class. */
     CONTROLLER_CLASS,
     /** Huh? */

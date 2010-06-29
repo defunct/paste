@@ -733,7 +733,8 @@ class Responder implements Reactor {
             // request values and the current controller or exception.
             Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
             conditions.put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName());
-            conditions.put(BindKey.CONTROLLER_CLASS, controller);
+            conditions.put(BindKey.CONTROLLER, controller);
+            conditions.put(BindKey.CONTROLLER_CLASS, controller == null ? null : controller.getClass());
             conditions.put(BindKey.PATH, criteria.getPath());
             conditions.put(BindKey.STATUS, injector.instance(Integer.class, Response.class));
             conditions.put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause());
