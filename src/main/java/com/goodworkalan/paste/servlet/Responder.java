@@ -296,6 +296,7 @@ class Responder implements Reactor {
                 provider(ilk(RequestParametersProvider.class), ilk(Parameters.class), Filter.class, RequestScoped.class);
                 provider(ilk(RequestParametersProvider.class), ilk(Parameters.class), null, RequestScoped.class);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Request.class);
+                instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Reaction.class);
                 instance(new Criteria(request), ilk(Criteria.class), Request.class);
                 provider(ilk(ControllerParametersProvider.class), ilk(Parameters.class), Controller.class, ControllerScoped.class);
             }
@@ -477,9 +478,11 @@ class Responder implements Reactor {
      *            The mappings obtained by the Dovetail URL pattern match.
      * @return The controller instance injector.
      */
-    private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings) {
+    private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings, final List<Runnable> janitors) {
         for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(controllerClass))) {
-            controller(injector, interceptorClass, mappings);
+            List<Runnable> interceptorJanitors = new ArrayList<Runnable>();
+            controller(injector, interceptorClass, mappings, interceptorJanitors);
+            cleanUp(interceptorJanitors);
         }
 
         // Clear the controller scope, null the controller.
@@ -489,6 +492,7 @@ class Responder implements Reactor {
             protected void build() {
                 scope(ControllerScoped.class);
                 instance(mappings, new Ilk<Map<String, String>>(){ }, Controller.class);
+                instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Controller.class);
             }
         });
 
@@ -623,10 +627,12 @@ class Responder implements Reactor {
      *            The path without the file suffix.
      * @param suffix
      *            The file suffix.
+     * @param janitors
+     *            The list of controller janitors.
      * @return The injector used to create the controller or null if no
      *         controller was found.
      */
-    private Injector controller(Injector injector, Interception interception, Criteria criteria, String path, String suffix) {
+    private Injector controller(Injector injector, Interception interception, Criteria criteria, String path, String suffix, List<Runnable> janitors) {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
@@ -662,7 +668,7 @@ class Responder implements Reactor {
                 }
 
                 if (controllerClass != null) {
-                    controllerInjector = controller(injector, controllerClass, mappings);
+                    controllerInjector = controller(injector, controllerClass, mappings, janitors);
                 }
             }
         }
@@ -701,8 +707,10 @@ class Responder implements Reactor {
             suffix = matcher.group(2);
         }
         
+        List<Runnable> janitors = new ArrayList<Runnable>();
+        
         try {
-            controllerInjector = controller(injector, interception, criteria, path, suffix);
+            controllerInjector = controller(injector, interception, criteria, path, suffix, janitors);
         } catch (ControllerException e) {
             caught = e;
             // Exceptions are also used for those things in HTTP that feel like
@@ -711,24 +719,59 @@ class Responder implements Reactor {
                 // Set the response status.
                 injector.instance(HttpServletResponse.class, null).setStatus(((HttpError) caught.getCause().getCause()).getStatus());
             }
+        } finally {
+            cleanUp(janitors);
         }
 
-        
+        janitors.clear();
+        try {
+            render(injector, criteria, controllerInjector, caught, suffix);
+        } finally {   
+            cleanUp(janitors);
+        }
+
+        // Down the filter chain, unless we've just sent a response.
+        if (!interception.isIntercepted()) {
+            chain.doFilter(injector.instance(ServletRequest.class, null), injector.instance(ServletResponse.class, null));
+        }
+    }
+
+    /**
+     * Render the final controller or caught exception.
+     * 
+     * @param injector
+     *            The filtration injector.
+     * @param criteria
+     *            The filter critiera.
+     * @param controllerInjector
+     *            The controller injector or null if an exception was thrown.
+     * @param caught
+     *            The caught exception or null if no exception was thrown.
+     * @param suffix
+     *            The file suffix.
+     * @throws ServletException
+     *             For any Servlet engine exceptions thrown during rendering.
+     * @throws IOException
+     *             For any I/O error.
+     */
+    private void render(Injector injector, Criteria criteria, 
+            Injector controllerInjector,  ControllerException caught, String suffix)
+    throws ServletException, IOException {
         List<InjectorBuilder> modules = null;
         for (;;) {
             Object controller = null;
             if (controllerInjector != null) { 
                 controller = controllerInjector.instance(Object.class, Controller.class);
             }
-
+   
             if (modules != null) {
                 break;
             }
-
+   
             if (controllerInjector == null && caught == null) {
                 break;
             }
-
+   
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
             Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
@@ -752,6 +795,7 @@ class Responder implements Reactor {
                     newInjector.instance(caught.getCause().getCause(), new Ilk<Throwable>(Throwable.class), Controller.class);
                 }
                 newInjector.newInjector().instance(Renderer.class, null).render();
+                break;
             } else if (caught != null) {
                 throw caught;
             } else if (controller != null && controller.getClass().isMemberClass()) {
@@ -759,11 +803,6 @@ class Responder implements Reactor {
             } else {
                 break;
             }
-        }
-
-        // Down the filter chain, unless we've just sent a response.
-        if (!interception.isIntercepted()) {
-            chain.doFilter(injector.instance(ServletRequest.class, null), injector.instance(ServletResponse.class, null));
         }
     }
 
