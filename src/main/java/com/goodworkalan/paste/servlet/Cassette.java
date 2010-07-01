@@ -1,5 +1,6 @@
 package com.goodworkalan.paste.servlet;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +91,11 @@ public final class Cassette {
     /** A rule map to match a controller or exception to a renderer. */
     public RuleMapBuilder<BindKey, List<InjectorBuilder>> renderers;
     
-    /** The map of annotations to controllers. */
-    public Map<Class<?>, List<Class<?>>> reactions;
+    /** The map of reaction types to controllers. */
+    public IlkAssociation<Class<?>> reactionsByType;
+
+    /** The reaction annotations to controllers. */
+    public Map<Class<? extends Annotation>, List<Class<?>>> reactionsByAnnotation;
 
     /** The type to interceptor association. */
     public IlkAssociation<Class<?>> interceptors;

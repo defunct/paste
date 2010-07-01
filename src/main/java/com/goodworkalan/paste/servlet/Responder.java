@@ -3,6 +3,7 @@ package com.goodworkalan.paste.servlet;
 import static com.goodworkalan.ilk.Types.getRawClass;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -98,8 +99,11 @@ class Responder implements Reactor {
     /** The list of janitors to run when the filter is shutdown. */
     private final LinkedBlockingQueue<Runnable> janitors = new LinkedBlockingQueue<Runnable>();
 
-    /** The map of annotations to controllers. */
-    private final Map<Class<?>, List<Class<?>>> reactions;
+    /** The reaction types to controllers. */
+    private final IlkAssociation<Class<?>> reactionsByClass;
+    
+    /** The reaction annotations to controllers. */
+    private final Map<Class<? extends Annotation>, List<Class<?>>> reactionsByAnnotation;
 
     /**
      * The thread local stack of injectors, one injector for the first
@@ -196,7 +200,8 @@ class Responder implements Reactor {
         this.injector = newInjector.newInjector();
         this.connections = cassette.getConnections();
         this.renderers = cassette.getRenderers();
-        this.reactions = cassette.reactions;
+        this.reactionsByClass = cassette.reactionsByType;
+        this.reactionsByAnnotation = cassette.reactionsByAnnotation;
         this.interceptors =  cassette.interceptors;
     }
 
@@ -205,7 +210,7 @@ class Responder implements Reactor {
      * triggering and startup reactions.
      */
     public void start() {
-        react(new Ilk<Startup>(Startup.class), new Startup());
+        react(new Ilk<Startup>(Startup.class));
     }
     
     /**
@@ -221,22 +226,91 @@ class Responder implements Reactor {
      *            The event.
      */
     public <T> void react(Ilk<T> ilk, T object) {
-        if (reactions.containsKey(object.getClass())) {
+        if (object == null) {
+            throw new NullPointerException();
+        }
+        react(object, ilk, null);
+    }
+
+    /**
+     * Trigger a reaction of the type specified by the given type token.
+     * Reactions are bound to types so that information can be provided via an
+     * instance of the type.
+     * 
+     * @param <T>
+     *            The event type.
+     * @param ilk
+     *            The super type token of the event type.
+     */
+    public <T> void react(Ilk<T> ilk) {
+        react(null, ilk, null);
+    }
+    
+    /**
+     * Trigger a reaction that generates an event that qualifies an object with
+     * the given annotation.
+     * 
+     * @param annotation
+     *            The annotation.
+     */
+    public void react(Class<? extends Annotation> annotation) {
+        this.<Object>react(null, null, annotation);
+    }
+
+    /**
+     * Trigger a reaction of the type specified by the given type token with the
+     * given object instance or it the object is null, create an instance using
+     * the injector. Reactions are bound to types so that information can be
+     * provided via an instance of the type.
+     * 
+     * @param <T>
+     *            The event type.
+     * @param object
+     *            The event.
+     * @param ilk
+     *            The super type token of the event type.
+     */
+    private <T> void react(T object, Ilk<T> ilk, Class<? extends Annotation> qualifier) {
+        List<Class<?>> controllers = null;
+        if (ilk != null) {
+            controllers = reactionsByClass.getAll(ilk.key);
+        } else {
+            controllers = reactionsByAnnotation.get(qualifier);
+        }
+        if (controllers != null) {
+            LinkedList<Injector> injectors = INJECTORS.get();
+            boolean isRoot = injectors.isEmpty();
+            Injector parentInjector = isRoot ? injector : injectors.getLast();
             List<Runnable> janitors = new ArrayList<Runnable>();
-            InjectorBuilder newInjector = injector.newInjector();
-            newInjector.instance(object, ilk, Reaction.class);
-            newInjector.instance(new JanitorQueue(janitors), new Ilk<JanitorQueue>(JanitorQueue.class), Reaction.class);
-            newInjector.scope(ReactionScoped.class);
-            Injector reactionInjector = newInjector.newInjector();
             try {
-                for (Class<?> reaction : reactions.get(object.getClass())) {
-                    Object child = reactionInjector.instance(reaction, null);
-                    if (child instanceof Runnable) {
-                        ((Runnable) child).run();
+                InjectorBuilder newInjector = parentInjector.newInjector();
+                if (object != null) {
+                    newInjector.instance(object, ilk, Reaction.class);
+                } else if (ilk != null ){
+                    newInjector.implementation(ilk, ilk, null, null);
+                } else {
+                    newInjector.implementation(new Ilk<Object>(Object.class), new Ilk<Object>(Object.class), qualifier, null);
+                }
+                if (!isRoot) {
+                    newInjector.instance(new JanitorQueue(janitors), new Ilk<JanitorQueue>(JanitorQueue.class), Reaction.class);
+                    newInjector.scope(ReactionScoped.class);
+                }
+                Injector reactionInjector = newInjector.newInjector();
+                injectors.addLast(reactionInjector);
+                for (Class<?> reaction : controllers) {
+                    List<Runnable> controllerJanitors = new ArrayList<Runnable>(); 
+                    try {
+                        controller(reactionInjector, reaction, new HashMap<String, String>(), controllerJanitors);
+                    } finally { 
+                        cleanUp(controllerJanitors);
                     }
                 }
             } finally {
                 cleanUp(janitors);
+                injectors.removeLast();
+                if (isRoot) {
+                    INJECTORS.remove();
+                }
             }
         }
     }

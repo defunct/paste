@@ -1,5 +1,6 @@
 package com.goodworkalan.paste.connector;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,8 @@ public class Connector {
      *            The connection data structure to populate.
      */
     public Connector(Cassette cassette) {
-        cassette.reactions = new HashMap<Class<?>, List<Class<?>>>();
+        cassette.reactionsByType = new IlkAssociation<Class<?>>(true);
+        cassette.reactionsByAnnotation = new HashMap<Class<? extends Annotation>, List<Class<?>>>();
         cassette.routes = new HashMap<Class<?>, Path>();
         cassette.connections = new ArrayList<List<Cassette.Connection>>();
         cassette.renderers = new RuleMapBuilder<BindKey, List<InjectorBuilder>>();
@@ -59,7 +61,7 @@ public class Connector {
      * @return A react statement to specify an event reactor.
      */
     public ReactStatement react() {
-        return new ReactStatement(this, cassette.reactions);
+        return new ReactStatement(this, cassette.reactionsByType, cassette.reactionsByAnnotation);
     }
 
     /**

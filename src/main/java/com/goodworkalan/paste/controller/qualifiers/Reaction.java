@@ -9,9 +9,7 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * Indicates that an object will last the lifetime of the current invocation of
- * the filter to handing an HTTP request or for initialization. Used by the list
- * of janitors that will clean up when the reaction terminates.
+ * Indicates that an object is associated with current reaction.
  * 
  * @author Alan Gutierrez
  */
