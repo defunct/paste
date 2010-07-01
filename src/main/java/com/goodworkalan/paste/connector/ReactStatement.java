@@ -61,14 +61,20 @@ public class ReactStatement {
      * 
      * @param trigger
      *            The trigger.
-     * @return A react with clause to specify the reaction controllers.
+  @return The react to type clause to specify the reaction controller.
      */
     public <T> ReactToTypeClause to(Class<T> trigger) {
        return to(new Ilk<T>(trigger));
     }
-    
+
     /**
-     * The type
+     * Specify an annotation that will trigger a reaction. The annotation must
+     * be annotated with <code>Qualifier</code>. The reagent for the reaction
+     * will be an <code>Object</code> qualified with the given qualifier.
+     * 
+     * @param annotationClass
+     *            The qualifier annotation.
+     * @return A react to annotation clause to specify the reaction controller.
      */
     public ReactToAnnotationClause to(Class<? extends Annotation> annotationClass) {
         return new ReactToAnnotationClause(connector, reactionsByAnnotation, annotationClass);
