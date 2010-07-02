@@ -72,11 +72,11 @@ public class ReactStatement {
      * be annotated with <code>Qualifier</code>. The reagent for the reaction
      * will be an <code>Object</code> qualified with the given qualifier.
      * 
-     * @param annotationClass
+     * @param qualifier
      *            The qualifier annotation.
      * @return A react to annotation clause to specify the reaction controller.
      */
-    public ReactToAnnotationClause to(Class<? extends Annotation> annotationClass) {
-        return new ReactToAnnotationClause(connector, reactionsByAnnotation, annotationClass);
+    public ReactToAnnotationClause toQualifier(Class<? extends Annotation> qualifier) {
+        return new ReactToAnnotationClause(connector, reactionsByAnnotation, qualifier);
     }
 }
