@@ -1,9 +1,9 @@
 package com.goodworkalan.paste.controller;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import com.goodworkalan.paste.controller.qualifiers.Controller;
+import com.goodworkalan.paste.controller.qualifiers.Verb;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
 
 /**
@@ -19,8 +19,8 @@ import com.goodworkalan.paste.controller.scopes.ControllerScoped;
  */
 @ControllerScoped
 public class Annotations {
-    /** The request. */
-    private final HttpServletRequest request;
+    /** The request method. */
+    private final String method;
     
     /** The controller parameters. */
     private final Parameters parameters;
@@ -35,9 +35,9 @@ public class Annotations {
      *            The request.
      */
     @Inject
-    public Annotations(@Controller Parameters parameters, HttpServletRequest request) {
+    public Annotations(@Controller Parameters parameters, @Verb String method) {
         this.parameters = parameters;
-        this.request = request;
+        this.method = method;
     }
 
     /**
@@ -85,7 +85,7 @@ public class Annotations {
             if (methods.length != 0) {
                 invoke = false;
                 for (int i = 0; !invoke && i < methods.length; i++) {
-                    invoke = methods[i].equals(request.getMethod());
+                    invoke = methods[i].equals(method);
                 }
             }
         }

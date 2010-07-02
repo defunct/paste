@@ -55,13 +55,13 @@ public class ReactStatement {
     public <T> ReactToTypeClause to(Ilk<T> ilk) {
        return new ReactToTypeClause(connector, reactionsByType, ilk.key);
     }
-    
+
     /**
      * Specify a type that will trigger a reaction.
      * 
      * @param trigger
      *            The trigger.
-  @return The react to type clause to specify the reaction controller.
+     * @return The react to type clause to specify the reaction controller.
      */
     public <T> ReactToTypeClause to(Class<T> trigger) {
        return to(new Ilk<T>(trigger));

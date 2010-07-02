@@ -51,6 +51,7 @@ import com.goodworkalan.paste.controller.qualifiers.Filter;
 import com.goodworkalan.paste.controller.qualifiers.Reaction;
 import com.goodworkalan.paste.controller.qualifiers.Request;
 import com.goodworkalan.paste.controller.qualifiers.Response;
+import com.goodworkalan.paste.controller.qualifiers.Verb;
 import com.goodworkalan.paste.controller.scopes.ApplicationScoped;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
 import com.goodworkalan.paste.controller.scopes.FilterScoped;
@@ -291,7 +292,7 @@ class Responder implements Reactor {
                 } else {
                     newInjector.implementation(new Ilk<Object>(Object.class), new Ilk<Object>(Object.class), qualifier, null);
                 }
-                if (!isRoot) {
+                if (isRoot) {
                     newInjector.instance(new JanitorQueue(janitors), new Ilk<JanitorQueue>(JanitorQueue.class), Reaction.class);
                     newInjector.scope(ReactionScoped.class);
                 }
@@ -373,6 +374,7 @@ class Responder implements Reactor {
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Reaction.class);
                 instance(new Criteria(request), ilk(Criteria.class), Request.class);
                 provider(ilk(ControllerParametersProvider.class), ilk(Parameters.class), Controller.class, ControllerScoped.class);
+                instance(request.getMethod(), ilk(String.class), Verb.class);
             }
         });
         return newInjector;

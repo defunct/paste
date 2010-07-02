@@ -1,5 +1,7 @@
 package com.goodworkalan.paste.controller;
 
+import java.util.Collections;
+
 /**
  * A named value list that contains request parameters.
  * <p>
@@ -25,6 +27,13 @@ public class Parameters extends NamedValueList {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create an empty set of parameters.
+     */
+    public Parameters() {
+        super(Collections.<NamedValue>emptyList());
+    }
+    
     /**
      * Create a list of request parameters by combining the given lists of named
      * values.
