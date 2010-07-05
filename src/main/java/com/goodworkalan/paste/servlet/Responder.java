@@ -41,7 +41,6 @@ import com.goodworkalan.paste.controller.HttpError;
 import com.goodworkalan.paste.controller.JanitorQueue;
 import com.goodworkalan.paste.controller.NamedValueList;
 import com.goodworkalan.paste.controller.Parameters;
-import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.Reactor;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.Startup;
@@ -58,8 +57,6 @@ import com.goodworkalan.paste.controller.scopes.FilterScoped;
 import com.goodworkalan.paste.controller.scopes.ReactionScoped;
 import com.goodworkalan.paste.controller.scopes.RequestScoped;
 import com.goodworkalan.paste.controller.scopes.SessionScoped;
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
 import com.goodworkalan.winnow.RuleMap;
 
 /**
@@ -119,7 +116,7 @@ class Responder implements Reactor {
 
     /** The controller type or annotation to interceptor association. */
     private final IlkAssociation<Class<?>> interceptors;
-    
+
     /**
      * Create a responder from using the given filter servlet context and the
      * given Paste filter initialization parameters.
@@ -128,10 +125,11 @@ class Responder implements Reactor {
      *            The Paste filter servlet context.
      * @param initialization
      *            The Paste filter initialization parameters.
+     * @throws ServletException
+     *             For any configuration errors.
      */
-    public Responder(final ServletContext servletContext, final Map<String, String> initialization) {
+    public Responder(final ServletContext servletContext, final Map<String, String> initialization) throws ServletException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        
 
         List<InjectorBuilder> modules = new ArrayList<InjectorBuilder>();
         if (initialization.containsKey("Modules")) {
@@ -140,18 +138,15 @@ class Responder implements Reactor {
                 try {
                     moduleClass = classLoader.loadClass(className);
                 } catch (ClassNotFoundException e) {
-                    throw new PasteException(0, e);
+                    String message = String.format("\n\tCannot locate Ilk module.\n\t\tModule [%s]", className);
+                    throw new ServletException(message, e);
                 }
-                final Class<? extends InjectorBuilder> injectorBuilderClass = moduleClass.asSubclass(InjectorBuilder.class);
                 InjectorBuilder module;
                 try {
-                    try {
-                        module = injectorBuilderClass.newInstance();
-                    } catch (Throwable e) {
-                        throw new ReflectiveException(Reflective.encode(e), e);
-                    }
-                } catch (ReflectiveException e) {
-                    throw new PasteException(0, e);
+                    module = (InjectorBuilder) moduleClass.newInstance();
+                } catch (Exception e) {
+                    String message = String.format("\n\tCannot construct instance of Ilk module.\n\t\tModule [%s]", moduleClass.getName());
+                    throw new ServletException(message, e);
                 }
                 modules.add(module);
             }
@@ -159,19 +154,21 @@ class Responder implements Reactor {
 
         List<Router> routers = new ArrayList<Router>();
         if (initialization.containsKey("Routers")) {
-            try {
-                for (String className : initialization.get("Routers").split(",")) {
-                    Class<?> moduleClass;
-                    try {
-                        moduleClass = classLoader.loadClass(className);
-                    } catch (ClassNotFoundException e) {
-                        throw new PasteException(0, e);
-                    }
+            for (String className : initialization.get("Routers").split(",")) {
+                Class<?> moduleClass;
+                try {
+                    moduleClass = classLoader.loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    String message = String.format("\n\tCannot locate router module.\n\t\tModule [%s]", className);
+                    throw new ServletException(message, e);
+                }
+                try {
                     Class<? extends Router> routerClass = moduleClass.asSubclass(Router.class);
                     routers.add(routerClass.newInstance());
+                } catch (Exception e) {
+                    String message = String.format("\n\tCannot construct instance of router module.\n\t\tModule [%s]", moduleClass.getName());
+                    throw new ServletException(message, e);
                 }
-            } catch (Exception e) {
-                throw new PasteException(0, e);
             }
         }
         
@@ -584,8 +581,11 @@ class Responder implements Reactor {
             controller = controllerScopeInjector.getVendor(new Ilk.Key(controllerClass), Controller.class).get(controllerScopeInjector);
         } catch (InvocationTargetException e) {
             throw new ControllerException(e);
-        } catch (Throwable e) {
-            throw new PasteException(Reflective.encode(e), e);
+        } catch (Exception e) {
+            String message = String.format(
+                    "\n\tUnable to construct a controller." +
+                    "\n\t\tController [%s]", controllerClass.getName());
+            throw new RuntimeException(message, e);
         }
         after(controllerScopeInjector, controller);
         return controllerInstanceInjector(controllerScopeInjector, controller);

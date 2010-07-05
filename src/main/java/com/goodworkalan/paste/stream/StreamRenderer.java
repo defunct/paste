@@ -1,5 +1,7 @@
 package com.goodworkalan.paste.stream;
 
+import static com.goodworkalan.ilk.Types.getRawClass;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,11 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.IlkReflect;
-import static com.goodworkalan.ilk.Types.*;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.actor.ControllerException;
-import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
@@ -97,7 +97,10 @@ class StreamRenderer implements Renderer {
         } catch (InvocationTargetException e) {
             throw new ControllerException(e);
         } catch (IllegalAccessException e) {
-            throw new PasteException(0, e);
+            String message = String.format(
+                "\n\tMember annotated for stream output is inaccessible." +
+                "\n\t\tController [%s], Property [%s]", controllerClass.getName(), outputMethod.getName());
+            throw new RuntimeException(message, e);
         } 
 
         HttpServletResponse response = injector.instance(HttpServletResponse.class, null);

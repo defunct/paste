@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.servlet.BindKey;
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
 import com.goodworkalan.winnow.Condition;
 import com.goodworkalan.winnow.Equals;
 import com.goodworkalan.winnow.InstanceOf;
@@ -182,14 +179,11 @@ public class RenderStatement {
         final List<InjectorBuilder> modules = new ArrayList<InjectorBuilder>();
         from.put(modules);
         try {
-            try {
-                Constructor<T> constructor = renderClass.getConstructor(Connector.class, List.class);
-                return constructor.newInstance(end, modules);
-            } catch (Throwable e) {
-                throw new ReflectiveException(Reflective.encode(e), e);
-            }
-        } catch (ReflectiveException e) {
-            throw new PasteException(0, e);
+            Constructor<T> constructor = renderClass.getConstructor(Connector.class, List.class);
+            return constructor.newInstance(end, modules);
+        } catch (Exception e) {
+            String message = String.format("Cannot create an instance of renderer [%s].", renderClass.getName());
+            throw new IllegalArgumentException(message, e);
         }
     }
 }

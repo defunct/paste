@@ -10,9 +10,7 @@ import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.controller.Annotations;
-import com.goodworkalan.paste.controller.PasteException;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
-import com.goodworkalan.reflective.Reflective;
 
 /**
  * Invokes a methods on a controller that have been annotated for invocation.
@@ -59,8 +57,8 @@ public class InvokeActor implements Runnable {
                     injector.inject(IlkReflect.REFLECTOR, controller.box, method);
                 } catch (InvocationTargetException e) {
                     throw new ControllerException(e);
-                } catch (Throwable e) {
-                    throw new PasteException(Reflective.encode(e), e);
+                } catch (Exception e) {
+                    throw new RuntimeException(String.format("\n\tUnable to invoke controller method.\n\t\tController [%s], Method [%s]", controller.box.key, method.getName()), e);
                 }
             }
         }
