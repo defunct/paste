@@ -2,21 +2,22 @@ package com.goodworkalan.stringbeans.json.paste;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.danger.Danger;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.IlkReflect;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
-import com.goodworkalan.paste.controller.PasteException;
+import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.paste.stream.Output;
-import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.stringbeans.Converter;
 import com.goodworkalan.stringbeans.json.JsonEmitter;
 
@@ -75,8 +76,10 @@ class JsonRenderer implements Renderer {
             if (method.getAnnotation(Output.class) != null) {
                 try {
                     output = injector.inject(IlkReflect.REFLECTOR, controller, method);
-                } catch (Throwable e) {
-                    throw new PasteException(Reflective.encode(e), e);
+                } catch (InvocationTargetException e) {
+                    throw new ControllerException(e);
+                } catch (IllegalAccessException e) {
+                    throw new Danger(e, JsonRenderer.class, "getterInaccessible", method.getName());
                 }
                 break;
             }
@@ -86,8 +89,8 @@ class JsonRenderer implements Renderer {
                 if (field.getAnnotation(Output.class) != null) {
                     try {
                         output = IlkReflect.get(IlkReflect.REFLECTOR, field, controller);
-                    } catch (Throwable e) {
-                        throw new PasteException(Reflective.encode(e), e);
+                    } catch (IllegalAccessException e) {
+                        throw new Danger(e, JsonRenderer.class, "fieldInaccessible", field.getName());
                     }
                     break;
                 }
