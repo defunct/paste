@@ -19,7 +19,7 @@ public class PasteProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.paste/paste/0.3.0.1")
+                .produces("com.github.bigeasy.paste/paste/0.3.0.2")
                 .depends()
                     .production("org.slf4j/slf4j-api/1.4.2")
                     .production("com.github.bigeasy.ilk/ilk-inject/0.+1")

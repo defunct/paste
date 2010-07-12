@@ -41,6 +41,7 @@ import com.goodworkalan.paste.controller.HttpError;
 import com.goodworkalan.paste.controller.JanitorQueue;
 import com.goodworkalan.paste.controller.NamedValueList;
 import com.goodworkalan.paste.controller.Parameters;
+import com.goodworkalan.paste.controller.Reactions;
 import com.goodworkalan.paste.controller.Reactor;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.Startup;
@@ -183,6 +184,7 @@ class Responder implements Reactor {
         newInjector.module(new InjectorBuilder() {
             protected void build() {
                 scope(ApplicationScoped.class);
+                implementation(ilk(Reactions.class), ilk(Reactions.class), null, ApplicationScoped.class);
                 instance(Responder.this, ilk(Reactor.class), null);
                 instance(initialization, new Ilk<Map<String, String>>() { }, Application.class);
                 instance(servletContext, ilk(ServletContext.class), null);

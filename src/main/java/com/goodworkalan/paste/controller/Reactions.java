@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 /**
  * Utility class for launching reactions delayed or at intervals.
  *
@@ -23,6 +25,7 @@ public class Reactions {
      * @param reactor
      *            The reactor.
      */
+    @Inject
     public Reactions(Reactor reactor) {
         this.reactor = reactor;
     }
@@ -37,7 +40,7 @@ public class Reactions {
      *            The interval in seconds.
      */
     public void periodic(final Class<? extends Annotation> annotation, int interval) {
-        periodic(new ReactionTask<Object>(reactor, null, null, annotation), interval * 1000);
+        periodic(new ReactionTask<Object>(reactor, null, null, annotation), interval);
     }
 
     /**
@@ -46,8 +49,8 @@ public class Reactions {
      * 
      * @param annotation
      *            The annotation.
-     * @param interval
-     *            The interval in seconds.
+     * @param delay
+     *            The delay in seconds.
      */
     public void delayed(final Class<? extends Annotation> annotation, int delay) {
         TIMER.schedule(new ReactionTask<Object>(reactor, null, null, annotation), delay * 1000);
@@ -64,7 +67,7 @@ public class Reactions {
      */
     private static void periodic(TimerTask runnable, int interval) {
         Date first = new Date();
-        first.setTime((first.getTime() - first.getTime() % 60000) + 65000);
+//        first.setTime((first.getTime() - first.getTime() % 60000) + 65000);
         TIMER.scheduleAtFixedRate(runnable, first, interval * 1000);
     }
 }

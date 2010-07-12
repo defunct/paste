@@ -31,8 +31,8 @@ public class Annotations {
      * 
      * @param parameters
      *            The controller parameters.
-     * @param request
-     *            The request.
+     * @param method
+     *            The request method.
      */
     @Inject
     public Annotations(@Controller Parameters parameters, @Verb String method) {
