@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.goodworkalan.danger.Danger;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.IlkReflect;
 import com.goodworkalan.ilk.inject.Boxed;
@@ -78,7 +79,7 @@ class StreamRenderer implements Renderer {
      * output.
      */
     public void render() throws ServletException, IOException {
-        Class<? extends Object> controllerClass = controller.getClass();
+        Class<?> controllerClass = controller.box.object.getClass();
 
         Method outputMethod = null;
         for (Method method : controllerClass.getMethods()) {
@@ -91,16 +92,17 @@ class StreamRenderer implements Renderer {
             }
         }
         
+        if (outputMethod == null) {
+            throw new Danger(Stream.class, "outputMethodMissing", controller.box.key);
+        }
+        
         Ilk.Box box;
         try {
             box = injector.inject(IlkReflect.REFLECTOR, controller.box, outputMethod);
         } catch (InvocationTargetException e) {
             throw new ControllerException(e);
         } catch (IllegalAccessException e) {
-            String message = String.format(
-                "\n\tMember annotated for stream output is inaccessible." +
-                "\n\t\tController [%s], Property [%s]", controllerClass.getName(), outputMethod.getName());
-            throw new RuntimeException(message, e);
+            throw new Danger(e, Stream.class, "outputMethodInaccessible", controllerClass.getName(), outputMethod.getName());
         } 
 
         HttpServletResponse response = injector.instance(HttpServletResponse.class, null);

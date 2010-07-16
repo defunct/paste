@@ -9,7 +9,6 @@ import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.ilk.inject.InjectorScoped;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.controller.Renderer;
-import com.goodworkalan.paste.controller.qualifiers.Controller;
 
 /**
  * An extension element in the domain-specific language that is used to specify
@@ -85,7 +84,7 @@ public class Stream {
                         return constructor.newInstance(arguments);
                     }
                 });
-                instance(configuration, ilk(Configuration.class), Controller.class);
+                instance(configuration, ilk(Configuration.class), null);
                 implementation(ilk(StreamRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }
         });
