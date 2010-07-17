@@ -608,6 +608,8 @@ class Responder implements Reactor {
         newControllerInstanceInjector.module(new InjectorBuilder() {
             protected void build() {
                 box(controller, ilk(Object.class), Controller.class);
+                // FIXME Can we have the Ilk come in from the DSL?
+                instance(controller, controller.key, Controller.class);
             }
         });
         return newControllerInstanceInjector.newInjector();
