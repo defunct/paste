@@ -362,6 +362,12 @@ class Responder implements Reactor {
                 scope(SessionScoped.class, (Ilk.Box) session.getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME));
                 scope(RequestScoped.class);
                 scope(ReactionScoped.class);
+                instance(request, ilk(HttpServletRequest.class), Request.class);
+                instance(request, ilk(ServletRequest.class), Request.class);
+                instance(response, ilk(HttpServletResponse.class), Response.class);
+                instance(response, ilk(HttpServletResponse.class), null);
+                instance(response, ilk(ServletResponse.class), Response.class);
+                instance(response, ilk(ServletResponse.class), null);
                 provider(new ReponseHeadersProvider(response), ilk(Headers.class), Response.class, null);
                 provider(new ResponseStatusProvider(response), ilk(Integer.class), Response.class, null);
                 instance(session, ilk(HttpSession.class), Request.class);
@@ -451,11 +457,9 @@ class Responder implements Reactor {
         newInjector.module(new InjectorBuilder(){
             protected void build() {
                 scope(FilterScoped.class);
-                instance(request, ilk(HttpServletRequest.class), Request.class);
-                instance(request, ilk(ServletRequest.class), Request.class);
-                instance(response, ilk(HttpServletResponse.class), Response.class);
+                instance(response, ilk(HttpServletResponse.class), Filter.class);
                 instance(response, ilk(HttpServletResponse.class), null);
-                instance(response, ilk(ServletResponse.class), Response.class);
+                instance(response, ilk(ServletResponse.class), Filter.class);
                 instance(response, ilk(ServletResponse.class), null);
                 instance(request, ilk(HttpServletRequest.class), Filter.class);
                 instance(request, ilk(HttpServletRequest.class), null);

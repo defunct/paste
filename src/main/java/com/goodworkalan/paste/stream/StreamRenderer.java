@@ -3,6 +3,8 @@ package com.goodworkalan.paste.stream;
 import static com.goodworkalan.ilk.Types.getRawClass;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -21,6 +23,7 @@ import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
+import com.goodworkalan.paste.controller.qualifiers.Filter;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
 
 /**
@@ -96,6 +99,9 @@ class StreamRenderer implements Renderer {
             throw new Danger(Stream.class, "outputMethodMissing", controller.box.key);
         }
         
+        HttpServletResponse response = injector.instance(HttpServletResponse.class, Filter.class);
+        response.setContentType(configuration.contentType);
+
         Ilk.Box box;
         try {
             box = injector.inject(IlkReflect.REFLECTOR, controller.box, outputMethod);
@@ -105,17 +111,23 @@ class StreamRenderer implements Renderer {
             throw new Danger(e, Stream.class, "outputMethodInaccessible", controllerClass.getName(), outputMethod.getName());
         } 
 
-        HttpServletResponse response = injector.instance(HttpServletResponse.class, null);
-        response.setContentType(configuration.contentType);
-        
-        if (URI.class.isAssignableFrom(getRawClass(box.key.type))) {
-            URI uri = box.cast(new Ilk<URI>(URI.class));
-            HttpServletRequest request = injector.instance(HttpServletRequest.class, null);
-            RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
-            dispatcher.forward(request, response);
-        } else  if (CharSequence.class.isAssignableFrom(getRawClass(box.key.type))) {
-            response.getWriter().write(box.cast(new Ilk<CharSequence>(CharSequence.class)).toString());
-            response.getWriter().flush();
+        // FIXME Think about this when you are awake, see your concerns.
+        if (box != null) {
+            if (URI.class.isAssignableFrom(getRawClass(box.key.type))) {
+                URI uri = box.cast(new Ilk<URI>(URI.class));
+                HttpServletRequest request = injector.instance(HttpServletRequest.class, null);
+                RequestDispatcher dispatcher = request.getRequestDispatcher(uri.getPath());
+                dispatcher.forward(request, response);
+            } else  if (CharSequence.class.isAssignableFrom(getRawClass(box.key.type))) {
+                String charsetName = "UTF-8";
+                int index = configuration.contentType.indexOf(';');
+                if (index != -1) {
+                    charsetName = configuration.contentType.substring(index + 1).trim(); 
+                }
+                Writer writer = new OutputStreamWriter(response.getOutputStream(), charsetName);
+                writer.write(box.cast(new Ilk<CharSequence>(CharSequence.class)).toString());
+                writer.flush();
+            }
         }
     }
 }

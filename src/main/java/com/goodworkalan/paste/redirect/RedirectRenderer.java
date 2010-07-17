@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -88,11 +89,9 @@ class RedirectRenderer implements Renderer {
             URI uri = URI.create(request.getRequestURL().toString());
             String path = location.getPath();
             if (path.length() != 0 && path.charAt(0) == '/') {
-                path = request.getContextPath() + path;
-                resolved =  uri.resolve(path).toString();
-            } else {
-                resolved =  uri.resolve(path).toString();
+                location = newURI(location, request.getContextPath());
             }
+            resolved =  uri.resolve(location).toString();
         } else {
             resolved =  location.toString();
         }
@@ -102,6 +101,14 @@ class RedirectRenderer implements Renderer {
             response.getWriter().append(page);
         } catch (IOException e) {
             throw new RuntimeException("Unable to render redirection error page.", e);
+        }
+    }
+
+    static URI newURI(URI location, String rootPath) {
+        try {
+            return new URI(location.getScheme(), location.getUserInfo(), location.getHost(), location.getPort(), rootPath + location.getPath(), location.getQuery(), location.getFragment());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
