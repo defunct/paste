@@ -53,7 +53,7 @@ public class RenderStatement {
      * @return This render statement to continue to specify match criteria.
      */
     public RenderStatement controller(Class<?> controllerClass) {
-        from.check(BindKey.CONTROLLER, new InstanceOf(controllerClass));
+        from.check(BindKey.CONTROLLER_CLASS, new InstanceOf(controllerClass, false));
         return this;
     }
 
@@ -121,7 +121,7 @@ public class RenderStatement {
         });
         return this;
     }
-
+    
     /**
      * Apply the renderer for any of the content types match the requested
      * content types.
@@ -146,7 +146,7 @@ public class RenderStatement {
      * @return This render statement to continue to specify match criteria.
      */
     public RenderStatement exception(Class<? extends Throwable> exceptionClass) {
-        from.check(BindKey.EXCEPTION_CLASS, new InstanceOf(exceptionClass));
+        from.check(BindKey.EXCEPTION, new InstanceOf(exceptionClass, true));
         return this;
     }
     

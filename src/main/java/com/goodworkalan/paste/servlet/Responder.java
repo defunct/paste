@@ -51,6 +51,7 @@ import com.goodworkalan.paste.controller.qualifiers.Filter;
 import com.goodworkalan.paste.controller.qualifiers.Reaction;
 import com.goodworkalan.paste.controller.qualifiers.Request;
 import com.goodworkalan.paste.controller.qualifiers.Response;
+import com.goodworkalan.paste.controller.qualifiers.Suffix;
 import com.goodworkalan.paste.controller.qualifiers.Verb;
 import com.goodworkalan.paste.controller.scopes.ApplicationScoped;
 import com.goodworkalan.paste.controller.scopes.ControllerScoped;
@@ -300,7 +301,7 @@ class Responder implements Reactor {
                 for (Class<?> reaction : controllers) {
                     List<Runnable> controllerJanitors = new ArrayList<Runnable>(); 
                     try {
-                        controller(reactionInjector, reaction, new HashMap<String, String>(), controllerJanitors);
+                        controller(reactionInjector, reaction, new HashMap<String, String>(), "", "", controllerJanitors);
                     } finally { 
                         cleanUp(controllerJanitors);
                     }
@@ -557,10 +558,10 @@ class Responder implements Reactor {
      *            The mappings obtained by the Dovetail URL pattern match.
      * @return The controller instance injector.
      */
-    private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings, final List<Runnable> janitors) {
+    private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings, final String path, final String suffix, final List<Runnable> janitors) {
         for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(controllerClass))) {
             List<Runnable> interceptorJanitors = new ArrayList<Runnable>();
-            controller(injector, interceptorClass, mappings, interceptorJanitors);
+            controller(injector, interceptorClass, mappings, path, suffix, interceptorJanitors);
             cleanUp(interceptorJanitors);
         }
 
@@ -570,6 +571,8 @@ class Responder implements Reactor {
         newControllerScopeInjector.module(new InjectorBuilder() {
             protected void build() {
                 scope(ControllerScoped.class);
+                instance(suffix, ilk(String.class), Suffix.class);
+                instance(path, ilk(String.class), com.goodworkalan.paste.controller.qualifiers.Path.class);
                 instance(mappings, new Ilk<Map<String, String>>(){ }, Controller.class);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Controller.class);
             }
@@ -586,7 +589,7 @@ class Responder implements Reactor {
         try {
             controller = controllerScopeInjector.getVendor(new Ilk.Key(controllerClass), Controller.class).get(controllerScopeInjector);
         } catch (InvocationTargetException e) {
-            throw new ControllerException(e);
+            throw new ControllerException(e, controllerClass);
         } catch (Exception e) {
             String message = String.format(
                     "\n\tUnable to construct a controller." +
@@ -752,7 +755,7 @@ class Responder implements Reactor {
                 }
 
                 if (controllerClass != null) {
-                    controllerInjector = controller(injector, controllerClass, mappings, janitors);
+                    controllerInjector = controller(injector, controllerClass, mappings, path, suffix, janitors);
                 }
             }
         }
@@ -859,12 +862,12 @@ class Responder implements Reactor {
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
             Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
-            conditions.put(BindKey.PACKAGE, controller == null ? null : controller.getClass().getPackage().getName());
+            conditions.put(BindKey.PACKAGE, controller == null ? caught.controllerClass.getPackage().getName() : controller.getClass().getPackage().getName());
             conditions.put(BindKey.CONTROLLER, controller);
-            conditions.put(BindKey.CONTROLLER_CLASS, controller == null ? null : controller.getClass());
+            conditions.put(BindKey.CONTROLLER_CLASS, controller == null ? caught.controllerClass : controller.getClass());
             conditions.put(BindKey.PATH, criteria.getPath());
             conditions.put(BindKey.STATUS, injector.instance(Integer.class, Response.class));
-            conditions.put(BindKey.EXCEPTION_CLASS, caught == null ? null : caught.getCause().getCause());
+            conditions.put(BindKey.EXCEPTION, caught == null ? null : caught.getCause().getCause());
             conditions.put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod());
             conditions.put(BindKey.SUFFIX, suffix);
             List<List<InjectorBuilder>> candidates = renderers.get(conditions);

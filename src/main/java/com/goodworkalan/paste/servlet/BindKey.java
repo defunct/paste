@@ -25,6 +25,6 @@ package com.goodworkalan.paste.servlet;
     SUFFIX,
     /** The response status. */
     STATUS,
-    /** The type of exception thrown. */
-    EXCEPTION_CLASS
+    /** The exception thrown. */
+    EXCEPTION
 }

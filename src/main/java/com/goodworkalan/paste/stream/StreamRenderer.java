@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.goodworkalan.danger.Danger;
 import com.goodworkalan.ilk.Ilk;
 import com.goodworkalan.ilk.IlkReflect;
+import com.goodworkalan.ilk.Types;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.actor.ControllerException;
@@ -106,7 +107,7 @@ class StreamRenderer implements Renderer {
         try {
             box = injector.inject(IlkReflect.REFLECTOR, controller.box, outputMethod);
         } catch (InvocationTargetException e) {
-            throw new ControllerException(e);
+            throw new ControllerException(e, Types.getRawClass(controller.box.key.type));
         } catch (IllegalAccessException e) {
             throw new Danger(e, Stream.class, "outputMethodInaccessible", controllerClass.getName(), outputMethod.getName());
         } 

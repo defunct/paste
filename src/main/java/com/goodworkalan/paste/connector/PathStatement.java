@@ -134,6 +134,10 @@ public class PathStatement<T> implements SubPathClause<T> {
         connections.add(new Cassette.Connection(globs, rules));
         return new PathStatement<SubPathClause<T>>(this, controllerToPath, connections, subCompilers, rules, Collections.singletonList(path));
     }
+    
+    public PathStatement<T> includeSuffix() {
+        return this;
+    }
 
     /**
      * Begin a rule statement to specify rules based on on request properties

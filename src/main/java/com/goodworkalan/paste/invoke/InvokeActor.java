@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import javax.inject.Inject;
 
 import com.goodworkalan.ilk.IlkReflect;
+import com.goodworkalan.ilk.Types;
 import com.goodworkalan.ilk.inject.Boxed;
 import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.paste.actor.ControllerException;
@@ -56,7 +57,7 @@ public class InvokeActor implements Runnable {
                 try {
                     injector.inject(IlkReflect.REFLECTOR, controller.box, method);
                 } catch (InvocationTargetException e) {
-                    throw new ControllerException(e);
+                    throw new ControllerException(e, Types.getRawClass(controller.box.key.type));
                 } catch (Exception e) {
                     throw new RuntimeException(String.format("\n\tUnable to invoke controller method.\n\t\tController [%s], Method [%s]", controller.box.key, method.getName()), e);
                 }

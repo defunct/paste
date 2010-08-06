@@ -20,14 +20,20 @@ import com.goodworkalan.ilk.inject.Injector;
 public class ControllerException extends RuntimeException {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
+    
+    /** The controller class. */
+    public final Class<?> controllerClass;
 
     /**
      * Create a controller exception that wraps the given cause.
      * 
      * @param cause
      *            The cause.
+     * @param controllerClass
+     *            The controller class.
      */
-    public ControllerException(Throwable cause) {
+    public ControllerException(Throwable cause, Class<?> controllerClass) {
         super("Controller threw an exception.", cause);
+        this.controllerClass = controllerClass;
     }
 }

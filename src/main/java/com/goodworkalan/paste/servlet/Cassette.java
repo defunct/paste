@@ -56,6 +56,9 @@ public final class Cassette {
         /** The paths that match this connection. */
         public List<Path> paths;
         
+        /** Whether to include the suffix when matching. */
+        public boolean includeSuffix;
+        
         /**
          * The set of rules to further qualify a connection based on request
          * properties.

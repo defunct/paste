@@ -1,7 +1,7 @@
 package com.goodworkalan.paste.redirect;
 
 /**
- * Configuration a redirection response.
+ * Configuration for a redirection response.
  * 
  * @author Alan Gutierrez
  */
