@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -18,6 +19,8 @@ import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
 import com.goodworkalan.paste.stream.Output;
+import com.goodworkalan.reflective.getter.Getter;
+import com.goodworkalan.reflective.getter.Getters;
 import com.goodworkalan.stringbeans.Converter;
 import com.goodworkalan.stringbeans.json.JsonEmitter;
 
@@ -38,6 +41,9 @@ class JsonRenderer implements Renderer {
     
     /** The HTTP response. */
     private final HttpServletResponse response;
+    
+    /** The JSON configuration. */
+    private final Configuration configuration;
 
     /**
      * Create a String Beans JSON renderer.
@@ -50,13 +56,16 @@ class JsonRenderer implements Renderer {
      *            The String Beans emitter and parser configuration.
      * @param response
      *            The HTTP response.
+     * @param configuration
+     *            The JSON configuration.
      */
     @Inject
-    public JsonRenderer(Injector injector, @Controller Boxed<Object> controller, Converter converter, HttpServletResponse response) {
+    public JsonRenderer(Injector injector, @Controller Boxed<Object> controller, Converter converter, HttpServletResponse response, Configuration configuration) {
         this.injector = injector;
         this.controller = controller.box;
         this.converter = converter;
         this.response = response;
+        this.configuration = configuration;
     }
 
     /**
@@ -77,11 +86,27 @@ class JsonRenderer implements Renderer {
                 try {
                     output = injector.inject(IlkReflect.REFLECTOR, controller, method);
                 } catch (InvocationTargetException e) {
-                    throw new ControllerException(e);
+                    throw new ControllerException(e, controller.getClass());
                 } catch (IllegalAccessException e) {
                     throw new Danger(e, JsonRenderer.class, "getterInaccessible", method.getName());
                 }
                 break;
+            }
+        }
+        String callback = null;
+        if (configuration.callback != null) {
+            Map<String, Getter> getters = Getters.getGetters(controller.object.getClass());
+            Getter getter = getters.get(configuration.callback);
+            if (getter == null) {
+                throw new Danger(Json.class, "callbackNotFound");
+            }
+            try {
+                callback = (String) getter.get(controller.object);
+            } catch (Exception e) {
+                throw new Danger(e, Json.class, "cannotGetCallback");
+            }
+            if (callback != null) {
+                response.getWriter().append(callback).append("(");
             }
         }
         if (output == null) {
@@ -90,7 +115,7 @@ class JsonRenderer implements Renderer {
                     try {
                         output = IlkReflect.get(IlkReflect.REFLECTOR, field, controller);
                     } catch (IllegalAccessException e) {
-                        throw new Danger(e, JsonRenderer.class, "fieldInaccessible", field.getName());
+                        throw new Danger(e, Json.class, "fieldInaccessible", field.getName());
                     }
                     break;
                 }
@@ -98,5 +123,8 @@ class JsonRenderer implements Renderer {
         }
         JsonEmitter emitter = new JsonEmitter(converter);
         emitter.emit(response.getWriter(), output.object);
+        if (callback != null) {
+            response.getWriter().append(");");
+        }
     }
 }

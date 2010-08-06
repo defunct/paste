@@ -19,7 +19,7 @@ public class PasteJsonProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.paste/paste-json/0.1")
+                .produces("com.github.bigeasy.paste/paste-json/0.1.0.1")
                 .depends()
                     .production("com.github.bigeasy.string-beans/string-beans-json/0.+1")
                     .production("com.github.bigeasy.paste/paste/0.+1")

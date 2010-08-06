@@ -22,6 +22,9 @@ public class Json {
     
     /** The modules used to define the renderer. */
     private final List<InjectorBuilder> modules;
+    
+    /** The JSON configuration. */
+    private final Configuration configuration;
 
     /**
      * Create an instance of the builder language extension to specify JSON
@@ -35,6 +38,18 @@ public class Json {
     public Json(Connector connector, List<InjectorBuilder> modules) {
         this.connector = connector;
         this.modules = modules;
+        this.configuration = new Configuration();
+    }
+
+    /**
+     * Set the JSONP callback parameter.
+     * 
+     * @param callback
+     *            The callback function name paremeter.
+     */
+    public Json callback(String parameterName) {
+        configuration.callback = parameterName;
+        return this;
     }
 
     /**
@@ -53,6 +68,7 @@ public class Json {
                         return constructor.newInstance(arguments);
                     }
                 });
+                instance(configuration, ilk(Configuration.class), null);
                 implementation(ilk(JsonRenderer.class), ilk(Renderer.class), null, InjectorScoped.class);
             }
         });
