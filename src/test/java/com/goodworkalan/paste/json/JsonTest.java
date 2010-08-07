@@ -64,9 +64,13 @@ public class JsonTest {
     public void addModule() {
         assertEquals(1, getModules().size());
     }
-    
+
+    /**
+     * The modules are constructed and their bindings applied when the injector
+     * is constructed.
+     */
     @Test
-    public void constructModules() {
+    public void bindImplementations() {
         InjectorBuilder newInjector = new InjectorBuilder();
         for (InjectorBuilder module : getModules().get(0)) {
             newInjector.module(module);
