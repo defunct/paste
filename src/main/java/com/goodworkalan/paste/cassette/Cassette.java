@@ -1,12 +1,10 @@
 package com.goodworkalan.paste.cassette;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.goodworkalan.dovetail.Path;
-import com.goodworkalan.dovetail.PathAssociation;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
@@ -109,39 +107,7 @@ public final class Cassette {
     public Cassette() {
     }
 
-    /**
-     * Get the map of controller classes to Dovetail <code>Path</code>
-     * instances.
-     * 
-     * @return A controller lookup.
-     */
-    Map<Class<?>, Path> getRoutes() {
-        return routes;
-    }
-
-    /**
-     * Builds a list of connection groups, where a connection group is a
-     * Dovetail path association tree that maps to a rule map of tests to
-     * further winnow the match based on request parameters. This method builds
-     * the path associations from their intermediate state, which is the list of
-     * paths to add to the path association.
-     * 
-     * @return The list of connection groups.
-     */
-    List<PathAssociation<RuleMap<BindKey, Class<?>>>> getConnections() {
-        List<PathAssociation<RuleMap<BindKey, Class<?>>>> trees = new ArrayList<PathAssociation<RuleMap<BindKey, Class<?>>>>();
-        for (List<Connection> listOfControllerPathMappings : connections) {
-            PathAssociation<RuleMap<BindKey, Class<?>>> tree = new PathAssociation<RuleMap<BindKey, Class<?>>>();
-            for (Connection mapping : listOfControllerPathMappings) {
-                RuleMap<BindKey, Class<?>> rules = mapping.rules.newRuleMap();
-                for (Path glob : mapping.paths) {
-                    tree.put(glob, rules);
-                }
-            }
-            trees.add(tree);
-        }
-        return trees;
-    }
+  
 
     /**
      * Create the rule map to match a controller or exception to a renderer.
