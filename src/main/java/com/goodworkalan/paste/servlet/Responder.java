@@ -585,7 +585,7 @@ class Responder implements Reactor {
         // We do it this way so we can build a controller injector explicitly
         // for the owner instances of a nested controller class when we run the
         // after actions.
-        final Ilk.Box controller;
+        Ilk.Box controller;
         try {
             controller = controllerScopeInjector.getVendor(new Ilk.Key(controllerClass), Controller.class).get(controllerScopeInjector);
         } catch (InvocationTargetException e) {
