@@ -3,7 +3,7 @@ package com.goodworkalan.paste.connector;
 import java.util.Map;
 
 import com.goodworkalan.dovetail.Path;
-import com.goodworkalan.paste.servlet.BindKey;
+import com.goodworkalan.paste.cassette.BindKey;
 import com.goodworkalan.winnow.Equals;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.winnow.RuleSetBuilder;

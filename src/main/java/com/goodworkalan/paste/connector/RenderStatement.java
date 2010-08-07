@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.servlet.BindKey;
+import com.goodworkalan.paste.cassette.BindKey;
 import com.goodworkalan.winnow.Condition;
 import com.goodworkalan.winnow.Equals;
 import com.goodworkalan.winnow.InstanceOf;

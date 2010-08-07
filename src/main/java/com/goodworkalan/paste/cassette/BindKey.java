@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.servlet;
+package com.goodworkalan.paste.cassette;
 
 /**
  * A set of keys used to bind request values to test parameters in order to

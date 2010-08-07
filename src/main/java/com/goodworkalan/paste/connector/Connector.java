@@ -9,8 +9,8 @@ import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
-import com.goodworkalan.paste.servlet.BindKey;
-import com.goodworkalan.paste.servlet.Cassette;
+import com.goodworkalan.paste.cassette.BindKey;
+import com.goodworkalan.paste.cassette.Cassette;
 
 /**
  * Used by {@link Router} instances to define path to controller mappings and

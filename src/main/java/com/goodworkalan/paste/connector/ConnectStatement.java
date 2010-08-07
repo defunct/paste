@@ -7,8 +7,8 @@ import java.util.Map;
 import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
-import com.goodworkalan.paste.servlet.BindKey;
-import com.goodworkalan.paste.servlet.Cassette;
+import com.goodworkalan.paste.cassette.BindKey;
+import com.goodworkalan.paste.cassette.Cassette;
 
 /**
  * A builder for a group of connections in the domain-specific controller

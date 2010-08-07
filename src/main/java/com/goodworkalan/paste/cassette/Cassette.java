@@ -1,4 +1,4 @@
-package com.goodworkalan.paste.servlet;
+package com.goodworkalan.paste.cassette;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
