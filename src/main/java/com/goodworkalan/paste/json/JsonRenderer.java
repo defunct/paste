@@ -121,6 +121,9 @@ class JsonRenderer implements Renderer {
                 }
             }
         }
+        if (output == null) {
+            throw new Danger(Json.class, "noOutput", controller.object.getClass());
+        }
         JsonEmitter emitter = new JsonEmitter(converter);
         emitter.emit(response.getWriter(), output.object);
         if (callback != null) {

@@ -25,6 +25,7 @@ public class PasteJsonProject implements ProjectModule {
                     .production("com.github.bigeasy.paste/paste/0.+1")
                     .development("org.testng/testng-jdk15/5.10")
                     .development("org.mockito/mockito-core/1.8.5")
+                    .development("com.github.bigeasy.danger/danger-test/0.3.0.0")
                     .end()
                 .end()
             .end();
