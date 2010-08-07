@@ -1,5 +1,7 @@
 package com.goodworkalan.paste.json;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
 
 import java.io.IOException;
@@ -11,17 +13,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.*;
 import org.testng.annotations.Test;
 
-import com.goodworkalan.ilk.inject.Injector;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.connector.Connector;
-import com.goodworkalan.paste.controller.Renderer;
 import com.goodworkalan.paste.controller.qualifiers.Controller;
+import com.goodworkalan.paste.json.Json;
 import com.goodworkalan.paste.servlet.BindKey;
 import com.goodworkalan.paste.servlet.Cassette;
-import com.goodworkalan.stringbeans.json.paste.Json;
 import com.goodworkalan.winnow.RuleMap;
 
 /**

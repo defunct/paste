@@ -1,4 +1,4 @@
-package com.goodworkalan.stringbeans.json.paste;
+package com.goodworkalan.paste.json;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

@@ -1,4 +1,4 @@
-package com.goodworkalan.stringbeans.json.paste;
+package com.goodworkalan.paste.json;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

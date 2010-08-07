@@ -1,4 +1,4 @@
-package com.goodworkalan.stringbeans.json.paste;
+package com.goodworkalan.paste.json;
 
 /**
  * The configuration for a JSON response.
