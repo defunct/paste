@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.ilk.association.IlkAssociation;
 import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.cassette.BindKey;
 import com.goodworkalan.paste.cassette.Cassette;
+import com.goodworkalan.paste.cassette.Connection;
+import com.goodworkalan.paste.cassette.ConnectionSet;
+import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
  * Used by {@link Router} instances to define path to controller mappings and
@@ -32,7 +34,7 @@ public class Connector {
         cassette.reactionsByType = new IlkAssociation<Class<?>>(true);
         cassette.reactionsByAnnotation = new HashMap<Class<? extends Annotation>, List<Class<?>>>();
         cassette.routes = new HashMap<Class<?>, Path>();
-        cassette.connections = new ArrayList<List<Cassette.Connection>>();
+        cassette.connections = new ArrayList<ConnectionSet<List<Connection>>>();
         cassette.renderers = new RuleMapBuilder<BindKey, List<InjectorBuilder>>();
         cassette.interceptors = new IlkAssociation<Class<?>>(true);
         this.cassette = cassette;
@@ -88,7 +90,7 @@ public class Connector {
      * @return A domain-specific language element used to define a group
      */
     public ConnectStatement connect() {
-        List<Cassette.Connection> group = new ArrayList<Cassette.Connection>();
+        ConnectionSet<List<Connection>> group = new ConnectionSet<List<Connection>>(new ArrayList<Connection>());
         cassette.connections.add(group);
         return new ConnectStatement(this, cassette.routes, group);
     }

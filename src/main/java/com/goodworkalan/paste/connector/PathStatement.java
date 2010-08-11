@@ -8,7 +8,8 @@ import java.util.Map;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.cassette.BindKey;
-import com.goodworkalan.paste.cassette.Cassette;
+import com.goodworkalan.paste.cassette.Connection;
+import com.goodworkalan.paste.cassette.ConnectionSet;
 import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
@@ -31,7 +32,7 @@ public class PathStatement<T> implements SubPathClause<T> {
      * A list of globs to sets of rule mappings the further test to see if the
      * controller is applicable based on additional request parameters.
      */
-    private final List<Cassette.Connection> connections;
+    private final ConnectionSet<List<Connection>> connections;
 
     /**
      * The list of parent glob compilers, one or each alternate path specified
@@ -80,7 +81,7 @@ public class PathStatement<T> implements SubPathClause<T> {
     PathStatement(
             T connector,
             Map<Class<?>, Path> controllerToPath,
-            List<Cassette.Connection> connections,
+            ConnectionSet<List<Connection>> connections,
             List<PathCompiler> compilers,
             RuleMapBuilder<BindKey, Class<?>> rules,
             List<String> patterns) {
@@ -131,7 +132,7 @@ public class PathStatement<T> implements SubPathClause<T> {
         }
         List<Path> globs = new ArrayList<Path>();
         RuleMapBuilder<BindKey, Class<?>> rules = new RuleMapBuilder<BindKey, Class<?>>();
-        connections.add(new Cassette.Connection(globs, rules));
+        connections.association.add(new Connection(globs, rules));
         return new PathStatement<SubPathClause<T>>(this, controllerToPath, connections, subCompilers, rules, Collections.singletonList(path));
     }
     
@@ -148,7 +149,7 @@ public class PathStatement<T> implements SubPathClause<T> {
      */
     public WhenStatement<T> when() {
         compile();
-        connections.add(new Cassette.Connection(paths, rules));
+        connections.association.add(new Connection(paths, rules));
         return new WhenStatement<T>(this, paths.get(0), controllerToPath, rules);
     }
 
@@ -163,7 +164,7 @@ public class PathStatement<T> implements SubPathClause<T> {
         compile();
         rules.rule().put(controller);
         controllerToPath.put(controller, paths.get(0));
-        connections.add(new Cassette.Connection(paths, rules));
+        connections.association.add(new Connection(paths, rules));
         return new End<T>(connector);
     }
 

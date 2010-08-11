@@ -4,11 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.cassette.BindKey;
-import com.goodworkalan.paste.cassette.Cassette;
+import com.goodworkalan.paste.cassette.Connection;
+import com.goodworkalan.paste.cassette.ConnectionSet;
+import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
  * A builder for a group of connections in the domain-specific controller
@@ -30,7 +31,7 @@ public class ConnectStatement {
      * A list of globs to sets of rule mappings the further test to see if the
      * controller is applicable based on additional request parameters.
      */
-    private final List<Cassette.Connection> connections;
+    private final ConnectionSet<List<Connection>> connections;
 
     /**
      * Create a connector group that will populate the given data structures
@@ -46,12 +47,25 @@ public class ConnectStatement {
      *            see if the controller is applicable based on additional
      *            request parameters.
      */
-    ConnectStatement(Connector end, Map<Class<?>, Path> controllerToGlob, List<Cassette.Connection> connections)  {
+    ConnectStatement(Connector end, Map<Class<?>, Path> controllerToGlob, ConnectionSet<List<Connection>> connections)  {
         this.end = end;
         this.controllerToGlob = controllerToGlob;
         this.connections = connections;
     }
 
+    /**
+     * Include the file suffix when comparing the path against the set of path
+     * matching patterns defined by this connect statement.
+     * 
+     * @return This connect statement to continue defining connection
+     *         properties.
+     */
+    public ConnectStatement includeSuffix() {
+        connections.includeSuffix = true;
+        return this;
+    }
+
+    
     /**
      * Begin a path statement in the domain-specific object to URL binding
      * language.

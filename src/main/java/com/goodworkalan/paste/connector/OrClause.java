@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.goodworkalan.winnow.RuleMapBuilder;
 import com.goodworkalan.dovetail.Path;
 import com.goodworkalan.dovetail.PathCompiler;
 import com.goodworkalan.paste.cassette.BindKey;
-import com.goodworkalan.paste.cassette.Cassette;
+import com.goodworkalan.paste.cassette.Connection;
+import com.goodworkalan.paste.cassette.ConnectionSet;
+import com.goodworkalan.winnow.RuleMapBuilder;
 
 /**
  * An or clause in the path statement used to specify multiple paths for a path
@@ -31,7 +32,7 @@ public class OrClause<T> {
      * A list of globs to sets of rule mappings the further test to see if the
      * controller is applicable based on additional request parameters.
      */
-    private final List<Cassette.Connection> connections;
+    private final ConnectionSet<List<Connection>> connections;
 
     /**
      * The list of parent glob compilers, one or each alternate path specified
@@ -71,7 +72,7 @@ public class OrClause<T> {
      */
     OrClause(T connector,
              Map<Class<?>, Path> controllerToGlob,
-             List<Cassette.Connection> connections,
+             ConnectionSet<List<Connection>> connections,
              List<PathCompiler> compilers,
              RuleMapBuilder<BindKey, Class<?>> rules,
              List<String> patterns) {

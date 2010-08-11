@@ -34,10 +34,12 @@ import com.goodworkalan.ilk.inject.InjectorBuilder;
 import com.goodworkalan.paste.actor.ControllerException;
 import com.goodworkalan.paste.cassette.BindKey;
 import com.goodworkalan.paste.cassette.Cassette;
-import com.goodworkalan.paste.cassette.Cassette.Connection;
+import com.goodworkalan.paste.cassette.Connection;
+import com.goodworkalan.paste.cassette.ConnectionSet;
 import com.goodworkalan.paste.connector.Connector;
 import com.goodworkalan.paste.connector.Router;
 import com.goodworkalan.paste.controller.Actors;
+import com.goodworkalan.paste.controller.Bond;
 import com.goodworkalan.paste.controller.Criteria;
 import com.goodworkalan.paste.controller.Headers;
 import com.goodworkalan.paste.controller.HttpError;
@@ -91,8 +93,8 @@ class Responder implements Reactor {
      * A list of URL bindings that map a path to a Deviate rule set that further
      * winnows the matches based on request parameters.
      */
-    private final List<PathAssociation<RuleMap<BindKey, Class<?>>>> connections;
-
+    private final List<ConnectionSet<PathAssociation<RuleMap<BindKey, Class<?>>>>> connections;
+    
     /**
      * The rule map used to select a renderer for a given controller or thrown
      * exception.
@@ -218,20 +220,23 @@ class Responder implements Reactor {
      * 
      * @return The list of connection groups.
      */
-    List<PathAssociation<RuleMap<BindKey, Class<?>>>> getConnections(Cassette cassette) {
-        List<PathAssociation<RuleMap<BindKey, Class<?>>>> trees = new ArrayList<PathAssociation<RuleMap<BindKey, Class<?>>>>();
-        for (List<Connection> listOfControllerPathMappings : cassette.connections) {
+    private static List<ConnectionSet<PathAssociation<RuleMap<BindKey, Class<?>>>>> getConnections(Cassette cassette) {
+        List<ConnectionSet<PathAssociation<RuleMap<BindKey, Class<?>>>>> trees = new ArrayList<ConnectionSet<PathAssociation<RuleMap<BindKey, Class<?>>>>>();
+        for (ConnectionSet<List<Connection>> connections : cassette.connections) {
             PathAssociation<RuleMap<BindKey, Class<?>>> tree = new PathAssociation<RuleMap<BindKey, Class<?>>>();
-            for (Connection mapping : listOfControllerPathMappings) {
-                RuleMap<BindKey, Class<?>> rules = mapping.rules.newRuleMap();
-                for (Path glob : mapping.paths) {
+            for (Connection connector : connections.association) {
+                RuleMap<BindKey, Class<?>> rules = connector.rules.newRuleMap();
+                for (Path glob : connector.paths) {
                     tree.put(glob, rules);
                 }
             }
-            trees.add(tree);
+            ConnectionSet<PathAssociation<RuleMap<BindKey,Class<?>>>> connector = new ConnectionSet<PathAssociation<RuleMap<BindKey,Class<?>>>>(tree);
+            connector.includeSuffix = connections.includeSuffix;
+            trees.add(connector);
         }
         return trees;
     }
+
     /**
      * Start the application by generating a {@link Startup} event and
      * triggering and startup reactions.
@@ -327,7 +332,7 @@ class Responder implements Reactor {
                 for (Class<?> reaction : controllers) {
                     List<Runnable> controllerJanitors = new ArrayList<Runnable>(); 
                     try {
-                        controller(reactionInjector, reaction, new HashMap<String, String>(), "", "", controllerJanitors);
+                        controller(reactionInjector, new Bond(new Bond(null, null, false), reaction), controllerJanitors);
                     } finally { 
                         cleanUp(controllerJanitors);
                     }
@@ -563,7 +568,7 @@ class Responder implements Reactor {
      * Invoke a controller of the given controller class.
      * <p>
      * Prior to running the controller, an interceptors are run as controllers
-     * using this method. Then a controller instnace is created that defines the
+     * using this method. Then a controller instance is created that defines the
      * controller scope an binds the given mappings to a <code>Map</code>
      * interface qualified by <code>Controller</code>. Then the before actors
      * are invoked.
@@ -580,14 +585,14 @@ class Responder implements Reactor {
      *            The filter injector.
      * @param controllerClass
      *            The controller class.
-     * @param mappings
-     *            The mappings obtained by the Dovetail URL pattern match.
+     * @param bond
+     *            The matched path, suffix and extracted parameters.
      * @return The controller instance injector.
      */
-    private Injector controller(Injector injector, final Class<?> controllerClass, final Map<String, String> mappings, final String path, final String suffix, final List<Runnable> janitors) {
-        for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(controllerClass))) {
+    private Injector controller(Injector injector, final Bond bond, final List<Runnable> janitors) {
+        for (Class<?> interceptorClass : interceptors.getAll(new Ilk.Key(bond.controllerClass))) {
             List<Runnable> interceptorJanitors = new ArrayList<Runnable>();
-            controller(injector, interceptorClass, mappings, path, suffix, interceptorJanitors);
+            controller(injector, new Bond(bond, interceptorClass), interceptorJanitors);
             cleanUp(interceptorJanitors);
         }
 
@@ -597,29 +602,32 @@ class Responder implements Reactor {
         newControllerScopeInjector.module(new InjectorBuilder() {
             protected void build() {
                 scope(ControllerScoped.class);
-                instance(suffix, ilk(String.class), Suffix.class);
-                instance(path, ilk(String.class), com.goodworkalan.paste.controller.qualifiers.Path.class);
-                instance(mappings, new Ilk<Map<String, String>>(){ }, Controller.class);
+                instance(bond, ilk(Bond.class), null);
+                instance(bond.suffix, ilk(String.class), Suffix.class);
+                instance(bond.controllerClass, ilk(Class.class), Controller.class);
+                instance(bond.path, ilk(String.class), com.goodworkalan.paste.controller.qualifiers.Path.class);
+                instance(bond.parameters, new Ilk<Map<String, String>>() {}, Controller.class);
                 instance(new JanitorQueue(janitors), ilk(JanitorQueue.class), Controller.class);
             }
         });
 
         Injector controllerScopeInjector = newControllerScopeInjector.newInjector();
 
-        before(controllerScopeInjector, controllerClass);
+        before(controllerScopeInjector, bond.controllerClass);
         
         // We do it this way so we can build a controller injector explicitly
         // for the owner instances of a nested controller class when we run the
         // after actions.
         Ilk.Box controller;
         try {
-            controller = controllerScopeInjector.getVendor(new Ilk.Key(controllerClass), Controller.class).get(controllerScopeInjector);
+            controller = controllerScopeInjector.getVendor(new Ilk.Key(bond.controllerClass), Controller.class).get(controllerScopeInjector);
         } catch (InvocationTargetException e) {
-            throw new ControllerException(e, controllerClass);
+            throw new ControllerException(e, controllerScopeInjector);
         } catch (Exception e) {
+            // FIXME Use a message bundle.
             String message = String.format(
                     "\n\tUnable to construct a controller." +
-                    "\n\t\tController [%s]", controllerClass.getName());
+                    "\n\t\tController [%s]", bond.controllerClass.getName());
             throw new RuntimeException(message, e);
         }
         after(controllerScopeInjector, controller);
@@ -745,25 +753,37 @@ class Responder implements Reactor {
      * @return The injector used to create the controller or null if no
      *         controller was found.
      */
-    private Injector controller(Injector injector, Interception interception, Criteria criteria, String path, String suffix, List<Runnable> janitors) {
+    private Injector controller(Injector injector, Interception interception, Criteria criteria, List<Runnable> janitors) {
         Injector controllerInjector = null;
         // We try each series of binding definitions in order. There can be
         // multiple bindings that match, applying multiple controllers.
-        for (PathAssociation<RuleMap<BindKey, Class<?>>> tree : connections) {
+        for (ConnectionSet<PathAssociation<RuleMap<BindKey, Class<?>>>> tree : connections) {
             // If a controller has written a response, we're done.
             if (interception.isIntercepted()) {
                 break;
             }
             
+            String path = criteria.getPath();
+            String suffix = null;
+            if (!tree.includeSuffix) {
+                Matcher matcher = SUFFIX.matcher(path);
+                if (matcher.matches()) {
+                    path = matcher.group(1);
+                    suffix = matcher.group(2);
+                }
+            }
+            
+            Bond bond = new Bond(path, suffix, tree.includeSuffix);
+            
             // Attempt to match the path.
-            List<Match<RuleMap<BindKey, Class<?>>>> matches = tree.match(path);
+            List<Match<RuleMap<BindKey, Class<?>>>> matches = tree.association.match(path);
 
             // We can have multiple matches, so we winnow them down by futher
             // matching request parameters, then futher winnowing them by
             // choosing a controller based on priority.
             if (!matches.isEmpty()) {
                 Class<?> controllerClass = null;
-                Map<String, String> mappings = null;
+                Map<String, String> parameters = null;
 
                 HttpServletRequest request = injector.instance(HttpServletRequest.class, Filter.class);
                 // Apply the rule set associated with each matched glob.
@@ -771,17 +791,17 @@ class Responder implements Reactor {
                     Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
                     conditions.put(BindKey.METHOD, request.getMethod());
                     conditions.put(BindKey.PATH, criteria.getPath());
-                    conditions.put(BindKey.SUFFIX, suffix);
+                    conditions.put(BindKey.SUFFIX, bond.suffix);
                     List<Class<?>> candidates = mapping.getObject().get(conditions);
                     if (!candidates.isEmpty()) {
                         controllerClass = candidates.get(0);
-                        mappings = mapping.getParameters();
+                        parameters = mapping.getParameters();
                         break;
                     }
                 }
 
                 if (controllerClass != null) {
-                    controllerInjector = controller(injector, controllerClass, mappings, path, suffix, janitors);
+                    controllerInjector = controller(injector, new Bond(bond, controllerClass, parameters), janitors);
                 }
             }
         }
@@ -812,18 +832,10 @@ class Responder implements Reactor {
         ControllerException caught = null;
         Injector controllerInjector = null;
 
-        String path = criteria.getPath();
-        String suffix = null;
-        Matcher matcher = SUFFIX.matcher(path);
-        if (matcher.matches()) {
-            path = matcher.group(1);
-            suffix = matcher.group(2);
-        }
-        
         List<Runnable> janitors = new ArrayList<Runnable>();
         
         try {
-            controllerInjector = controller(injector, interception, criteria, path, suffix, janitors);
+            controllerInjector = controller(injector, interception, criteria, janitors);
         } catch (ControllerException e) {
             caught = e;
             // Exceptions are also used for those things in HTTP that feel like
@@ -838,7 +850,7 @@ class Responder implements Reactor {
 
         janitors.clear();
         try {
-            render(injector, criteria, controllerInjector, caught, suffix);
+            render(criteria, controllerInjector, caught);
         } finally {   
             cleanUp(janitors);
         }
@@ -852,8 +864,6 @@ class Responder implements Reactor {
     /**
      * Render the final controller or caught exception.
      * 
-     * @param injector
-     *            The filtration injector.
      * @param criteria
      *            The filter critiera.
      * @param controllerInjector
@@ -867,40 +877,41 @@ class Responder implements Reactor {
      * @throws IOException
      *             For any I/O error.
      */
-    private void render(Injector injector, Criteria criteria, 
-            Injector controllerInjector,  ControllerException caught, String suffix)
+    private void render(Criteria criteria, Injector controllerInjector,  ControllerException caught)
     throws ServletException, IOException {
         List<InjectorBuilder> modules = null;
         for (;;) {
-            Object controller = null;
-            if (controllerInjector != null) { 
-                controller = controllerInjector.instance(Object.class, Controller.class);
-            }
-   
             if (modules != null) {
                 break;
             }
-   
-            if (controllerInjector == null && caught == null) {
+            
+            Object controller = null;
+            if (controllerInjector != null) { 
+                controller = controllerInjector.instance(Object.class, Controller.class);
+            } else if (caught != null) {
+                controllerInjector = caught.injector;
+            } else {
                 break;
             }
+
+            Class<?> controllerClass = controllerInjector.instance(Class.class, Controller.class);
    
             // Get a list of render modules whose rules match the current
             // request values and the current controller or exception.
             Map<BindKey, Object> conditions = new HashMap<BindKey, Object>();
-            conditions.put(BindKey.PACKAGE, controller == null ? caught.controllerClass.getPackage().getName() : controller.getClass().getPackage().getName());
+            conditions.put(BindKey.PACKAGE, controllerClass.getPackage().getName());
             conditions.put(BindKey.CONTROLLER, controller);
-            conditions.put(BindKey.CONTROLLER_CLASS, controller == null ? caught.controllerClass : controller.getClass());
-            conditions.put(BindKey.PATH, criteria.getPath());
-            conditions.put(BindKey.STATUS, injector.instance(Integer.class, Response.class));
+            conditions.put(BindKey.CONTROLLER_CLASS, controllerClass);
+            conditions.put(BindKey.PATH, controllerInjector.instance(String.class, com.goodworkalan.paste.controller.qualifiers.Path.class));
+            conditions.put(BindKey.STATUS, controllerInjector.instance(Integer.class, Response.class));
             conditions.put(BindKey.EXCEPTION, caught == null ? null : caught.getCause().getCause());
-            conditions.put(BindKey.METHOD, injector.instance(HttpServletRequest.class, null).getMethod());
-            conditions.put(BindKey.SUFFIX, suffix);
+            conditions.put(BindKey.METHOD, controllerInjector.instance(HttpServletRequest.class, null).getMethod());
+            conditions.put(BindKey.SUFFIX, controllerInjector.instance(String.class, Suffix.class));
             List<List<InjectorBuilder>> candidates = renderers.get(conditions);
             if (!candidates.isEmpty()) {
                 // Use the render module with the highest priority.
                 modules = candidates.get(0);
-                InjectorBuilder newInjector = controllerInjector == null ? injector.newInjector() : controllerInjector.newInjector();
+                InjectorBuilder newInjector = controllerInjector.newInjector();
                 for (InjectorBuilder module : modules) {
                     newInjector.module(module);
                 }

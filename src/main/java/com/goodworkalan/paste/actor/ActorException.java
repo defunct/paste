@@ -2,11 +2,12 @@ package com.goodworkalan.paste.actor;
 
 /**
  * A wrapper around an exception raised by an object that supports an actor that
- * was constructed through dependency injection. This is to disambiguate
- * exceptions thrown through reflection that are controller exceptions
- * (application exceptions) or actor exceptions (framework exceptions).
- * Framework exceptions are reported as programming errors, while controller
- * exceptions can alter the flow of control of the application.
+ * was constructed through dependency injection.
+ * <p>
+ * This is to disambiguate exceptions thrown through reflection that are
+ * controller exceptions (application exceptions) or actor exceptions (framework
+ * exceptions). Framework exceptions are reported as programming errors, while
+ * controller exceptions can alter the flow of control of the application.
  * 
  * This is a wrapper only exception,
  * 

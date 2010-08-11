@@ -21,8 +21,8 @@ public class ControllerException extends RuntimeException {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
     
-    /** The controller class. */
-    public final Class<?> controllerClass;
+    /** The controller injector. */
+    public final Injector injector;
 
     /**
      * Create a controller exception that wraps the given cause.
@@ -32,8 +32,8 @@ public class ControllerException extends RuntimeException {
      * @param controllerClass
      *            The controller class.
      */
-    public ControllerException(Throwable cause, Class<?> controllerClass) {
+    public ControllerException(Throwable cause, Injector injector) {
         super("Controller threw an exception.", cause);
-        this.controllerClass = controllerClass;
+        this.injector = injector;
     }
 }
